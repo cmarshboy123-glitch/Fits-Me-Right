@@ -1,0 +1,27 @@
+{
+  "name": "fitsmeright",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "audit:catalog": "node work/validate-catalog.js",
+    "audit:links": "node work/audit-retailer-links.js",
+    "audit:images": "node work/audit-unique-image-slots.mjs",
+    "migration:squarespace": "node work/generate-squarespace-migration.mjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "autoprefixer": "latest",
+    "lucide-react": "latest",
+    "postcss": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-router-dom": "latest",
+    "tailwindcss": "^3.4.17",
+    "vite": "latest"
+  },
+  "devDependencies": {}
+}
