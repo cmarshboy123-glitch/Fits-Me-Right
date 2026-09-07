@@ -6,10 +6,10 @@ import { luxuryRetailers, retailerNames } from '../utils/retailers'
 
 const categories = [
   ['Everyday Ease', '/assets/unique/home-everyday-ease-v1.webp'],
-  ['Business Casual', '/assets/unique/home-business-casual-v2.png'],
+  ['Business Casual', '/assets/unique/home-business-casual-men-v1.webp'],
   ['Formal Wear', '/assets/unique/home-after-five-v1.webp'],
-  ['Made to Move', '/assets/unique/home-made-to-move-v1.webp'],
-  ['Shoes', '/assets/unique/home-shoes-occasion-v1.webp'],
+  ['Made to Move', '/assets/unique/home-made-to-move-men-v1.webp'],
+  ['Shoes', '/assets/unique/home-shoes-occasion-men-v1.webp'],
   ['Accessories', '/assets/unique/home-accessories-occasion-v1.webp'],
 ]
 
