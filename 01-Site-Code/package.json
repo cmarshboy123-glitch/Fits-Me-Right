@@ -12,7 +12,8 @@
     "audit:links": "node work/audit-retailer-links.js",
     "audit:images": "node work/audit-unique-image-slots.mjs",
     "audit": "npm run audit:catalog && npm run audit:links && npm run audit:images",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "vite build && wrangler deploy"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",
@@ -25,5 +26,8 @@
     "react-router-dom": "^7.18.2",
     "tailwindcss": "^3.4.17",
     "vite": "^8.2.1"
+  },
+  "devDependencies": {
+    "wrangler": "^4.129.0"
   }
 }
