@@ -2,12 +2,18 @@ import mockProducts from '../data/products.json'
 import verifiedProducts from '../data/verifiedProducts'
 import marketplaceInventory from '../data/marketplaceInventory'
 
+// The broader catalog (products.json) uses shirtSizes/pantsSizes while the
+// verified/marketplace records use availableShirtSizes/availablePantsSizes —
+// line the field names up so every product behaves identically once merged.
+const normalizedMockProducts = mockProducts.map((product) => ({
+  ...product,
+  availableShirtSizes: product.shirtSizes,
+  availablePantsSizes: product.pantsSizes,
+}))
+
 // Keep the page contract async so a vendor/affiliate API can replace this implementation later.
 export async function getProducts() {
-  const previewShoesAndJewels = mockProducts
-    .filter((product) => product.id >= 15 && product.id <= 25)
-    .map((product) => ({ ...product, isPreview: true }))
-  return Promise.resolve([...verifiedProducts, ...marketplaceInventory, ...previewShoesAndJewels])
+  return Promise.resolve([...verifiedProducts, ...marketplaceInventory, ...normalizedMockProducts])
 }
 
 export async function getRecommendedProducts(selections) {

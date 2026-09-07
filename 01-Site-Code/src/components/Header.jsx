@@ -1,7 +1,10 @@
-﻿import { Heart, Menu, Search, ShoppingBag, UserRound, X } from 'lucide-react'
-import { useState } from 'react'
+import { Heart, Menu, Search, ShoppingBag, UserRound, X } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useStyle } from '../context/StyleContext'
+import { getProducts } from '../services/catalogService'
+import { parseShoppingIntent, productMatchesIntent } from '../utils/searchIntent'
+import { retailerSearchUrl } from '../utils/retailers'
 import BrandMark from './BrandMark'
 
 const nav = [
@@ -14,13 +17,38 @@ const nav = [
 export default function Header() {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
+  const [products, setProducts] = useState([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const blurTimeout = useRef(null)
   const navigate = useNavigate()
   const { updateSelection } = useStyle()
+
+  useEffect(() => { getProducts().then(setProducts) }, [])
+  useEffect(() => () => clearTimeout(blurTimeout.current), [])
 
   const startFor = (gender) => {
     updateSelection('gender', gender)
     navigate('/style/body-type')
     setOpen(false)
+  }
+
+  const trimmedQuery = query.trim()
+  const suggestions = useMemo(() => {
+    if (!trimmedQuery || !products.length) return []
+    const intent = parseShoppingIntent(trimmedQuery)
+    return products.filter((product) => productMatchesIntent(product, intent)).slice(0, 6)
+  }, [trimmedQuery, products])
+
+  const runSearch = (value) => {
+    setShowSuggestions(false)
+    navigate(`/shop?q=${encodeURIComponent(value)}`)
+  }
+
+  const openSuggestion = (product) => {
+    setShowSuggestions(false)
+    const url = product.productUrl || retailerSearchUrl(product)
+    if (url && url !== '#') window.open(url, '_blank', 'noreferrer')
+    else runSearch(product.name)
   }
 
   return (
@@ -34,10 +62,63 @@ export default function Header() {
             <NavLink key={path} to={path} className={({ isActive }) => `text-xs font-semibold transition ${isActive ? 'text-black' : 'text-neutral-500 hover:text-black'}`}>{label}</NavLink>
           ))}
         </div>
-        <form onSubmit={(event) => { event.preventDefault(); navigate(`/shop?q=${encodeURIComponent(query)}`) }} className="ml-auto hidden max-w-sm flex-1 items-center rounded-full border border-neutral-200 bg-[#F7F5F0] px-4 py-2.5 lg:flex">
-          <input value={query} onChange={(event) => setQuery(event.target.value)} className="w-full bg-transparent text-sm outline-none" placeholder="Search every store" aria-label="Search" />
-          <button aria-label="Submit search"><Search size={19} /></button>
-        </form>
+        <div className="relative ml-auto hidden max-w-sm flex-1 lg:block">
+          <form
+            onSubmit={(event) => { event.preventDefault(); runSearch(query) }}
+            className="flex items-center rounded-full border border-neutral-200 bg-[#F7F5F0] px-4 py-2.5"
+          >
+            <input
+              value={query}
+              onChange={(event) => { setQuery(event.target.value); setShowSuggestions(true) }}
+              onFocus={() => setShowSuggestions(true)}
+              onBlur={() => { blurTimeout.current = setTimeout(() => setShowSuggestions(false), 150) }}
+              onKeyDown={(event) => { if (event.key === 'Escape') event.currentTarget.blur() }}
+              className="w-full bg-transparent text-sm outline-none"
+              placeholder="Search any clothing, brand, or store"
+              aria-label="Search"
+              autoComplete="off"
+              role="combobox"
+              aria-expanded={showSuggestions && trimmedQuery.length > 0}
+              aria-controls="header-search-suggestions"
+            />
+            <button aria-label="Submit search"><Search size={19} /></button>
+          </form>
+          {showSuggestions && trimmedQuery.length > 0 && (
+            <div id="header-search-suggestions" className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-xl">
+              {suggestions.length > 0 ? (
+                <ul>
+                  {suggestions.map((product) => (
+                    <li key={product.id}>
+                      <button
+                        type="button"
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => openSuggestion(product)}
+                        className="flex w-full items-center gap-3 border-b border-neutral-100 px-4 py-2.5 text-left transition hover:bg-neutral-50"
+                      >
+                        <img src={product.imageUrl} alt="" className="h-11 w-9 shrink-0 rounded-md object-cover" />
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-xs font-bold">{product.name}</span>
+                          <span className="block truncate text-[10px] font-semibold uppercase tracking-wide text-neutral-400">{product.vendor} · {product.category}</span>
+                        </span>
+                        <span className="shrink-0 text-xs font-bold">${product.price.toFixed(0)}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="px-4 py-3 text-xs text-neutral-500">No quick matches yet — press Enter to search the whole marketplace.</p>
+              )}
+              <button
+                type="button"
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => runSearch(query)}
+                className="flex w-full items-center justify-center gap-2 bg-[#F7F5F0] px-4 py-3 text-[11px] font-bold uppercase tracking-wide text-neutral-700 hover:bg-neutral-100"
+              >
+                <Search size={13} /> See all results for &ldquo;{trimmedQuery}&rdquo;
+              </button>
+            </div>
+          )}
+        </div>
         <div className="ml-auto flex items-center gap-4 text-neutral-700 lg:ml-0">
           <button aria-label="Search" onClick={() => navigate('/shop')} className="lg:hidden"><Search size={21} /></button>
           <button aria-label="Wishlist" className="hidden sm:block"><Heart size={21} /></button>
@@ -58,4 +139,3 @@ export default function Header() {
     </header>
   )
 }
-

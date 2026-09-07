@@ -48,7 +48,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "White"
   },
   {
     "id": 2,
@@ -99,7 +100,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Black"
   },
   {
     "id": 3,
@@ -151,7 +153,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Ivory"
   },
   {
     "id": 4,
@@ -202,7 +205,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Emerald"
   },
   {
     "id": 5,
@@ -222,7 +226,7 @@
       "Bohemian",
       "Business Casual"
     ],
-    "category": "Bottoms",
+    "category": "Pants",
     "price": 79.9,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "ASOS",
@@ -254,7 +258,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Sand"
   },
   {
     "id": 6,
@@ -273,7 +278,7 @@
       "Active Wear",
       "Casual"
     ],
-    "category": "Active",
+    "category": "Activewear",
     "price": 88,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Bloomingdale's",
@@ -305,7 +310,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Charcoal"
   },
   {
     "id": 7,
@@ -357,7 +363,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Burgundy"
   },
   {
     "id": 8,
@@ -393,20 +400,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Navy"
   },
   {
     "id": 9,
@@ -426,7 +434,7 @@
       "Professional/Formal Business",
       "Semi-Formal"
     ],
-    "category": "Bottoms",
+    "category": "Pants",
     "price": 148,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Anthropologie",
@@ -443,20 +451,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Taupe"
   },
   {
     "id": 10,
@@ -476,7 +485,7 @@
       "Formal Attire",
       "Black Tie"
     ],
-    "category": "Tailoring",
+    "category": "Suits",
     "price": 625,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Urban Outfitters",
@@ -493,20 +502,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Charcoal"
   },
   {
     "id": 11,
@@ -542,20 +552,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Blue"
   },
   {
     "id": 12,
@@ -575,7 +586,7 @@
       "Bohemian",
       "Business Casual"
     ],
-    "category": "Bottoms",
+    "category": "Pants",
     "price": 128,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Old Navy",
@@ -592,20 +603,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Olive"
   },
   {
     "id": 13,
@@ -624,7 +636,7 @@
       "Active Wear",
       "Casual"
     ],
-    "category": "Active",
+    "category": "Activewear",
     "price": 92,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Banana Republic",
@@ -641,20 +653,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Black"
   },
   {
     "id": 14,
@@ -674,7 +687,7 @@
       "Cocktail Dress",
       "Formal Attire"
     ],
-    "category": "Tailoring",
+    "category": "Suits",
     "price": 425,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "J.Crew",
@@ -691,20 +704,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Wine"
   },
   {
     "id": 15,
@@ -756,7 +770,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Camel"
   },
   {
     "id": 16,
@@ -792,20 +807,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "White"
   },
   {
     "id": 17,
@@ -856,7 +872,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Grey"
   },
   {
     "id": 18,
@@ -893,20 +910,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Black"
   },
   {
     "id": 19,
@@ -957,7 +975,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Multicolor"
   },
   {
     "id": 20,
@@ -1009,7 +1028,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Gold"
   },
   {
     "id": 21,
@@ -1046,20 +1066,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Silver"
   },
   {
     "id": 22,
@@ -1111,7 +1132,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Gold"
   },
   {
     "id": 23,
@@ -1162,7 +1184,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Natural"
   },
   {
     "id": 24,
@@ -1198,20 +1221,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Silver"
   },
   {
     "id": 25,
@@ -1263,7 +1287,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Everyday & Designer"
+    "storeTier": "Everyday & Designer",
+    "color": "Burgundy"
   },
   {
     "id": 26,
@@ -1282,7 +1307,7 @@
       "Casual",
       "Business Casual"
     ],
-    "category": "Tops",
+    "category": "Knitwear",
     "price": 49.9,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "UNIQLO",
@@ -1314,7 +1339,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Asian Market"
+    "storeTier": "Asian Market",
+    "color": "Grey"
   },
   {
     "id": 27,
@@ -1365,7 +1391,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Asian Market"
+    "storeTier": "Asian Market",
+    "color": "Olive"
   },
   {
     "id": 28,
@@ -1385,7 +1412,7 @@
       "Cocktail Dress",
       "Semi-Formal"
     ],
-    "category": "Dresses",
+    "category": "Tops",
     "price": 228,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "MUJI",
@@ -1417,7 +1444,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Asian Market"
+    "storeTier": "Asian Market",
+    "color": "Natural"
   },
   {
     "id": 29,
@@ -1468,7 +1496,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Asian Market"
+    "storeTier": "Asian Market",
+    "color": "Blush"
   },
   {
     "id": 30,
@@ -1488,7 +1517,7 @@
       "Bohemian",
       "Business Casual"
     ],
-    "category": "Bottoms",
+    "category": "Pants",
     "price": 79.9,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "MUSINSA",
@@ -1520,7 +1549,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Asian Market"
+    "storeTier": "Asian Market",
+    "color": "Black"
   },
   {
     "id": 31,
@@ -1539,7 +1569,7 @@
       "Active Wear",
       "Casual"
     ],
-    "category": "Active",
+    "category": "Dresses",
     "price": 88,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "W Concept",
@@ -1571,7 +1601,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Asian Market"
+    "storeTier": "Asian Market",
+    "color": "Ivory"
   },
   {
     "id": 32,
@@ -1591,7 +1622,7 @@
       "Semi-Formal",
       "Bohemian"
     ],
-    "category": "Dresses",
+    "category": "Tops",
     "price": 348,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Cider",
@@ -1623,7 +1654,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Asian Market"
+    "storeTier": "Asian Market",
+    "color": "Fuchsia"
   },
   {
     "id": 33,
@@ -1659,20 +1691,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Asian Market"
+    "storeTier": "Asian Market",
+    "color": "Coral"
   },
   {
     "id": 34,
@@ -1692,7 +1725,7 @@
       "Professional/Formal Business",
       "Semi-Formal"
     ],
-    "category": "Bottoms",
+    "category": "Pants",
     "price": 148,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Love, Bonito",
@@ -1709,20 +1742,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Asian Market"
+    "storeTier": "Asian Market",
+    "color": "Charcoal"
   },
   {
     "id": 35,
@@ -1742,7 +1776,7 @@
       "Formal Attire",
       "Black Tie"
     ],
-    "category": "Tailoring",
+    "category": "Shoes",
     "price": 625,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Charles & Keith",
@@ -1759,20 +1793,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Asian Market"
+    "storeTier": "Asian Market",
+    "color": "Black"
   },
   {
     "id": 36,
@@ -1825,7 +1860,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Ivory"
   },
   {
     "id": 37,
@@ -1878,7 +1914,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Camel"
   },
   {
     "id": 38,
@@ -1930,7 +1967,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Black"
   },
   {
     "id": 39,
@@ -1950,7 +1988,7 @@
       "Formal Attire",
       "Cocktail Dress"
     ],
-    "category": "Dresses",
+    "category": "Outerwear",
     "price": 1025,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Saint Laurent",
@@ -1982,7 +2020,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Black"
   },
   {
     "id": 40,
@@ -2004,7 +2043,7 @@
       "Formal Attire",
       "Cocktail Dress"
     ],
-    "category": "Bottoms",
+    "category": "Dresses",
     "price": 1150,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Bottega Veneta",
@@ -2036,7 +2075,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Emerald"
   },
   {
     "id": 41,
@@ -2057,7 +2097,7 @@
       "Formal Attire",
       "Cocktail Dress"
     ],
-    "category": "Active",
+    "category": "Outerwear",
     "price": 1275,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Burberry",
@@ -2089,7 +2129,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Camel"
   },
   {
     "id": 42,
@@ -2110,7 +2151,7 @@
       "Bohemian",
       "Formal Attire"
     ],
-    "category": "Dresses",
+    "category": "Outerwear",
     "price": 1400,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Balenciaga",
@@ -2142,7 +2183,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Black"
   },
   {
     "id": 43,
@@ -2163,7 +2205,7 @@
       "Formal Attire",
       "Cocktail Dress"
     ],
-    "category": "Tops",
+    "category": "Dresses",
     "price": 1525,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Dior",
@@ -2180,20 +2222,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Ivory"
   },
   {
     "id": 44,
@@ -2215,7 +2258,7 @@
       "Formal Attire",
       "Cocktail Dress"
     ],
-    "category": "Bottoms",
+    "category": "Dresses",
     "price": 1650,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Fendi",
@@ -2232,20 +2275,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Camel"
   },
   {
     "id": 45,
@@ -2266,7 +2310,7 @@
       "Black Tie",
       "Cocktail Dress"
     ],
-    "category": "Tailoring",
+    "category": "Tops",
     "price": 1775,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Versace",
@@ -2283,20 +2327,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Multicolor"
   },
   {
     "id": 46,
@@ -2317,7 +2362,7 @@
       "Formal Attire",
       "Cocktail Dress"
     ],
-    "category": "Tops",
+    "category": "Dresses",
     "price": 1900,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Valentino",
@@ -2334,20 +2379,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Red"
   },
   {
     "id": 47,
@@ -2369,7 +2415,7 @@
       "Formal Attire",
       "Cocktail Dress"
     ],
-    "category": "Bottoms",
+    "category": "Outerwear",
     "price": 2025,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Givenchy",
@@ -2386,20 +2432,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Black"
   },
   {
     "id": 48,
@@ -2420,7 +2467,7 @@
       "Formal Attire",
       "Cocktail Dress"
     ],
-    "category": "Active",
+    "category": "Tops",
     "price": 2150,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Loewe",
@@ -2437,20 +2484,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Terracotta"
   },
   {
     "id": 49,
@@ -2470,7 +2518,7 @@
       "Cocktail Dress",
       "Formal Attire"
     ],
-    "category": "Tailoring",
+    "category": "Knitwear",
     "price": 2275,
     "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Celine",
@@ -2487,24 +2535,25 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Camel"
   },
   {
     "id": 50,
-    "name": "BouclÃ© Evening Jacket",
+    "name": "Bouclé Evening Jacket",
     "gender": "Women",
     "bodyType": [
       "Straight",
@@ -2522,9 +2571,9 @@
       "Formal Attire",
       "Cocktail Dress"
     ],
-    "category": "Shoes",
+    "category": "Outerwear",
     "price": 2400,
-    "imageUrl": "/assets/department-shoes.webp",
+    "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Chanel",
     "brand": "Chanel",
     "shirtSizes": [
@@ -2554,7 +2603,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Pink"
   },
   {
     "id": 51,
@@ -2575,11 +2625,11 @@
       "Formal Attire",
       "Cocktail Dress"
     ],
-    "category": "Shoes",
+    "category": "Pants",
     "price": 2525,
-    "imageUrl": "/assets/department-shoes.webp",
-    "vendor": "HermÃ¨s",
-    "brand": "HermÃ¨s",
+    "imageUrl": "/assets/department-clothing.webp",
+    "vendor": "Hermès",
+    "brand": "Hermès",
     "shirtSizes": [
       "XXS",
       "XS",
@@ -2592,20 +2642,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Orange"
   },
   {
     "id": 52,
@@ -2626,9 +2677,9 @@
       "Formal Attire",
       "Cocktail Dress"
     ],
-    "category": "Shoes",
+    "category": "Suits",
     "price": 2650,
-    "imageUrl": "/assets/department-shoes.webp",
+    "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Alexander McQueen",
     "brand": "Alexander McQueen",
     "shirtSizes": [
@@ -2658,7 +2709,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Black"
   },
   {
     "id": 53,
@@ -2679,9 +2731,9 @@
       "Formal Attire",
       "Cocktail Dress"
     ],
-    "category": "Shoes",
+    "category": "Outerwear",
     "price": 2775,
-    "imageUrl": "/assets/department-shoes.webp",
+    "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Moncler",
     "brand": "Moncler",
     "shirtSizes": [
@@ -2696,20 +2748,21 @@
       "4XL"
     ],
     "pantsSizes": [
-      "28 Ã— 30",
-      "30 Ã— 30",
-      "32 Ã— 30",
-      "32 Ã— 32",
-      "34 Ã— 32",
-      "36 Ã— 32",
-      "38 Ã— 32",
-      "40 Ã— 32",
-      "42 Ã— 32",
-      "44 Ã— 32",
-      "46 Ã— 32",
-      "48 Ã— 32"
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Navy"
   },
   {
     "id": 54,
@@ -2762,7 +2815,8 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Burgundy"
   },
   {
     "id": 55,
@@ -2782,9 +2836,9 @@
       "Cocktail Dress",
       "Formal Attire"
     ],
-    "category": "Jewelry",
+    "category": "Dresses",
     "price": 3025,
-    "imageUrl": "/assets/department-jewelry.webp",
+    "imageUrl": "/assets/department-clothing.webp",
     "vendor": "Dolce & Gabbana",
     "brand": "Dolce & Gabbana",
     "shirtSizes": [
@@ -2814,6 +2868,615 @@
       "22W",
       "24W"
     ],
-    "storeTier": "Luxury"
+    "storeTier": "Luxury",
+    "color": "Black"
+  },
+  {
+    "id": 56,
+    "name": "Cashmere Blend Cardigan",
+    "gender": "Women",
+    "bodyType": [
+      "Straight",
+      "Curvy",
+      "Athletic",
+      "Petite",
+      "Tall",
+      "Plus"
+    ],
+    "priceTier": "treat",
+    "dressCode": [
+      "Casual",
+      "Business Casual"
+    ],
+    "category": "Knitwear",
+    "price": 148,
+    "imageUrl": "/assets/department-clothing.webp",
+    "vendor": "Nordstrom",
+    "brand": "Common Thread",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "00",
+      "0",
+      "2",
+      "4",
+      "6",
+      "8",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20W",
+      "22W",
+      "24W"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Camel"
+  },
+  {
+    "id": 57,
+    "name": "Chunky Knit Crewneck Sweater",
+    "gender": "Men",
+    "bodyType": [
+      "Slim",
+      "Regular",
+      "Athletic",
+      "Broad",
+      "Big & Tall",
+      "Short"
+    ],
+    "priceTier": "budget",
+    "dressCode": [
+      "Casual"
+    ],
+    "category": "Knitwear",
+    "price": 68,
+    "imageUrl": "/assets/department-clothing.webp",
+    "vendor": "J.Crew",
+    "brand": "Northline",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Oatmeal"
+  },
+  {
+    "id": 58,
+    "name": "Ribbed Turtleneck Sweater",
+    "gender": "Women",
+    "bodyType": [
+      "Straight",
+      "Curvy",
+      "Athletic",
+      "Petite",
+      "Tall",
+      "Plus"
+    ],
+    "priceTier": "treat",
+    "dressCode": [
+      "Business Casual",
+      "Casual"
+    ],
+    "category": "Knitwear",
+    "price": 98,
+    "imageUrl": "/assets/department-clothing.webp",
+    "vendor": "Banana Republic",
+    "brand": "Studio Meridian",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "00",
+      "0",
+      "2",
+      "4",
+      "6",
+      "8",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20W",
+      "22W",
+      "24W"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Charcoal"
+  },
+  {
+    "id": 59,
+    "name": "Pleated Midi Skirt",
+    "gender": "Women",
+    "bodyType": [
+      "Straight",
+      "Curvy",
+      "Athletic",
+      "Petite",
+      "Tall",
+      "Plus"
+    ],
+    "priceTier": "budget",
+    "dressCode": [
+      "Business Casual",
+      "Semi-Formal"
+    ],
+    "category": "Skirts",
+    "price": 59.9,
+    "imageUrl": "/assets/department-clothing.webp",
+    "vendor": "Zara",
+    "brand": "Form & Field",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "00",
+      "0",
+      "2",
+      "4",
+      "6",
+      "8",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20W",
+      "22W",
+      "24W"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Black"
+  },
+  {
+    "id": 60,
+    "name": "Denim A-Line Mini Skirt",
+    "gender": "Women",
+    "bodyType": [
+      "Straight",
+      "Curvy",
+      "Athletic",
+      "Petite",
+      "Tall",
+      "Plus"
+    ],
+    "priceTier": "budget",
+    "dressCode": [
+      "Casual"
+    ],
+    "category": "Skirts",
+    "price": 44.9,
+    "imageUrl": "/assets/department-clothing.webp",
+    "vendor": "American Eagle",
+    "brand": "Aster Row",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "00",
+      "0",
+      "2",
+      "4",
+      "6",
+      "8",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20W",
+      "22W",
+      "24W"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Blue"
+  },
+  {
+    "id": 61,
+    "name": "Tailored Bermuda Shorts",
+    "gender": "Men",
+    "bodyType": [
+      "Slim",
+      "Regular",
+      "Athletic",
+      "Broad",
+      "Big & Tall",
+      "Short"
+    ],
+    "priceTier": "budget",
+    "dressCode": [
+      "Business Casual",
+      "Casual"
+    ],
+    "category": "Shorts",
+    "price": 59.5,
+    "imageUrl": "/assets/department-clothing.webp",
+    "vendor": "Banana Republic",
+    "brand": "Common Thread",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Olive"
+  },
+  {
+    "id": 62,
+    "name": "High-Rise Denim Shorts",
+    "gender": "Women",
+    "bodyType": [
+      "Straight",
+      "Curvy",
+      "Athletic",
+      "Petite",
+      "Tall",
+      "Plus"
+    ],
+    "priceTier": "budget",
+    "dressCode": [
+      "Casual"
+    ],
+    "category": "Shorts",
+    "price": 39.9,
+    "imageUrl": "/assets/department-clothing.webp",
+    "vendor": "Gap",
+    "brand": "Northline",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "00",
+      "0",
+      "2",
+      "4",
+      "6",
+      "8",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20W",
+      "22W",
+      "24W"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Blue"
+  },
+  {
+    "id": 63,
+    "name": "Chino Shorts",
+    "gender": "Men",
+    "bodyType": [
+      "Slim",
+      "Regular",
+      "Athletic",
+      "Broad",
+      "Big & Tall",
+      "Short"
+    ],
+    "priceTier": "budget",
+    "dressCode": [
+      "Casual"
+    ],
+    "category": "Shorts",
+    "price": 34.99,
+    "imageUrl": "/assets/department-clothing.webp",
+    "vendor": "Old Navy",
+    "brand": "Studio Meridian",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Tan"
+  },
+  {
+    "id": 64,
+    "name": "One-Piece Ruched Swimsuit",
+    "gender": "Women",
+    "bodyType": [
+      "Straight",
+      "Curvy",
+      "Athletic",
+      "Petite",
+      "Tall",
+      "Plus"
+    ],
+    "priceTier": "budget",
+    "dressCode": [
+      "Active Wear",
+      "Casual"
+    ],
+    "category": "Swimwear",
+    "price": 42,
+    "imageUrl": "/assets/department-clothing.webp",
+    "vendor": "Target",
+    "brand": "Form & Field",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "00",
+      "0",
+      "2",
+      "4",
+      "6",
+      "8",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20W",
+      "22W",
+      "24W"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Black"
+  },
+  {
+    "id": 65,
+    "name": "Quick-Dry Swim Trunks",
+    "gender": "Men",
+    "bodyType": [
+      "Slim",
+      "Regular",
+      "Athletic",
+      "Broad",
+      "Big & Tall",
+      "Short"
+    ],
+    "priceTier": "budget",
+    "dressCode": [
+      "Active Wear",
+      "Casual"
+    ],
+    "category": "Swimwear",
+    "price": 32,
+    "imageUrl": "/assets/department-clothing.webp",
+    "vendor": "Old Navy",
+    "brand": "Aster Row",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Navy"
+  },
+  {
+    "id": 66,
+    "name": "Cotton Boxer Briefs 3-Pack",
+    "gender": "Men",
+    "bodyType": [
+      "Slim",
+      "Regular",
+      "Athletic",
+      "Broad",
+      "Big & Tall",
+      "Short"
+    ],
+    "priceTier": "budget",
+    "dressCode": [
+      "Casual"
+    ],
+    "category": "Intimates",
+    "price": 28,
+    "imageUrl": "/assets/department-clothing.webp",
+    "vendor": "Target",
+    "brand": "Common Thread",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "White"
+  },
+  {
+    "id": 67,
+    "name": "Lace Trim Bralette",
+    "gender": "Women",
+    "bodyType": [
+      "Straight",
+      "Curvy",
+      "Athletic",
+      "Petite",
+      "Tall",
+      "Plus"
+    ],
+    "priceTier": "budget",
+    "dressCode": [
+      "Casual"
+    ],
+    "category": "Intimates",
+    "price": 24.9,
+    "imageUrl": "/assets/department-clothing.webp",
+    "vendor": "American Eagle",
+    "brand": "Northline",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "00",
+      "0",
+      "2",
+      "4",
+      "6",
+      "8",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20W",
+      "22W",
+      "24W"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Blush"
   }
 ]

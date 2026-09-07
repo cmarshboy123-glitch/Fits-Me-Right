@@ -24,14 +24,14 @@ export default function Shop() {
 
   useEffect(() => { getProducts().then(setProducts) }, [])
 
-  const exactProducts = useMemo(() => products.filter((product) => product.productUrl), [products])
-  const stores = useMemo(() => [...new Set(exactProducts.map((product) => product.vendor))].sort(), [exactProducts])
-  const brands = useMemo(() => [...new Set(exactProducts.map((product) => product.brand).filter(Boolean))].sort(), [exactProducts])
+  const catalogProducts = products
+  const stores = useMemo(() => [...new Set(catalogProducts.map((product) => product.vendor))].sort(), [catalogProducts])
+  const brands = useMemo(() => [...new Set(catalogProducts.map((product) => product.brand).filter(Boolean))].sort(), [catalogProducts])
   const bodyTypes = gender === 'Women' ? womenBodyTypes : gender === 'Men' ? menBodyTypes : [...new Set([...womenBodyTypes, ...menBodyTypes])]
   const searchIntent = useMemo(() => parseShoppingIntent(query), [query])
   const understood = intentLabels(searchIntent)
 
-  const filtered = useMemo(() => exactProducts.filter((product) => {
+  const filtered = useMemo(() => catalogProducts.filter((product) => {
     const catalogBodyType = bodyType === 'Balanced' ? 'Regular' : bodyType
     return (!query || productMatchesIntent(product, searchIntent)) &&
       (!retailer || product.vendor === retailer) && (!brand || product.brand === brand) &&
@@ -39,7 +39,7 @@ export default function Shop() {
       (!priceTier || product.priceTier === priceTier) && (!market || product.storeTier === market) &&
       (!category || productMatchesIntent(product, { text: '', color: '', category, maxPrice: null, minPrice: null, size: '', gender: '' })) &&
       (!color || productColorFamily(product.color) === color)
-  }), [exactProducts, query, searchIntent, retailer, brand, gender, bodyType, priceTier, market, category, color])
+  }), [catalogProducts, query, searchIntent, retailer, brand, gender, bodyType, priceTier, market, category, color])
 
   const activeCount = [query, retailer, brand, gender, bodyType, priceTier, market, category, color].filter(Boolean).length
   const guidedSearch = Boolean(searchParams.get('bodyType') || searchParams.get('priceTier'))

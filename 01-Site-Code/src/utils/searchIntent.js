@@ -38,16 +38,18 @@ const colorAliases = shoppingColors
   .flatMap((color) => color.aliases.map((alias) => ({ ...color, alias })))
   .sort((a, b) => b.alias.length - a.alias.length)
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+// So "hermes" finds "Hermès" — most people won't type the accent.
+const stripDiacritics = (value) => value.normalize('NFD').replace(/\p{Diacritic}/gu, '')
 
 export function productColorFamily(color = '') {
-  const source = String(color).toLowerCase()
+  const source = stripDiacritics(String(color).toLowerCase())
   return colorAliases.find(({ alias }) => new RegExp(`\\b${escapeRegExp(alias)}\\b`).test(source))?.value || ''
 }
 
 export const shoppingCategories = ['Pants', 'Jeans', 'Tops', 'Dresses', 'Skirts', 'Shorts', 'Outerwear', 'Knitwear', 'Suits', 'Activewear', 'Swimwear', 'Intimates', 'Shoes', 'Jewelry', 'Accessories']
 
 export function parseShoppingIntent(input = '') {
-  const source = input.trim().toLowerCase().replace(/\bmngo\b/g, 'mango')
+  const source = stripDiacritics(input.trim().toLowerCase()).replace(/\bmngo\b/g, 'mango')
   let remainder = source
   const maxMatch = source.match(/(?:under|below|less than|up to|max(?:imum)?(?: of)?)\s*\$?\s*(\d+(?:\.\d{1,2})?)/)
   const minMatch = source.match(/(?:over|above|more than|at least)\s*\$?\s*(\d+(?:\.\d{1,2})?)/)
@@ -80,7 +82,7 @@ export function parseShoppingIntent(input = '') {
 }
 
 export function productMatchesIntent(product, intent) {
-  const haystack = `${product.name} ${product.brand} ${product.vendor} ${product.category} ${product.color || ''} ${product.fitNote || ''}`.toLowerCase()
+  const haystack = stripDiacritics(`${product.name} ${product.brand} ${product.vendor} ${product.category} ${product.color || ''} ${product.fitNote || ''}`.toLowerCase())
   const textTokens = intent.text.split(/\s+/).filter(Boolean)
   const productColor = productColorFamily(product.color)
   const sizes = [...(product.availablePantsSizes || []), ...(product.availableShirtSizes || [])].map(normalizeSize)
