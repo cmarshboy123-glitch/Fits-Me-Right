@@ -1,0 +1,5 @@
+node_modules
+dist
+
+# Synced from ../02-Public-Assets by scripts/copy-assets.mjs (postinstall/prebuild)
+public/assets

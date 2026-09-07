@@ -4,6 +4,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "postinstall": "node scripts/copy-assets.mjs",
+    "prebuild": "node scripts/copy-assets.mjs",
     "dev": "vite",
     "build": "vite build",
     "audit:catalog": "node work/validate-catalog.js",
