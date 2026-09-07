@@ -17,7 +17,7 @@ This preserves the complete search, filters, guided flow, routing, and future AP
 4. If the domain is registered at Squarespace, open its DNS settings and add the CNAME or A record supplied by the host.
 5. Use the main Squarespace site for editorial or company pages if desired, and link its Shop navigation to `https://shop.fitsmeright.com`.
 
-The included `netlify.toml`, `vercel.json`, `wrangler.jsonc`, and `public/_redirects` preserve React Router pages when someone visits a deep URL such as `/style/body-type` directly.
+The included `netlify.toml`, `vercel.json`, and `wrangler.jsonc` preserve React Router pages when someone visits a deep URL such as `/style/body-type` directly — each host reads its own file, so no shared `_redirects` file is needed (and one caused a real deploy failure on Cloudflare Workers — see below, don't re-add it).
 
 ### Cloudflare Workers
 
@@ -29,6 +29,10 @@ npx wrangler deploy
 ```
 
 `scripts/copy-assets.mjs` runs automatically via `postinstall`/`prebuild`, so the images in `02-Public-Assets` are synced into `public/assets` on every install and build — no manual step needed.
+
+**Do not add a `public/_redirects` file.** That format is for Netlify/Pages-style hosts; Cloudflare Workers' static-assets deploy validates it against its own redirect engine and rejects a catch-all `/* /index.html 200` rule as an infinite loop, which fails the deploy outright. SPA fallback on Workers is handled entirely by `not_found_handling` in `wrangler.jsonc`.
+
+If the Cloudflare dashboard's own Build/Deploy commands are configured directly on the project (Settings → Builds), they take precedence over anything documented here — check there first if a deploy fails and this file is up to date.
 
 ## Use Fits Me Right as the main website
 
