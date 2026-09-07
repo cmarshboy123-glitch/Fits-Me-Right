@@ -4,12 +4,9 @@
     "name": "Air Cotton Relaxed Shirt",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
-      "Petite",
-      "Tall",
-      "Plus"
+      "Plus",
+      "Tall"
     ],
     "priceTier": "budget",
     "dressCode": [
@@ -56,12 +53,10 @@
     "name": "Soft Structure Blazer",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
+      "Plus",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "treat",
     "dressCode": [
@@ -109,11 +104,9 @@
     "gender": "Women",
     "bodyType": [
       "Straight",
-      "Curvy",
       "Athletic",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "treat",
     "dressCode": [
@@ -161,12 +154,10 @@
     "name": "Sculpted Evening Gown",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
+      "Plus",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -214,11 +205,9 @@
     "gender": "Women",
     "bodyType": [
       "Straight",
-      "Curvy",
       "Athletic",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "budget",
     "dressCode": [
@@ -269,8 +258,6 @@
       "Straight",
       "Curvy",
       "Athletic",
-      "Petite",
-      "Tall",
       "Plus"
     ],
     "priceTier": "budget",
@@ -280,7 +267,7 @@
     ],
     "category": "Activewear",
     "price": 88,
-    "imageUrl": "/assets/department-clothing.webp",
+    "imageUrl": "/assets/unique/women-motion-rib-set-v1.webp",
     "vendor": "Bloomingdale's",
     "brand": "Common Thread",
     "shirtSizes": [
@@ -318,12 +305,9 @@
     "name": "Silk Wrap Midi",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
-      "Petite",
-      "Tall",
-      "Plus"
+      "Plus",
+      "Tall"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -372,11 +356,8 @@
     "gender": "Men",
     "bodyType": [
       "Slim",
-      "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Regular"
     ],
     "priceTier": "budget",
     "dressCode": [
@@ -422,11 +403,8 @@
     "gender": "Men",
     "bodyType": [
       "Slim",
-      "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Regular"
     ],
     "priceTier": "treat",
     "dressCode": [
@@ -472,12 +450,9 @@
     "name": "Unstructured Wool Suit",
     "gender": "Men",
     "bodyType": [
-      "Slim",
-      "Regular",
-      "Athletic",
       "Broad",
-      "Big & Tall",
-      "Short"
+      "Athletic",
+      "Regular"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -524,11 +499,8 @@
     "gender": "Men",
     "bodyType": [
       "Slim",
-      "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Regular"
     ],
     "priceTier": "budget",
     "dressCode": [
@@ -573,10 +545,7 @@
     "name": "Pleated Camp Trouser",
     "gender": "Men",
     "bodyType": [
-      "Slim",
       "Regular",
-      "Athletic",
-      "Broad",
       "Big & Tall",
       "Short"
     ],
@@ -627,9 +596,7 @@
       "Slim",
       "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Broad"
     ],
     "priceTier": "budget",
     "dressCode": [
@@ -638,7 +605,7 @@
     ],
     "category": "Activewear",
     "price": 92,
-    "imageUrl": "/assets/department-clothing.webp",
+    "imageUrl": "/assets/unique/men-performance-track-layer-v1.webp",
     "vendor": "Banana Republic",
     "brand": "Studio Meridian",
     "shirtSizes": [
@@ -674,12 +641,9 @@
     "name": "Velvet Dinner Jacket",
     "gender": "Men",
     "bodyType": [
-      "Slim",
-      "Regular",
-      "Athletic",
       "Broad",
-      "Big & Tall",
-      "Short"
+      "Athletic",
+      "Regular"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -1296,11 +1260,9 @@
     "gender": "Women",
     "bodyType": [
       "Straight",
-      "Curvy",
       "Athletic",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "budget",
     "dressCode": [
@@ -1347,12 +1309,10 @@
     "name": "Relaxed Utility Jacket",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
+      "Plus",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "treat",
     "dressCode": [
@@ -1400,11 +1360,9 @@
     "gender": "Women",
     "bodyType": [
       "Straight",
-      "Curvy",
       "Athletic",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "treat",
     "dressCode": [
@@ -1452,12 +1410,10 @@
     "name": "Soft Pleat Midi Dress",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
+      "Plus",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -1504,12 +1460,9 @@
     "name": "Seoul Wide-Leg Trouser",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
-      "Petite",
-      "Tall",
-      "Plus"
+      "Plus",
+      "Tall"
     ],
     "priceTier": "budget",
     "dressCode": [
@@ -1558,11 +1511,9 @@
     "gender": "Women",
     "bodyType": [
       "Straight",
-      "Curvy",
       "Athletic",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "budget",
     "dressCode": [
@@ -1609,12 +1560,9 @@
     "name": "Curve Satin Wrap Top",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
-      "Petite",
-      "Tall",
-      "Plus"
+      "Plus",
+      "Tall"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -1663,11 +1611,8 @@
     "gender": "Men",
     "bodyType": [
       "Slim",
-      "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Regular"
     ],
     "priceTier": "budget",
     "dressCode": [
@@ -1713,11 +1658,8 @@
     "gender": "Men",
     "bodyType": [
       "Slim",
-      "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Regular"
     ],
     "priceTier": "treat",
     "dressCode": [
@@ -1815,11 +1757,9 @@
     "gender": "Women",
     "bodyType": [
       "Straight",
-      "Curvy",
       "Athletic",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -1868,12 +1808,10 @@
     "name": "Monogram Wool Coat",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
+      "Plus",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -1922,12 +1860,10 @@
     "name": "Architectural Midi Dress",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
+      "Plus",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -1975,12 +1911,10 @@
     "name": "Le Smoking Inspired Blazer",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
+      "Plus",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -2028,12 +1962,10 @@
     "name": "Intrecciato Evening Dress",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
+      "Plus",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -2083,12 +2015,10 @@
     "name": "Heritage Trench",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
+      "Plus",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -2137,12 +2067,10 @@
     "name": "Sculpted City Jacket",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
+      "Plus",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -2191,10 +2119,7 @@
     "name": "Atelier Pleated Gown",
     "gender": "Men",
     "bodyType": [
-      "Slim",
       "Regular",
-      "Athletic",
-      "Broad",
       "Big & Tall",
       "Short"
     ],
@@ -2244,11 +2169,8 @@
     "gender": "Men",
     "bodyType": [
       "Slim",
-      "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Regular"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -2297,11 +2219,8 @@
     "gender": "Men",
     "bodyType": [
       "Slim",
-      "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Regular"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -2351,9 +2270,7 @@
       "Slim",
       "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Broad"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -2400,10 +2317,7 @@
     "name": "Sharp-Shoulder Wool Coat",
     "gender": "Men",
     "bodyType": [
-      "Slim",
       "Regular",
-      "Athletic",
-      "Broad",
       "Big & Tall",
       "Short"
     ],
@@ -2454,11 +2368,8 @@
     "gender": "Men",
     "bodyType": [
       "Slim",
-      "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Regular"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -2506,11 +2417,8 @@
     "gender": "Men",
     "bodyType": [
       "Slim",
-      "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Regular"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -2556,12 +2464,10 @@
     "name": "Bouclé Evening Jacket",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
+      "Plus",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -2612,11 +2518,8 @@
     "gender": "Men",
     "bodyType": [
       "Slim",
-      "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Regular"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -2664,11 +2567,8 @@
     "gender": "Women",
     "bodyType": [
       "Straight",
-      "Curvy",
       "Athletic",
-      "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -2717,10 +2617,7 @@
     "name": "Alpine Down Layer",
     "gender": "Men",
     "bodyType": [
-      "Slim",
       "Regular",
-      "Athletic",
-      "Broad",
       "Big & Tall",
       "Short"
     ],
@@ -2823,12 +2720,10 @@
     "name": "Sicilian Lace Cocktail Dress",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
+      "Plus",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "splurge",
     "dressCode": [
@@ -2877,11 +2772,9 @@
     "gender": "Women",
     "bodyType": [
       "Straight",
-      "Curvy",
       "Athletic",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "treat",
     "dressCode": [
@@ -2928,10 +2821,7 @@
     "name": "Chunky Knit Crewneck Sweater",
     "gender": "Men",
     "bodyType": [
-      "Slim",
       "Regular",
-      "Athletic",
-      "Broad",
       "Big & Tall",
       "Short"
     ],
@@ -2978,11 +2868,9 @@
     "gender": "Women",
     "bodyType": [
       "Straight",
-      "Curvy",
       "Athletic",
       "Petite",
-      "Tall",
-      "Plus"
+      "Tall"
     ],
     "priceTier": "treat",
     "dressCode": [
@@ -3029,12 +2917,9 @@
     "name": "Pleated Midi Skirt",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
-      "Petite",
-      "Tall",
-      "Plus"
+      "Plus",
+      "Tall"
     ],
     "priceTier": "budget",
     "dressCode": [
@@ -3081,12 +2966,9 @@
     "name": "Denim A-Line Mini Skirt",
     "gender": "Women",
     "bodyType": [
-      "Straight",
       "Curvy",
-      "Athletic",
-      "Petite",
-      "Tall",
-      "Plus"
+      "Plus",
+      "Tall"
     ],
     "priceTier": "budget",
     "dressCode": [
@@ -3135,9 +3017,7 @@
       "Slim",
       "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Broad"
     ],
     "priceTier": "budget",
     "dressCode": [
@@ -3185,8 +3065,6 @@
       "Straight",
       "Curvy",
       "Athletic",
-      "Petite",
-      "Tall",
       "Plus"
     ],
     "priceTier": "budget",
@@ -3236,9 +3114,7 @@
       "Slim",
       "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Broad"
     ],
     "priceTier": "budget",
     "dressCode": [
@@ -3285,8 +3161,6 @@
       "Straight",
       "Curvy",
       "Athletic",
-      "Petite",
-      "Tall",
       "Plus"
     ],
     "priceTier": "budget",
@@ -3337,9 +3211,7 @@
       "Slim",
       "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Broad"
     ],
     "priceTier": "budget",
     "dressCode": [
@@ -3387,9 +3259,7 @@
       "Slim",
       "Regular",
       "Athletic",
-      "Broad",
-      "Big & Tall",
-      "Short"
+      "Broad"
     ],
     "priceTier": "budget",
     "dressCode": [
@@ -3436,8 +3306,6 @@
       "Straight",
       "Curvy",
       "Athletic",
-      "Petite",
-      "Tall",
       "Plus"
     ],
     "priceTier": "budget",
@@ -3478,5 +3346,593 @@
     ],
     "storeTier": "Everyday & Designer",
     "color": "Blush"
+  },
+  {
+    "id": 68,
+    "name": "Seamless Training Tank",
+    "gender": "Women",
+    "bodyType": [
+      "Straight",
+      "Curvy",
+      "Athletic",
+      "Plus"
+    ],
+    "priceTier": "budget",
+    "dressCode": [
+      "Active Wear",
+      "Casual"
+    ],
+    "category": "Activewear",
+    "price": 28,
+    "imageUrl": "/assets/unique/women-training-tank-black-v1.webp",
+    "vendor": "Old Navy",
+    "brand": "Form & Field",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "00",
+      "0",
+      "2",
+      "4",
+      "6",
+      "8",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20W",
+      "22W",
+      "24W"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Black"
+  },
+  {
+    "id": 69,
+    "name": "High-Waist Yoga Legging",
+    "gender": "Women",
+    "bodyType": [
+      "Straight",
+      "Curvy",
+      "Athletic",
+      "Plus"
+    ],
+    "priceTier": "budget",
+    "dressCode": [
+      "Active Wear",
+      "Casual"
+    ],
+    "category": "Activewear",
+    "price": 34,
+    "imageUrl": "/assets/unique/women-yoga-legging-charcoal-v1.webp",
+    "vendor": "Target",
+    "brand": "Aster Row",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "00",
+      "0",
+      "2",
+      "4",
+      "6",
+      "8",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20W",
+      "22W",
+      "24W"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Charcoal"
+  },
+  {
+    "id": 70,
+    "name": "Ribbed Sports Bra and Legging Set",
+    "gender": "Women",
+    "bodyType": [
+      "Straight",
+      "Curvy",
+      "Athletic",
+      "Plus"
+    ],
+    "priceTier": "treat",
+    "dressCode": [
+      "Active Wear",
+      "Casual"
+    ],
+    "category": "Activewear",
+    "price": 128,
+    "imageUrl": "/assets/unique/women-sports-bra-legging-set-v1.webp",
+    "vendor": "Nordstrom",
+    "brand": "Common Thread",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "00",
+      "0",
+      "2",
+      "4",
+      "6",
+      "8",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20W",
+      "22W",
+      "24W"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Green"
+  },
+  {
+    "id": 71,
+    "name": "Zip-Front Track Jacket",
+    "gender": "Women",
+    "bodyType": [
+      "Straight",
+      "Curvy",
+      "Athletic",
+      "Plus"
+    ],
+    "priceTier": "treat",
+    "dressCode": [
+      "Active Wear",
+      "Casual"
+    ],
+    "category": "Activewear",
+    "price": 145,
+    "imageUrl": "/assets/unique/women-zip-track-jacket-cream-v1.webp",
+    "vendor": "Bloomingdale's",
+    "brand": "Studio Meridian",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "00",
+      "0",
+      "2",
+      "4",
+      "6",
+      "8",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20W",
+      "22W",
+      "24W"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Ivory"
+  },
+  {
+    "id": 72,
+    "name": "Performance Knit Two-Piece Set",
+    "gender": "Women",
+    "bodyType": [
+      "Straight",
+      "Curvy",
+      "Athletic",
+      "Plus"
+    ],
+    "priceTier": "splurge",
+    "dressCode": [
+      "Active Wear",
+      "Casual"
+    ],
+    "category": "Activewear",
+    "price": 320,
+    "imageUrl": "/assets/unique/women-performance-knit-set-v1.webp",
+    "vendor": "Revolve",
+    "brand": "Northline",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "00",
+      "0",
+      "2",
+      "4",
+      "6",
+      "8",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20W",
+      "22W",
+      "24W"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Black"
+  },
+  {
+    "id": 73,
+    "name": "Technical Running Jacket",
+    "gender": "Women",
+    "bodyType": [
+      "Straight",
+      "Curvy",
+      "Athletic",
+      "Plus"
+    ],
+    "priceTier": "splurge",
+    "dressCode": [
+      "Active Wear",
+      "Casual"
+    ],
+    "category": "Activewear",
+    "price": 340,
+    "imageUrl": "/assets/unique/women-technical-running-jacket-v1.webp",
+    "vendor": "Nordstrom",
+    "brand": "Northline",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "00",
+      "0",
+      "2",
+      "4",
+      "6",
+      "8",
+      "10",
+      "12",
+      "14",
+      "16",
+      "18",
+      "20W",
+      "22W",
+      "24W"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Black"
+  },
+  {
+    "id": 74,
+    "name": "Mesh Training Shorts",
+    "gender": "Men",
+    "bodyType": [
+      "Slim",
+      "Regular",
+      "Athletic",
+      "Broad"
+    ],
+    "priceTier": "budget",
+    "dressCode": [
+      "Active Wear",
+      "Casual"
+    ],
+    "category": "Activewear",
+    "price": 26,
+    "imageUrl": "/assets/unique/men-mesh-training-shorts-v1.webp",
+    "vendor": "Old Navy",
+    "brand": "Aster Row",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Navy"
+  },
+  {
+    "id": 75,
+    "name": "Performance Crew Tee",
+    "gender": "Men",
+    "bodyType": [
+      "Slim",
+      "Regular",
+      "Athletic",
+      "Broad"
+    ],
+    "priceTier": "budget",
+    "dressCode": [
+      "Active Wear",
+      "Casual"
+    ],
+    "category": "Activewear",
+    "price": 22,
+    "imageUrl": "/assets/unique/men-performance-crew-tee-v1.webp",
+    "vendor": "Target",
+    "brand": "Form & Field",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Grey"
+  },
+  {
+    "id": 76,
+    "name": "Zip Track Jacket",
+    "gender": "Men",
+    "bodyType": [
+      "Slim",
+      "Regular",
+      "Athletic",
+      "Broad"
+    ],
+    "priceTier": "treat",
+    "dressCode": [
+      "Active Wear",
+      "Casual"
+    ],
+    "category": "Activewear",
+    "price": 128,
+    "imageUrl": "/assets/unique/men-zip-track-jacket-navy-v1.webp",
+    "vendor": "Banana Republic",
+    "brand": "Common Thread",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Navy"
+  },
+  {
+    "id": 77,
+    "name": "Tapered Jogger Pant",
+    "gender": "Men",
+    "bodyType": [
+      "Slim",
+      "Regular",
+      "Athletic",
+      "Broad"
+    ],
+    "priceTier": "treat",
+    "dressCode": [
+      "Active Wear",
+      "Casual"
+    ],
+    "category": "Activewear",
+    "price": 118,
+    "imageUrl": "/assets/unique/men-tapered-jogger-pant-v1.webp",
+    "vendor": "Bloomingdale's",
+    "brand": "Studio Meridian",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Charcoal"
+  },
+  {
+    "id": 78,
+    "name": "Technical Running Jacket",
+    "gender": "Men",
+    "bodyType": [
+      "Slim",
+      "Regular",
+      "Athletic",
+      "Broad"
+    ],
+    "priceTier": "splurge",
+    "dressCode": [
+      "Active Wear",
+      "Casual"
+    ],
+    "category": "Activewear",
+    "price": 310,
+    "imageUrl": "/assets/unique/men-technical-running-jacket-v1.webp",
+    "vendor": "Nordstrom",
+    "brand": "Northline",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Black"
+  },
+  {
+    "id": 79,
+    "name": "Merino Performance Half-Zip",
+    "gender": "Men",
+    "bodyType": [
+      "Slim",
+      "Regular",
+      "Athletic",
+      "Broad"
+    ],
+    "priceTier": "splurge",
+    "dressCode": [
+      "Active Wear",
+      "Casual"
+    ],
+    "category": "Activewear",
+    "price": 295,
+    "imageUrl": "/assets/unique/men-merino-half-zip-v1.webp",
+    "vendor": "Revolve",
+    "brand": "Northline",
+    "shirtSizes": [
+      "XXS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL",
+      "4XL"
+    ],
+    "pantsSizes": [
+      "28 × 30",
+      "30 × 30",
+      "32 × 30",
+      "32 × 32",
+      "34 × 32",
+      "36 × 32",
+      "38 × 32",
+      "40 × 32",
+      "42 × 32",
+      "44 × 32",
+      "46 × 32",
+      "48 × 32"
+    ],
+    "storeTier": "Everyday & Designer",
+    "color": "Charcoal"
   }
 ]

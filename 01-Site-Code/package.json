@@ -11,6 +11,7 @@
     "audit:catalog": "node work/validate-catalog.js",
     "audit:links": "node work/audit-retailer-links.js",
     "audit:images": "node work/audit-unique-image-slots.mjs",
+    "audit:coverage": "node work/coverage-audit.mjs",
     "audit": "npm run audit:catalog && npm run audit:links && npm run audit:images",
     "preview": "vite preview",
     "deploy": "vite build && wrangler deploy"

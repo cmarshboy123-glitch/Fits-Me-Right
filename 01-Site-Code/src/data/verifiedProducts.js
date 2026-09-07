@@ -16,7 +16,7 @@ const products = [
   {
     id: 1001,
     name: 'Cotton Jersey T-shirt with Print',
-    gender: 'Men', bodyType: menFits, priceTier: 'splurge',
+    gender: 'Men', bodyType: ['Slim', 'Athletic', 'Regular'], priceTier: 'splurge',
     dressCode: ['Casual'], category: 'Tops', price: 650,
     vendor: 'Gucci', brand: 'Gucci', storeTier: 'Luxury', color: 'White',
     availableShirtSizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'],
@@ -27,7 +27,7 @@ const products = [
   {
     id: 1002,
     name: 'Cotton Shirt',
-    gender: 'Men', bodyType: menFits, priceTier: 'splurge',
+    gender: 'Men', bodyType: ['Slim', 'Athletic', 'Regular'], priceTier: 'splurge',
     dressCode: ['Business Casual', 'Professional/Formal Business', 'Formal Attire', 'Black Tie'], category: 'Tops', price: 1350,
     vendor: 'Prada', brand: 'Prada', storeTier: 'Luxury', color: 'White',
     availableShirtSizes: ['XXS', 'XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
@@ -38,7 +38,7 @@ const products = [
   {
     id: 1003,
     name: 'Classic Shirt',
-    gender: 'Men', bodyType: menFits, priceTier: 'splurge',
+    gender: 'Men', bodyType: ['Slim', 'Athletic', 'Regular'], priceTier: 'splurge',
     dressCode: ['Business Casual', 'Professional/Formal Business', 'Formal Attire'], category: 'Tops', price: 960,
     vendor: 'Louis Vuitton', brand: 'Louis Vuitton', storeTier: 'Luxury', color: 'Sky Blue',
     availableShirtSizes: ['XS', 'S', 'M', 'L', 'XL'],
@@ -49,7 +49,7 @@ const products = [
   {
     id: 1004,
     name: 'Cotton Linen Shirt | Short Sleeve',
-    gender: 'Men', bodyType: menFits, priceTier: 'budget',
+    gender: 'Men', bodyType: ['Slim', 'Athletic', 'Regular'], priceTier: 'budget',
     dressCode: ['Casual', 'Business Casual', 'Bohemian'], category: 'Tops', price: 39.9,
     vendor: 'Uniqlo', brand: 'Uniqlo', storeTier: 'Asian Market', color: 'Brown',
     availableShirtSizes: ['XXS', 'XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'],
@@ -60,7 +60,7 @@ const products = [
   {
     id: 1005,
     name: 'Oxford Slim Shirt',
-    gender: 'Men', bodyType: menFits, priceTier: 'budget',
+    gender: 'Men', bodyType: ['Slim', 'Athletic', 'Regular'], priceTier: 'budget',
     dressCode: ['Casual', 'Business Casual', 'Professional/Formal Business'], category: 'Tops', price: 49.9,
     vendor: 'Uniqlo', brand: 'Uniqlo', storeTier: 'Asian Market', color: 'Blue',
     availableShirtSizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'],
@@ -71,7 +71,7 @@ const products = [
   {
     id: 1006,
     name: 'Broadcloth Shirt | Button Down',
-    gender: 'Men', bodyType: menFits, priceTier: 'budget',
+    gender: 'Men', bodyType: ['Regular', 'Big & Tall', 'Short'], priceTier: 'budget',
     dressCode: ['Business Casual', 'Professional/Formal Business', 'Formal Attire'], category: 'Tops', price: 49.9,
     vendor: 'Uniqlo', brand: 'Uniqlo', storeTier: 'Asian Market', color: 'White',
     availableShirtSizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'],
@@ -82,7 +82,7 @@ const products = [
   {
     id: 1101,
     name: 'Classic Button-Down Shirt',
-    gender: 'Women', bodyType: womenFits, priceTier: 'budget',
+    gender: 'Women', bodyType: ['Straight', 'Athletic', 'Petite', 'Tall'], priceTier: 'budget',
     dressCode: ['Casual', 'Business Casual', 'Professional/Formal Business'], category: 'Tops', price: 17.99,
     vendor: 'Old Navy', brand: 'Old Navy', storeTier: 'Everyday & Designer', color: 'Blue Stripe',
     availableShirtSizes: ['XXS', 'XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
@@ -93,7 +93,7 @@ const products = [
   {
     id: 1102,
     name: "Women's Cotton Shirt",
-    gender: 'Women', bodyType: womenFits, priceTier: 'splurge',
+    gender: 'Women', bodyType: ['Straight', 'Athletic', 'Petite', 'Tall'], priceTier: 'splurge',
     dressCode: ['Business Casual', 'Professional/Formal Business', 'Formal Attire'], category: 'Tops', price: 1590,
     vendor: 'Prada', brand: 'Prada', storeTier: 'Luxury', color: 'White',
     availableShirtSizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'],
@@ -104,7 +104,7 @@ const products = [
   {
     id: 1103,
     name: "Women's Racer Back Gathered Dress",
-    gender: 'Women', bodyType: womenFits, priceTier: 'budget',
+    gender: 'Women', bodyType: ['Curvy', 'Plus', 'Petite', 'Tall'], priceTier: 'budget',
     dressCode: ['Casual', 'Cocktail Dress', 'Semi-Formal'], category: 'Dresses', price: 85,
     vendor: 'Nordstrom', brand: 'The Bshirt', storeTier: 'Everyday & Designer', color: 'Black / White Stripe',
     availableShirtSizes: ['XS', 'S', 'M', 'L', 'XL'],
@@ -115,7 +115,7 @@ const products = [
   {
     id: 1104,
     name: 'Polyamide Midi Dress',
-    gender: 'Women', bodyType: womenFits, priceTier: 'budget',
+    gender: 'Women', bodyType: ['Curvy', 'Plus', 'Petite', 'Tall'], priceTier: 'budget',
     dressCode: ['Cocktail Dress', 'Semi-Formal'], category: 'Dresses', price: 69.9,
     vendor: 'Zara', brand: 'Zara', storeTier: 'Everyday & Designer', color: 'Black',
     availableShirtSizes: ['XS', 'S', 'M', 'L', 'XL'],
@@ -126,7 +126,7 @@ const products = [
   {
     id: 1105,
     name: 'Satin Halter Midi Dress',
-    gender: 'Women', bodyType: womenFits, priceTier: 'budget',
+    gender: 'Women', bodyType: ['Curvy', 'Plus', 'Petite', 'Tall'], priceTier: 'budget',
     dressCode: ['Formal Attire', 'Cocktail Dress', 'Semi-Formal'], category: 'Dresses', price: 79.9,
     vendor: 'Zara', brand: 'Zara', storeTier: 'Everyday & Designer', color: 'Orange',
     availableShirtSizes: ['XS', 'S', 'M', 'L', 'XL'],
@@ -137,7 +137,7 @@ const products = [
   {
     id: 1106,
     name: 'Button-Front Midi Dress',
-    gender: 'Women', bodyType: womenFits, priceTier: 'budget',
+    gender: 'Women', bodyType: ['Curvy', 'Plus', 'Petite', 'Tall'], priceTier: 'budget',
     dressCode: ['Casual', 'Business Casual', 'Bohemian'], category: 'Dresses', price: 34.99,
     vendor: 'H&M', brand: 'H&M', storeTier: 'Everyday & Designer', color: 'Black / Floral',
     availableShirtSizes: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
@@ -148,7 +148,7 @@ const products = [
   {
     id: 1107,
     name: 'Dress with Flared Skirt',
-    gender: 'Women', bodyType: womenFits, priceTier: 'budget',
+    gender: 'Women', bodyType: ['Curvy', 'Plus', 'Tall'], priceTier: 'budget',
     dressCode: ['Casual', 'Bohemian', 'Semi-Formal'], category: 'Dresses', price: 44.99,
     vendor: 'H&M', brand: 'H&M', storeTier: 'Everyday & Designer', color: 'Light Beige / Floral',
     availableShirtSizes: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
@@ -159,7 +159,7 @@ const products = [
   {
     id: 1108,
     name: 'Dorian Dress',
-    gender: 'Women', bodyType: womenFits, priceTier: 'treat',
+    gender: 'Women', bodyType: ['Curvy', 'Plus', 'Petite', 'Tall'], priceTier: 'treat',
     dressCode: ['Cocktail Dress', 'Semi-Formal'], category: 'Dresses', price: 248,
     vendor: 'Reformation', brand: 'Reformation', storeTier: 'Everyday & Designer', color: 'White / Midnight',
     availablePantsSizes: ['0', '2', '4', '6', '8', '10', '12'],
@@ -170,7 +170,7 @@ const products = [
   {
     id: 1109,
     name: "Women's Ruffle-Front Cotton Blouse",
-    gender: 'Women', bodyType: womenFits, priceTier: 'budget',
+    gender: 'Women', bodyType: ['Straight', 'Athletic', 'Petite', 'Tall'], priceTier: 'budget',
     dressCode: ['Casual', 'Business Casual'], category: 'Tops', price: 35.7,
     vendor: "Macy's", brand: 'On 34th', storeTier: 'Everyday & Designer', color: 'Blue',
     availableShirtSizes: ['XXS', 'XS', 'S', 'M', 'L', 'XL', '2XL'],
