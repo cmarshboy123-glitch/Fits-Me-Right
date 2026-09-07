@@ -5,13 +5,40 @@
 @layer base {
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body { margin: 0; min-width: 320px; background: #FCFBF8; color: #171717; font-family: "Inter Variable", Inter, "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; letter-spacing: -.008em; }
+  body {
+    margin: 0; min-width: 320px; color: #171717;
+    font-family: "Inter Variable", Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; letter-spacing: -.008em;
+    background-color: #FCFBF8;
+    /* A faint dressmaker's-pattern-paper dot grid, matching the tailor/measuring-tape
+       motif in the brand mark — fills the wide-viewport margins instead of flat blank space. */
+    background-image: radial-gradient(circle, rgba(28, 23, 17, .05) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
   main { overflow: clip; }
   img { display: block; }
   button, a { -webkit-tap-highlight-color: transparent; }
   button { cursor: pointer; }
   button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid #D3A11E; outline-offset: 3px; }
   ::selection { background: #D3A11E; color: white; }
+}
+
+/* A slim decorative site frame, echoing the boutique packaging feel of the wardrobe
+   sections elsewhere on the page. Purely cosmetic — no pointer events, sits above
+   content but never blocks it. */
+.site-frame { position: fixed; inset: 10px; z-index: 200; pointer-events: none; }
+.site-frame::before, .site-frame::after { content: ""; position: absolute; inset: 0; }
+.site-frame::before { border: 1px solid rgba(211, 161, 30, .38); }
+.site-frame::after { inset: 5px; border: 1px solid rgba(28, 23, 17, .08); }
+.site-frame span { position: absolute; width: 22px; height: 22px; border-color: #D3A11E; }
+.site-frame span:nth-child(1) { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
+.site-frame span:nth-child(2) { top: -1px; right: -1px; border-top: 2px solid; border-right: 2px solid; }
+.site-frame span:nth-child(3) { bottom: -1px; left: -1px; border-bottom: 2px solid; border-left: 2px solid; }
+.site-frame span:nth-child(4) { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
+
+@media (max-width: 640px) {
+  .site-frame { inset: 5px; }
+  .site-frame::after { inset: 3px; }
 }
 
 .route-loader {

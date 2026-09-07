@@ -29,5 +29,13 @@ export default function Layout() {
     return () => window.clearTimeout(timer)
   }, [location.key])
 
-  return <><RouteLoader active={isRouteLoading} /><Header /><main><Outlet /></main><Footer /></>
+  return (
+    <>
+      <div className="site-frame" aria-hidden="true"><span /><span /><span /><span /></div>
+      <RouteLoader active={isRouteLoading} />
+      <Header />
+      <main><Outlet /></main>
+      <Footer />
+    </>
+  )
 }
