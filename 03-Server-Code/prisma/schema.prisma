@@ -1,0 +1,49 @@
+// Fits Me Right catalog database schema.
+// Mirrors the product shape the frontend already expects (see
+// 01-Site-Code/src/services/catalogService.js) so swapping the data
+// source doesn't require touching search/filter logic on the client.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  // Same numeric ids already used across verifiedProducts.js,
+  // marketplaceInventory.js, and products.json — already verified unique
+  // across all three (see work/validate-catalog.js), so no remapping needed.
+  id       Int    @id
+  name     String
+  gender   String
+  category String
+  price    Float
+  priceTier String
+  imageUrl String
+  vendor   String
+  brand    String
+  color    String
+  storeTier String
+
+  bodyType  String[]
+  dressCode String[]
+
+  availableShirtSizes String[]
+  availablePantsSizes String[]
+
+  // Only set on items with a hand-verified exact retailer link.
+  productUrl String?
+  verifiedAt String?
+  fitNote    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([gender])
+  @@index([category])
+  @@index([vendor])
+  @@index([priceTier])
+}
