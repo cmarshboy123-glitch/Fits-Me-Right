@@ -14,11 +14,19 @@ export const shoppingColors = [
   { value: 'metallic', label: 'Metallic', swatch: '#b7aa8c', aliases: ['metallic', 'gold', 'silver', 'bronze', 'copper'] },
   { value: 'multi', label: 'Multicolor', swatch: 'linear-gradient(135deg,#b83b3b,#d6a72b,#3f7550,#496ba8)', aliases: ['multicolor', 'multi color', 'multi-color', 'print', 'printed', 'patterned'] },
 ]
-const categoryAliases = {
+
+// So "hermes" finds "Hermès" — most people won't type the accent.
+const stripDiacritics = (value) => value.normalize('NFD').replace(/\p{Diacritic}/gu, '')
+// So "tshirt" finds "T-Shirt" and "offwhite" finds "off-white" — most people
+// don't type the hyphen, the way Google doesn't require one either.
+const stripSeparators = (value) => value.replace(/[-_]+/g, '')
+const normalize = (value) => stripSeparators(stripDiacritics(value.toLowerCase()))
+
+const rawCategoryAliases = {
   Jeans: ['jeans', 'jean', 'denim'],
   Pants: ['pants', 'pant', 'trousers', 'trouser', 'slacks', 'slack', 'chinos', 'chino', 'khakis', 'khaki', 'culottes', 'culotte'],
   Dresses: ['dress', 'dresses', 'gown'],
-  Tops: ['shirt', 'shirts', 'blouse', 'blouses', 'top', 'tops', 'tee', 't-shirt'],
+  Tops: ['shirt', 'shirts', 'blouse', 'blouses', 'top', 'tops', 'tee', 'tees', 't-shirt', 't-shirts', 'polo', 'polos'],
   Skirts: ['skirt', 'skirts', 'skort', 'skorts'],
   Shorts: ['shorts', 'short'],
   Outerwear: ['coat', 'coats', 'jacket', 'jackets', 'blazer', 'blazers', 'parka', 'parkas', 'trench', 'trenchcoat'],
@@ -31,25 +39,29 @@ const categoryAliases = {
   Jewelry: ['jewelry', 'jewellery', 'earrings', 'necklace', 'bracelet', 'ring'],
   Accessories: ['accessory', 'accessories', 'belt', 'belts', 'scarf', 'scarves', 'hat', 'hats', 'bag', 'bags'],
 }
+// Hyphens stripped once here so "tshirt" matches the "t-shirt" alias the
+// same way it matches a hyphen-stripped source string.
+const categoryAliases = Object.fromEntries(
+  Object.entries(rawCategoryAliases).map(([category, aliases]) => [category, aliases.map(stripSeparators)]),
+)
 
 const normalizeSize = (size) => String(size).trim().toLowerCase().replace(/^0+(?=\d)/, '')
 
-const colorAliases = shoppingColors
-  .flatMap((color) => color.aliases.map((alias) => ({ ...color, alias })))
-  .sort((a, b) => b.alias.length - a.alias.length)
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-// So "hermes" finds "Hermès" — most people won't type the accent.
-const stripDiacritics = (value) => value.normalize('NFD').replace(/\p{Diacritic}/gu, '')
+
+const colorAliases = shoppingColors
+  .flatMap((color) => color.aliases.map((alias) => ({ ...color, alias: stripSeparators(alias) })))
+  .sort((a, b) => b.alias.length - a.alias.length)
 
 export function productColorFamily(color = '') {
-  const source = stripDiacritics(String(color).toLowerCase())
+  const source = normalize(String(color))
   return colorAliases.find(({ alias }) => new RegExp(`\\b${escapeRegExp(alias)}\\b`).test(source))?.value || ''
 }
 
 export const shoppingCategories = ['Pants', 'Jeans', 'Tops', 'Dresses', 'Skirts', 'Shorts', 'Outerwear', 'Knitwear', 'Suits', 'Activewear', 'Swimwear', 'Intimates', 'Shoes', 'Jewelry', 'Accessories']
 
 export function parseShoppingIntent(input = '') {
-  const source = stripDiacritics(input.trim().toLowerCase()).replace(/\bmngo\b/g, 'mango')
+  const source = normalize(input.trim()).replace(/\bmngo\b/g, 'mango')
   let remainder = source
   const maxMatch = source.match(/(?:under|below|less than|up to|max(?:imum)?(?: of)?)\s*\$?\s*(\d+(?:\.\d{1,2})?)/)
   const minMatch = source.match(/(?:over|above|more than|at least)\s*\$?\s*(\d+(?:\.\d{1,2})?)/)
@@ -82,7 +94,7 @@ export function parseShoppingIntent(input = '') {
 }
 
 export function productMatchesIntent(product, intent) {
-  const haystack = stripDiacritics(`${product.name} ${product.brand} ${product.vendor} ${product.category} ${product.color || ''} ${product.fitNote || ''}`.toLowerCase())
+  const haystack = normalize(`${product.name} ${product.brand} ${product.vendor} ${product.category} ${product.color || ''} ${product.fitNote || ''}`)
   const textTokens = intent.text.split(/\s+/).filter(Boolean)
   const productColor = productColorFamily(product.color)
   const sizes = [...(product.availablePantsSizes || []), ...(product.availableShirtSizes || [])].map(normalizeSize)

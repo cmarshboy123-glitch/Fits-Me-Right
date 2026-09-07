@@ -6,6 +6,7 @@ export const retailerNames = [
   'Target', 'Walmart', 'Amazon Fashion', 'Revolve', 'Nordstrom Rack',
   'UNIQLO', 'GU', 'MUJI', 'YesStyle', 'MUSINSA', 'W Concept', 'Cider',
   'Pomelo', 'Love, Bonito', 'Charles & Keith',
+  'Nike', 'Adidas', 'Lululemon', 'Puma', 'Under Armour',
   'Gucci', 'Louis Vuitton', 'Prada', 'Saint Laurent', 'Bottega Veneta',
   'Burberry', 'Balenciaga', 'Dior', 'Fendi', 'Versace', 'Valentino',
   'Givenchy', 'Loewe', 'Celine', 'Chanel', 'Hermès', 'Alexander McQueen',
@@ -19,10 +20,12 @@ export const luxuryRetailers = [
   'Moncler', 'Ferragamo', 'Dolce & Gabbana',
 ]
 
-export function retailerSearchUrl(product) {
-  const query = encodeURIComponent(`${product.brand || ''} ${product.name}`.trim())
-  const slug = `${product.brand || ''} ${product.name}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-  const destinations = {
+// Shared per-retailer search URL templates, parameterized on a query/slug pair
+// so both a specific product (retailerSearchUrl) and raw free text
+// (webSearchDestinations) can build a real, working destination for the
+// same set of stores.
+function buildDestinations(query, slug) {
+  return {
     Nordstrom: `https://www.nordstrom.com/sr?keyword=${query}`,
     "Macy's": `https://www.macys.com/shop/featured/${slug}`,
     Zara: `https://www.zara.com/us/en/search?searchTerm=${query}`,
@@ -59,6 +62,11 @@ export function retailerSearchUrl(product) {
     Pomelo: `https://www.pomelofashion.com/th/en/search?query=${query}`,
     'Love, Bonito': `https://www.lovebonito.com/us/search?q=${query}`,
     'Charles & Keith': `https://www.charleskeith.com/us/search?q=${query}`,
+    Nike: `https://www.nike.com/w?q=${query}`,
+    Adidas: `https://www.adidas.com/us/search?q=${query}`,
+    Lululemon: `https://shop.lululemon.com/search?Ntt=${query}`,
+    Puma: `https://us.puma.com/us/en/search?q=${query}`,
+    'Under Armour': `https://www.underarmour.com/en-us/search?q=${query}`,
     Gucci: 'https://www.gucci.com/us/en/',
     'Louis Vuitton': 'https://us.louisvuitton.com/eng-us/homepage',
     Prada: 'https://www.prada.com/us/en.html',
@@ -80,5 +88,35 @@ export function retailerSearchUrl(product) {
     Ferragamo: 'https://www.ferragamo.com/shop/us/en',
     'Dolce & Gabbana': 'https://www.dolcegabbana.com/en-us/',
   }
-  return destinations[product.vendor] || '#'
+}
+
+export function retailerSearchUrl(product) {
+  const text = `${product.brand || ''} ${product.name}`.trim()
+  const query = encodeURIComponent(text)
+  const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  return buildDestinations(query, slug)[product.vendor] || '#'
+}
+
+// The catalog can never stock literally everything — no static dataset can.
+// When a search doesn't match anything we carry, this gives the raw query
+// somewhere real to go: a direct search at the specific store it names (if
+// any), plus Google Shopping and Amazon as universal fallbacks — so typing
+// anything still surfaces real, live results instead of a dead end.
+export function webSearchDestinations(rawQuery) {
+  const text = rawQuery.trim()
+  if (!text) return []
+  const query = encodeURIComponent(text)
+  const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  const destinations = buildDestinations(query, slug)
+
+  const lowerText = text.toLowerCase()
+  const matchedRetailer = retailerNames.find((name) => lowerText.includes(name.toLowerCase()))
+
+  const results = []
+  if (matchedRetailer && destinations[matchedRetailer] && destinations[matchedRetailer] !== '#') {
+    results.push({ label: matchedRetailer, url: destinations[matchedRetailer] })
+  }
+  results.push({ label: 'Google Shopping', url: `https://www.google.com/search?tbm=shop&q=${query}` })
+  results.push({ label: 'Amazon', url: `https://www.amazon.com/s?k=${query}` })
+  return results
 }

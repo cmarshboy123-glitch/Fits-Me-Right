@@ -1,9 +1,10 @@
-import { ArrowRight, Search, SlidersHorizontal, X } from 'lucide-react'
+import { ArrowRight, ExternalLink, Search, SlidersHorizontal, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid'
 import { getProducts } from '../services/catalogService'
 import { intentLabels, parseShoppingIntent, productColorFamily, productMatchesIntent, shoppingCategories, shoppingColors } from '../utils/searchIntent'
+import { webSearchDestinations } from '../utils/retailers'
 
 const priceOptions = [['All prices', ''], ['On a Budget', 'budget'], ['Mid Range', 'treat'], ["Let's Splurge", 'splurge']]
 const womenBodyTypes = ['Straight', 'Curvy', 'Athletic', 'Petite', 'Tall', 'Plus']
@@ -42,6 +43,7 @@ export default function Shop() {
   }), [catalogProducts, query, searchIntent, retailer, brand, gender, bodyType, priceTier, market, category, color])
 
   const activeCount = [query, retailer, brand, gender, bodyType, priceTier, market, category, color].filter(Boolean).length
+  const webResults = useMemo(() => webSearchDestinations(query), [query])
   const guidedSearch = Boolean(searchParams.get('bodyType') || searchParams.get('priceTier'))
 
   const syncUrl = (event) => {
@@ -83,7 +85,25 @@ export default function Shop() {
       </div>
 
       <div className="flex items-center justify-between gap-5 py-6"><p className="text-sm font-bold">{filtered.length} VERIFIED ITEMS ACROSS {[...new Set(filtered.map((product) => product.vendor))].length} STORES</p><p className="max-w-md text-right text-xs text-neutral-500">Every shopping button opens the named item on the official retailer site · retailer confirms live price and stock</p></div>
-      {filtered.length ? <ProductGrid products={filtered} /> : <div className="rounded-2xl bg-neutral-100 py-20 text-center"><h2 className="text-2xl font-bold">Nothing matched that search.</h2><p className="mt-2 text-sm text-neutral-600">Try clearing one filter to widen the selection.</p><button onClick={clearAll} className="mt-5 text-sm font-bold underline">CLEAR ALL FILTERS</button></div>}
+      {filtered.length ? <ProductGrid products={filtered} /> : (
+        <div className="rounded-2xl bg-neutral-100 px-6 py-16 text-center">
+          <h2 className="text-2xl font-bold">Nothing in our marketplace matched that search.</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-neutral-600">Try clearing a filter to widen the selection{query ? ', or keep looking below — we sent your exact search to the wider web.' : '.'}</p>
+          <button onClick={clearAll} className="mt-5 text-sm font-bold underline">CLEAR ALL FILTERS</button>
+          {webResults.length > 0 && (
+            <div className="mx-auto mt-8 max-w-xl border-t border-neutral-300 pt-8">
+              <p className="text-[10px] font-black uppercase tracking-[.2em] text-neutral-500">Not in our marketplace yet — search the web directly</p>
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+                {webResults.map(({ label, url }) => (
+                  <a key={label} href={url} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full bg-black px-5 py-3 text-xs font-bold text-white transition hover:bg-amber-600">
+                    SEARCH “{query}” ON {label.toUpperCase()} <ExternalLink size={13} />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </section>
   )
 }
