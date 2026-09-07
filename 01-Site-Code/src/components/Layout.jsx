@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Header from './Header'
 import Footer from './Footer'
 import RouteLoader from './RouteLoader'
+import { getPageTitle } from '../utils/pageTitle'
 
 export default function Layout() {
   const location = useLocation()
@@ -11,6 +12,10 @@ export default function Layout() {
 
   useEffect(() => {
     window.scrollTo(0, 0)
+  }, [location.pathname])
+
+  useEffect(() => {
+    document.title = getPageTitle(location.pathname)
   }, [location.pathname])
 
   useLayoutEffect(() => {

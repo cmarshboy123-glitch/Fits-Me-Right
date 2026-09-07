@@ -1,4 +1,5 @@
-import { createContext, useContext, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { readStorage, writeStorage } from '../utils/persist'
 
 const StyleContext = createContext(null)
 
@@ -11,9 +12,14 @@ const initialSelections = {
   dressCode: '',
 }
 
+const PROFILES_KEY = 'fits-me-right:profiles'
+
 export function StyleProvider({ children }) {
   const [selections, setSelections] = useState(initialSelections)
-  const [profiles, setProfiles] = useState([])
+  const [profiles, setProfiles] = useState(() => readStorage(PROFILES_KEY, []))
+
+  // Saved profiles are meant to survive a refresh or a new visit — persist them.
+  useEffect(() => { writeStorage(PROFILES_KEY, profiles) }, [profiles])
 
   const updateSelection = (key, value) => {
     setSelections((current) => ({ ...current, [key]: value }))

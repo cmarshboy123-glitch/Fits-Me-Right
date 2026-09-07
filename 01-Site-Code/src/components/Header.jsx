@@ -1,7 +1,8 @@
-import { Heart, Menu, Search, ShoppingBag, UserRound, X } from 'lucide-react'
+import { Heart, Menu, Search, UserRound, X } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useStyle } from '../context/StyleContext'
+import { useWishlist } from '../context/WishlistContext'
 import { getProducts } from '../services/catalogService'
 import { parseShoppingIntent, productMatchesIntent } from '../utils/searchIntent'
 import { retailerSearchUrl } from '../utils/retailers'
@@ -22,6 +23,7 @@ export default function Header() {
   const blurTimeout = useRef(null)
   const navigate = useNavigate()
   const { updateSelection } = useStyle()
+  const { count: wishlistCount } = useWishlist()
 
   useEffect(() => { getProducts().then(setProducts) }, [])
   useEffect(() => () => clearTimeout(blurTimeout.current), [])
@@ -121,9 +123,11 @@ export default function Header() {
         </div>
         <div className="ml-auto flex items-center gap-4 text-neutral-700 lg:ml-0">
           <button aria-label="Search" onClick={() => navigate('/shop')} className="lg:hidden"><Search size={21} /></button>
-          <button aria-label="Wishlist" className="hidden sm:block"><Heart size={21} /></button>
-          <button aria-label="Account" className="hidden sm:block"><UserRound size={21} /></button>
-          <button aria-label="Shopping bag"><ShoppingBag size={21} /></button>
+          <Link to="/wishlist" aria-label={`Wishlist${wishlistCount ? `, ${wishlistCount} saved` : ''}`} className="relative">
+            <Heart size={21} />
+            {wishlistCount > 0 && <span className="absolute -right-1.5 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-[#D3A11E] px-1 text-[9px] font-black text-black">{wishlistCount > 9 ? '9+' : wishlistCount}</span>}
+          </Link>
+          <Link to="/profiles" aria-label="Your style profiles" className="hidden sm:block"><UserRound size={21} /></Link>
           <button onClick={() => setOpen(!open)} aria-label="Menu" className="md:hidden">{open ? <X size={23} /> : <Menu size={23} />}</button>
         </div>
       </div>
@@ -133,6 +137,12 @@ export default function Header() {
             <button className="text-left" onClick={() => startFor('Women')}>Women</button>
             <button className="text-left" onClick={() => startFor('Men')}>Men</button>
             {nav.map(([label, path]) => <Link key={path} to={path} onClick={() => setOpen(false)}>{label}</Link>)}
+            <div className="mt-1 flex flex-col gap-5 border-t border-neutral-200 pt-5 text-neutral-600">
+              <Link to="/wishlist" onClick={() => setOpen(false)}>Wishlist{wishlistCount > 0 ? ` (${wishlistCount})` : ''}</Link>
+              <Link to="/profiles" onClick={() => setOpen(false)}>Style Profiles</Link>
+              <Link to="/about" onClick={() => setOpen(false)}>Our Fit Promise</Link>
+              <Link to="/help" onClick={() => setOpen(false)}>Help &amp; Contact</Link>
+            </div>
           </div>
         </div>
       )}

@@ -5,6 +5,7 @@ import BodyShape from '../components/BodyShape'
 import ProductGrid from '../components/ProductGrid'
 import { useStyle } from '../context/StyleContext'
 import { getRecommendedProducts } from '../services/catalogService'
+import { summarizeSelections } from '../utils/summarizeSelections'
 
 const steps = ['gender', 'body-type', 'price', 'shirt-size', 'pants-size', 'dress-code', 'save-profile', 'results']
 const womenBodyTypes = ['Straight', 'Curvy', 'Athletic', 'Petite', 'Tall', 'Plus']
@@ -24,11 +25,11 @@ const bodyTypeDetails = {
 }
 const shirtSizes = ['XXS', 'XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', 'Not sure']
 const womenPants = ['00', '0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20W', '22W', '24W', 'Not sure']
-const menPants = ['28 Ã— 30', '30 Ã— 30', '32 Ã— 30', '32 Ã— 32', '34 Ã— 32', '36 Ã— 32', '38 Ã— 32', '40 Ã— 32', '42 Ã— 32', '44 Ã— 32', '46 Ã— 32', '48 Ã— 32', 'Not sure']
+const menPants = ['28 × 30', '30 × 30', '32 × 30', '32 × 32', '34 × 32', '36 × 32', '38 × 32', '40 × 32', '42 × 32', '44 × 32', '46 × 32', '48 × 32', 'Not sure']
 const prices = [
   { value: 'budget', title: 'On a Budget', detail: 'Under $100', stores: ['H&M', 'Old Navy', 'Uniqlo', 'ASOS'] },
-  { value: 'treat', title: 'Mid Range', detail: '$100â€“$300', stores: ['Macyâ€™s', 'Nordstrom', 'COS', 'Reformation'] },
-  { value: 'splurge', title: 'Letâ€™s Splurge', detail: 'Above $300', stores: ['Saks Fifth Avenue', 'Net-a-Porter', 'Gucci', 'Prada'] },
+  { value: 'treat', title: 'Mid Range', detail: '$100–$300', stores: ['Macy’s', 'Nordstrom', 'COS', 'Reformation'] },
+  { value: 'splurge', title: 'Let’s Splurge', detail: 'Above $300', stores: ['Saks Fifth Avenue', 'Net-a-Porter', 'Gucci', 'Prada'] },
 ]
 const womenDressCodes = ['Casual', 'Business Casual', 'Professional/Formal Business', 'Formal Attire', 'Cocktail Dress', 'Bohemian', 'Active Wear', 'Semi-Formal']
 const menDressCodes = [...womenDressCodes.slice(0, 6), 'Black Tie', ...womenDressCodes.slice(6)]
@@ -47,6 +48,10 @@ export default function GuidedFlow() {
   const dressCodes = selections.gender === 'Men' ? menDressCodes : womenDressCodes
   const selectedPrice = prices.find((price) => price.value === selections.priceTier)
   const filterStepCount = steps.length - 1
+  const latestVerifiedAt = results.map((product) => product.verifiedAt).filter(Boolean).sort().at(-1)
+  const latestVerifiedLabel = latestVerifiedAt
+    ? new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${latestVerifiedAt}T00:00:00Z`))
+    : null
 
   useEffect(() => { if (index === -1) navigate('/style/gender', { replace: true }) }, [index, navigate])
   useEffect(() => {
@@ -77,23 +82,23 @@ export default function GuidedFlow() {
     return (
       <section className="mx-auto min-h-[70vh] max-w-[1440px] px-4 py-10 lg:px-8">
         <div className="flex flex-col gap-4 border-b border-black pb-7 sm:flex-row sm:items-end sm:justify-between">
-          <div><p className="text-xs font-bold uppercase tracking-widest text-[#D3A11E]">Your personal edit</p><h1 className="mt-2 text-4xl font-black tracking-tight">Made to fit your life.</h1><p className="mt-3 text-sm text-neutral-600">{selections.gender} Â· {selections.bodyType} Â· {selectedPrice?.title} Â· Shirt {selections.shirtSize} Â· Pants {selections.pantsSize} Â· {selections.dressCode}</p></div>
+          <div><p className="text-xs font-bold uppercase tracking-widest text-[#D3A11E]">Your personal edit</p><h1 className="mt-2 text-4xl font-black tracking-tight">Made to fit your life.</h1><p className="mt-3 text-sm text-neutral-600">{summarizeSelections(selections, ['gender', 'bodyType', () => selectedPrice?.title, (s) => s.shirtSize && `Shirt ${s.shirtSize}`, (s) => s.pantsSize && `Pants ${s.pantsSize}`, 'dressCode'])}</p></div>
           <button onClick={restart} className="flex items-center gap-2 text-sm font-bold"><RotateCcw size={16} /> START AGAIN</button>
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-4 py-6"><p className="text-sm font-bold">{loading ? 'CURATINGâ€¦' : `${results.length} MATCH${results.length === 1 ? '' : 'ES'}`}</p><div className="flex items-center gap-5"><button onClick={() => navigate('/style/save-profile')} className="flex items-center gap-2 text-sm font-bold"><BookmarkPlus size={17} /> SAVE PROFILE</button><button onClick={() => navigate('/style/dress-code')} className="flex items-center gap-2 text-sm font-bold"><SlidersHorizontal size={17} /> EDIT FILTERS</button></div></div>
-        {!loading && results.length > 0 && <><div className="mb-7 border-y border-black py-5"><p className="text-[10px] font-black uppercase tracking-[.24em] text-amber-800">Verified direct matches</p><div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold">{[...new Set(results.map((product) => product.vendor))].map((vendor) => <span key={vendor}>{vendor}</span>)}</div><p className="mt-3 max-w-2xl text-xs leading-5 text-neutral-500">Each button opens that exact retailer product page. Prices and size availability were checked August 10, 2026 and can change at the store.</p></div><ProductGrid products={results} /></>}
-        {!loading && results.length === 0 && <div className="grid place-items-center rounded-3xl bg-neutral-100 px-6 py-24 text-center"><div><p className="text-xs font-bold uppercase tracking-widest text-[#D3A11E]">The edit is still in progress</p><h2 className="mt-3 text-3xl font-black">No exact matchesâ€”yet.</h2><p className="mx-auto mt-3 max-w-md text-neutral-600">Try adjusting one detail and weâ€™ll widen the rail.</p><button onClick={() => navigate('/style/dress-code')} className="mt-7 rounded-full bg-black px-7 py-4 text-sm font-bold text-white">CHANGE DRESS CODE</button></div></div>}
+        <div className="flex flex-wrap items-center justify-between gap-4 py-6"><p className="text-sm font-bold">{loading ? 'CURATING…' : `${results.length} MATCH${results.length === 1 ? '' : 'ES'}`}</p><div className="flex items-center gap-5"><button onClick={() => navigate('/style/save-profile')} className="flex items-center gap-2 text-sm font-bold"><BookmarkPlus size={17} /> SAVE PROFILE</button><button onClick={() => navigate('/style/dress-code')} className="flex items-center gap-2 text-sm font-bold"><SlidersHorizontal size={17} /> EDIT FILTERS</button></div></div>
+        {!loading && results.length > 0 && <><div className="mb-7 border-y border-black py-5"><p className="text-[10px] font-black uppercase tracking-[.24em] text-amber-800">Verified direct matches</p><div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold">{[...new Set(results.map((product) => product.vendor))].map((vendor) => <span key={vendor}>{vendor}</span>)}</div><p className="mt-3 max-w-2xl text-xs leading-5 text-neutral-500">Each button opens that exact retailer product page. Prices and size availability {latestVerifiedLabel ? `were checked ${latestVerifiedLabel}` : 'are a snapshot'} and can change at the store.</p></div><ProductGrid products={results} /></>}
+        {!loading && results.length === 0 && <div className="grid place-items-center rounded-3xl bg-neutral-100 px-6 py-24 text-center"><div><p className="text-xs font-bold uppercase tracking-widest text-[#D3A11E]">The edit is still in progress</p><h2 className="mt-3 text-3xl font-black">No exact matches””yet.</h2><p className="mx-auto mt-3 max-w-md text-neutral-600">Try adjusting one detail and we’ll widen the rail.</p><button onClick={() => navigate('/style/dress-code')} className="mt-7 rounded-full bg-black px-7 py-4 text-sm font-bold text-white">CHANGE DRESS CODE</button></div></div>}
       </section>
     )
   }
 
   const titles = {
-    gender: ['First, who are we styling?', 'Choose the collection youâ€™d like to explore.'],
+    gender: ['First, who are we styling?', 'Choose the collection you’d like to explore.'],
     'body-type': [selections.gender === 'Men' ? 'How would you describe your build?' : 'What feels most like you?', 'This gives us a better starting point for proportion and fit.'],
-    'shirt-size': ['What shirt size fits best?', 'Choose your usual size. You can always check the retailerâ€™s final size chart.'],
-    'pants-size': [selections.gender === 'Men' ? 'What waist and inseam do you wear?' : 'What pants size fits best?', selections.gender === 'Men' ? 'Select your usual waist Ã— inseam combination.' : 'Choose your usual numeric or plus size.'],
+    'shirt-size': ['What shirt size fits best?', 'Choose your usual size. You can always check the retailer’s final size chart.'],
+    'pants-size': [selections.gender === 'Men' ? 'What waist and inseam do you wear?' : 'What pants size fits best?', selections.gender === 'Men' ? 'Select your usual waist × inseam combination.' : 'Choose your usual numeric or plus size.'],
     price: ['What feels good to spend?', 'Choose a range to filter both products and the stores we bring into your edit.'],
-    'dress-code': ['Where are you headed?', 'Choose the setting and weâ€™ll bring the right level of polish.'],
+    'dress-code': ['Where are you headed?', 'Choose the setting and we’ll bring the right level of polish.'],
     'save-profile': ['Would you like to save these preferences?', 'Give this edit a name so you can keep separate profiles for work, weekends, events, or anyone else you shop for.'],
   }
 
@@ -122,7 +127,7 @@ export default function GuidedFlow() {
 
       {step === 'shirt-size' && <SizeGrid icon={<Shirt size={28} />} sizes={shirtSizes} selected={selections.shirtSize} onChoose={(value) => choose('shirtSize', value)} />}
       {step === 'pants-size' && <SizeGrid icon={<Ruler size={28} />} sizes={pantsSizes} selected={selections.pantsSize} onChoose={(value) => choose('pantsSize', value)} />}
-      {step === 'price' && <div className="grid border-l border-t border-black md:grid-cols-3">{prices.map((price, index) => <button key={price.value} onClick={() => choosePriceAndSearch(price.value)} className="group flex min-h-80 flex-col items-start justify-between border-b border-r border-black p-7 text-left transition-colors hover:bg-[#E8C45D]"><span className="flex w-full items-center justify-between text-[10px] font-black uppercase tracking-[.22em]"><span>Price edit</span><span>0{index + 1}</span></span><span className="block"><span className="block text-3xl font-black tracking-tight">{price.title}</span><span className="mt-2 block text-neutral-600 group-hover:text-black">{price.detail}</span><span className="mt-7 block border-t border-black/25 pt-4 text-[10px] font-black uppercase tracking-[.18em]">Stores you may see</span><span className="mt-2 block text-xs leading-6 text-neutral-600 group-hover:text-black">{price.stores.join(' Â· ')}</span><span className="mt-5 block text-[10px] font-black uppercase tracking-[.18em]">Search this edit</span></span><ArrowRight /></button>)}</div>}
+      {step === 'price' && <div className="grid border-l border-t border-black md:grid-cols-3">{prices.map((price, index) => <button key={price.value} onClick={() => choosePriceAndSearch(price.value)} className="group flex min-h-80 flex-col items-start justify-between border-b border-r border-black p-7 text-left transition-colors hover:bg-[#E8C45D]"><span className="flex w-full items-center justify-between text-[10px] font-black uppercase tracking-[.22em]"><span>Price edit</span><span>0{index + 1}</span></span><span className="block"><span className="block text-3xl font-black tracking-tight">{price.title}</span><span className="mt-2 block text-neutral-600 group-hover:text-black">{price.detail}</span><span className="mt-7 block border-t border-black/25 pt-4 text-[10px] font-black uppercase tracking-[.18em]">Stores you may see</span><span className="mt-2 block text-xs leading-6 text-neutral-600 group-hover:text-black">{price.stores.join(' · ')}</span><span className="mt-5 block text-[10px] font-black uppercase tracking-[.18em]">Search this edit</span></span><ArrowRight /></button>)}</div>}
       {step === 'dress-code' && <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">{dressCodes.map((value, i) => <button key={value} onClick={() => choose('dressCode', value)} className="flex min-h-28 items-center justify-between rounded-2xl border border-neutral-300 p-5 text-left font-bold transition hover:border-black hover:bg-[#FFF1C7]"><span><span className="mr-4 text-xs text-neutral-400">{String(i + 1).padStart(2, '0')}</span>{value}</span><ArrowRight size={18} /></button>)}</div>}
       {step === 'save-profile' && <div className="grid border-y border-black lg:grid-cols-[1fr_1.15fr]">
         <div className="border-b border-black bg-[#F4EEE2] p-7 lg:border-b-0 lg:border-r lg:p-10">
@@ -132,10 +137,10 @@ export default function GuidedFlow() {
         </div>
         <div className="p-7 lg:p-10">
           <label htmlFor="profile-name" className="text-sm font-black">Name this profile</label>
-          <p className="mt-2 text-sm leading-6 text-neutral-600">Try â€œWork,â€ â€œWeekend,â€ â€œEvent looks,â€ or a personâ€™s name.</p>
+          <p className="mt-2 text-sm leading-6 text-neutral-600">Try “Work,” “Weekend,” “Event looks,” or a person’s name.</p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row"><input id="profile-name" value={profileName} onChange={(event) => { setProfileName(event.target.value); setProfileSaved(false) }} placeholder="Weekend style" className="min-h-14 flex-1 border border-black px-4 outline-none" /><button onClick={saveCurrentProfile} disabled={!profileName.trim()} className="flex min-h-14 items-center justify-center gap-2 bg-black px-6 text-xs font-black text-white disabled:cursor-not-allowed disabled:opacity-35"><BookmarkPlus size={17} /> SAVE PROFILE</button></div>
           {profileSaved && <p className="mt-4 flex items-center gap-2 text-sm font-bold text-amber-800"><Check size={17} /> Profile saved. You can create another or continue to results.</p>}
-          {profiles.length > 0 && <div className="mt-9 border-t border-black pt-6"><div className="flex items-center justify-between"><h2 className="font-black">Your saved profiles</h2><span className="text-xs font-bold">{profiles.length}</span></div><div className="mt-4 grid gap-3">{profiles.map((profile) => <div key={profile.id} className="flex items-center justify-between gap-4 border border-neutral-300 p-4"><button onClick={() => useSavedProfile(profile.id)} className="min-w-0 flex-1 text-left"><span className="block truncate font-black">{profile.name}</span><span className="mt-1 block truncate text-xs text-neutral-500">{profile.selections.gender} Â· {profile.selections.bodyType} Â· {profile.selections.dressCode}</span></button><button onClick={() => deleteProfile(profile.id)} aria-label={`Delete ${profile.name} profile`} className="p-2 text-neutral-500 hover:text-black"><Trash2 size={17} /></button></div>)}</div></div>}
+          {profiles.length > 0 && <div className="mt-9 border-t border-black pt-6"><div className="flex items-center justify-between"><h2 className="font-black">Your saved profiles</h2><span className="text-xs font-bold">{profiles.length}</span></div><div className="mt-4 grid gap-3">{profiles.map((profile) => <div key={profile.id} className="flex items-center justify-between gap-4 border border-neutral-300 p-4"><button onClick={() => useSavedProfile(profile.id)} className="min-w-0 flex-1 text-left"><span className="block truncate font-black">{profile.name}</span><span className="mt-1 block truncate text-xs text-neutral-500">{summarizeSelections(profile.selections, ['gender', 'bodyType', 'dressCode'])}</span></button><button onClick={() => deleteProfile(profile.id)} aria-label={`Delete ${profile.name} profile`} className="p-2 text-neutral-500 hover:text-black"><Trash2 size={17} /></button></div>)}</div></div>}
           <button onClick={() => navigate('/style/results')} className="mt-8 flex w-full items-center justify-center gap-3 bg-[#D3A11E] px-6 py-4 text-xs font-black">VIEW MY RESULTS <ArrowRight size={16} /></button>
         </div>
       </div>}

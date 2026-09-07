@@ -7,6 +7,11 @@ import JustJewels from './pages/JustJewels'
 import NewCreatives from './pages/NewCreatives'
 import Shop from './pages/Shop'
 import ThriftyShopper from './pages/ThriftyShopper'
+import Wishlist from './pages/Wishlist'
+import Profiles from './pages/Profiles'
+import About from './pages/About'
+import Help from './pages/Help'
+import NotFound from './pages/NotFound'
 
 export default function App() {
   return (
@@ -21,7 +26,11 @@ export default function App() {
         <Route path="creative-feature" element={<Navigate to="/creative-corner" replace />} />
         <Route path="new-creatives" element={<Navigate to="/creative-corner" replace />} />
         <Route path="shop" element={<Shop />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="wishlist" element={<Wishlist />} />
+        <Route path="profiles" element={<Profiles />} />
+        <Route path="about" element={<About />} />
+        <Route path="help" element={<Help />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   )

@@ -11,13 +11,24 @@ npm run build
 
 This preserves the complete search, filters, guided flow, routing, and future API integration.
 
-1. Deploy this repository to Netlify, Vercel, Render, Cloudflare Pages, or another static host.
+1. Deploy this repository to Netlify, Vercel, Cloudflare Workers, Render, or another static host.
 2. Use `npm run build` as the build command and `dist` as the publish/output directory.
 3. Add `shop.fitsmeright.com` as the custom domain at the host.
 4. If the domain is registered at Squarespace, open its DNS settings and add the CNAME or A record supplied by the host.
 5. Use the main Squarespace site for editorial or company pages if desired, and link its Shop navigation to `https://shop.fitsmeright.com`.
 
-The included `netlify.toml`, `vercel.json`, and `public/_redirects` preserve React Router pages when someone visits a deep URL such as `/style/body-type` directly.
+The included `netlify.toml`, `vercel.json`, `wrangler.jsonc`, and `public/_redirects` preserve React Router pages when someone visits a deep URL such as `/style/body-type` directly.
+
+### Cloudflare Workers
+
+`wrangler.jsonc` is already configured for a static-assets Worker (`assets.directory: "./dist"`, SPA fallback via `not_found_handling`). Point the Cloudflare dashboard's build command at `npm run build`, or deploy directly:
+
+```bash
+npm run build
+npx wrangler deploy
+```
+
+`scripts/copy-assets.mjs` runs automatically via `postinstall`/`prebuild`, so the images in `02-Public-Assets` are synced into `public/assets` on every install and build — no manual step needed.
 
 ## Use Fits Me Right as the main website
 

@@ -1,7 +1,10 @@
 import { ExternalLink, Heart, Search } from 'lucide-react'
+import { useWishlist } from '../context/WishlistContext'
 import { retailerSearchUrl } from '../utils/retailers'
 
 export default function ProductCard({ product }) {
+  const { isSaved, toggle } = useWishlist()
+  const saved = isSaved(product.id)
   const visibleSizes = product.availableShirtSizes || product.availablePantsSizes
   const verifiedDate = product.verifiedAt
     ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${product.verifiedAt}T00:00:00Z`))
@@ -26,8 +29,14 @@ export default function ProductCard({ product }) {
         <span className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[8px] font-bold uppercase tracking-[.14em] backdrop-blur ${isExact ? 'bg-white/90 text-neutral-800' : hasLink ? 'bg-white/80 text-neutral-600' : 'bg-white/80 text-neutral-500'}`}>
           {isExact ? 'Verified retailer item' : hasLink ? 'Shop this look' : 'Preview only'}
         </span>
-        <button className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90" aria-label={`Save ${product.name}`}>
-          <Heart size={18} strokeWidth={1.6} />
+        <button
+          type="button"
+          onClick={() => toggle(product)}
+          aria-pressed={saved}
+          aria-label={saved ? `Remove ${product.name} from your wishlist` : `Save ${product.name} to your wishlist`}
+          className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 transition hover:scale-105"
+        >
+          <Heart size={18} strokeWidth={1.6} fill={saved ? '#D3A11E' : 'none'} stroke={saved ? '#D3A11E' : 'currentColor'} />
         </button>
       </div>
       <div className="pt-4">
@@ -46,7 +55,7 @@ export default function ProductCard({ product }) {
         ) : (
           <span className="mt-4 flex w-full items-center justify-center rounded-xl border border-neutral-300 px-3 py-3 text-[10px] font-bold text-neutral-400">RETAILER LINK COMING SOON</span>
         )}
-        {hasLink && <p className="mt-2 text-center text-[9px] leading-4 text-neutral-400">{isExact ? `${verifiedDate ? `Destination verified ${verifiedDate}. ` : ''}Retailer confirms live price, size, and stock.` : `Opens ${product.vendor}'s search for this item — confirm price, size, and stock there.`}</p>}
+        {hasLink && <p className="mt-2 text-center text-[9px] leading-4 text-neutral-400">{isExact ? `${verifiedDate ? `Destination verified ${verifiedDate}. ` : ''}Retailer confirms live price, size, and stock.` : `Opens ${product.vendor}’s search for this item — confirm price, size, and stock there.`}</p>}
       </div>
     </article>
   )

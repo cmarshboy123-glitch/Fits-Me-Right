@@ -5,7 +5,7 @@
 @layer base {
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body { margin: 0; min-width: 320px; background: #FCFBF8; color: #171717; font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; letter-spacing: -.008em; }
+  body { margin: 0; min-width: 320px; background: #FCFBF8; color: #171717; font-family: "Inter Variable", Inter, "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; letter-spacing: -.008em; }
   main { overflow: clip; }
   img { display: block; }
   button, a { -webkit-tap-highlight-color: transparent; }
