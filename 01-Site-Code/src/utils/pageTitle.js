@@ -22,6 +22,7 @@ const routes = [
   [/^\/profiles\b/, () => 'Style Profiles'],
   [/^\/about\b/, () => 'Our Fit Promise'],
   [/^\/help\b/, () => 'Help & Contact'],
+  [/^\/admin\b/, () => 'Catalog Manager'],
   [/^\/style\/([\w-]+)/, (match) => `${stepTitles[match[1]] || 'Style Edit'} — Style Edit`],
 ]
 
