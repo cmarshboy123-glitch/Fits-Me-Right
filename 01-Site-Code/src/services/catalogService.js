@@ -2,6 +2,8 @@ import mockProducts from '../data/products.json'
 import verifiedProducts from '../data/verifiedProducts'
 import marketplaceInventory from '../data/marketplaceInventory'
 
+const API_URL = 'https://fits-me-right-api-6d1474833fcd.herokuapp.com/api/products'
+
 // The broader catalog (products.json) uses shirtSizes/pantsSizes while the
 // verified/marketplace records use availableShirtSizes/availablePantsSizes —
 // line the field names up so every product behaves identically once merged.
@@ -11,9 +13,28 @@ const normalizedMockProducts = mockProducts.map((product) => ({
   availablePantsSizes: product.pantsSizes,
 }))
 
-// Keep the page contract async so a vendor/affiliate API can replace this implementation later.
+const bundledCatalog = [...verifiedProducts, ...marketplaceInventory, ...normalizedMockProducts]
+
+let cachedCatalog = null
+
+// Serves the live Postgres-backed catalog when reachable, falling back to the
+// bundled static data (kept in sync via 03-Server-Code/prisma/seed.mjs) if the
+// API is unreachable — e.g. the Heroku dyno waking up from sleep, or an outage.
 export async function getProducts() {
-  return Promise.resolve([...verifiedProducts, ...marketplaceInventory, ...normalizedMockProducts])
+  if (cachedCatalog) return cachedCatalog
+
+  try {
+    const response = await fetch(API_URL)
+    if (!response.ok) throw new Error(`API responded with ${response.status}`)
+    const products = await response.json()
+    if (!Array.isArray(products) || products.length === 0) throw new Error('API returned no products')
+    cachedCatalog = products
+  } catch (error) {
+    console.warn('Falling back to bundled catalog — live API unreachable:', error)
+    cachedCatalog = bundledCatalog
+  }
+
+  return cachedCatalog
 }
 
 export async function getRecommendedProducts(selections) {
