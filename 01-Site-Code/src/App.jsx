@@ -11,6 +11,7 @@ import Wishlist from './pages/Wishlist'
 import Profiles from './pages/Profiles'
 import About from './pages/About'
 import Help from './pages/Help'
+import Admin from './pages/Admin'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
         <Route path="profiles" element={<Profiles />} />
         <Route path="about" element={<About />} />
         <Route path="help" element={<Help />} />
+        <Route path="admin" element={<Admin />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

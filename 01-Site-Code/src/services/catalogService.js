@@ -2,7 +2,7 @@ import mockProducts from '../data/products.json'
 import verifiedProducts from '../data/verifiedProducts'
 import marketplaceInventory from '../data/marketplaceInventory'
 
-const API_URL = 'https://fits-me-right-api-6d1474833fcd.herokuapp.com/api/products'
+export const API_URL = 'https://fits-me-right-api-6d1474833fcd.herokuapp.com/api/products'
 
 // The broader catalog (products.json) uses shirtSizes/pantsSizes while the
 // verified/marketplace records use availableShirtSizes/availablePantsSizes —
@@ -35,6 +35,12 @@ export async function getProducts() {
   }
 
   return cachedCatalog
+}
+
+// Called after an admin create/edit/delete so the next getProducts() call
+// re-fetches instead of serving the stale in-memory copy.
+export function invalidateCatalogCache() {
+  cachedCatalog = null
 }
 
 export async function getRecommendedProducts(selections) {
