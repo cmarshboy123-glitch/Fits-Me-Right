@@ -14,7 +14,7 @@ export default function ThriftyShopper() {
     <div className="bg-[#FCFBF8] px-4 pb-16 pt-6 lg:px-8">
       <section className="mx-auto grid min-h-[580px] max-w-[1440px] overflow-hidden rounded-[2rem] bg-[#F5F0E7] lg:grid-cols-[1.05fr_.95fr]">
         <div className="flex flex-col justify-center px-6 py-16 lg:px-14">
-          <p className="text-[11px] font-black uppercase tracking-[.28em] text-amber-800">A new marketplace is coming</p>
+          <p className="text-[11px] font-black uppercase tracking-[.28em] text-gold-800">A new marketplace is coming</p>
           <h1 className="mt-7 max-w-2xl text-5xl font-black leading-[.92] tracking-[-.05em] sm:text-7xl">Thrifty<br />Shopper.</h1>
           <p className="mt-7 max-w-xl text-lg leading-8 text-neutral-700">Soon, Fits Me Right will make it easier to discover thrift, vintage, and resale stores through the same fit-first shopping experience.</p>
           <div className="mt-9 flex flex-wrap gap-3">
@@ -32,7 +32,7 @@ export default function ThriftyShopper() {
       </section>
 
       <section className="mx-auto mt-8 max-w-[1440px] rounded-[2rem] bg-white px-5 py-14 lg:px-10">
-        <div className="mb-8 flex items-end justify-between gap-4"><div><p className="text-[11px] font-black uppercase tracking-[.24em] text-amber-800">What to expect</p><h2 className="mt-3 text-3xl font-black">Secondhand, made easier to find.</h2></div><Search className="hidden h-8 w-8 sm:block" /></div>
+        <div className="mb-8 flex items-end justify-between gap-4"><div><p className="text-[11px] font-black uppercase tracking-[.24em] text-gold-800">What to expect</p><h2 className="mt-3 text-3xl font-black">Secondhand, made easier to find.</h2></div><Search className="hidden h-8 w-8 sm:block" /></div>
         <div className="grid gap-4 md:grid-cols-3">
           {futureDepartments.map(([title, description], index) => <article key={title} className="min-h-56 rounded-2xl border border-neutral-200 bg-[#FCFBF8] p-7"><div className="flex items-center justify-between"><Store size={22} /><span className="text-xs font-black">0{index + 1}</span></div><h3 className="mt-12 text-xl font-black">{title}</h3><p className="mt-3 text-sm leading-6 text-neutral-600">{description}</p></article>)}
         </div>

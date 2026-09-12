@@ -31,7 +31,6 @@ export default function Layout() {
 
   return (
     <>
-      <div className="site-frame" aria-hidden="true"><span /><span /><span /><span /></div>
       <RouteLoader active={isRouteLoading} />
       <Header />
       <main><Outlet /></main>

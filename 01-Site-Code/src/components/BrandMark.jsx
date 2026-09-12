@@ -9,7 +9,7 @@ export default function BrandMark({ compact = false, inverse = false }) {
           {[12,18,24,30,36,42,48].map((y, i) => <path key={y} d={`M26 ${y}h${i % 2 ? 4 : 6}`} stroke="#1C1711" strokeWidth="1.2" />)}
         </g>
       </svg>
-      {!compact && <span className={`leading-none ${inverse ? 'text-white' : 'text-neutral-950'}`}><span className="block text-[15px] font-black tracking-[-.03em]">FITS ME RIGHT</span><span className="mt-1 block text-[9px] font-bold uppercase tracking-[.18em] text-amber-600">Your fashion concierge</span></span>}
+      {!compact && <span className={`leading-none ${inverse ? 'text-white' : 'text-neutral-950'}`}><span className="block text-[15px] font-black tracking-[-.03em]">FITS ME RIGHT</span><span className="mt-1 block text-[9px] font-bold uppercase tracking-[.18em] text-gold-600">Your fashion concierge</span></span>}
     </div>
   )
 }

@@ -68,7 +68,7 @@ export default function Header() {
         <div className="relative ml-auto hidden max-w-sm flex-1 lg:block">
           <form
             onSubmit={(event) => { event.preventDefault(); runSearch(query) }}
-            className="flex items-center rounded-full border border-neutral-200 bg-[#F7F5F0] px-4 py-2.5"
+            className="flex items-center rounded-full border border-neutral-200 bg-neutral-100 px-4 py-2.5 transition focus-within:border-gold-400 focus-within:bg-white"
           >
             <input
               value={query}
@@ -122,7 +122,7 @@ export default function Header() {
                 type="button"
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => runSearch(query)}
-                className="flex w-full items-center justify-center gap-2 bg-[#F7F5F0] px-4 py-3 text-[11px] font-bold uppercase tracking-wide text-neutral-700 hover:bg-neutral-100"
+                className="flex w-full items-center justify-center gap-2 bg-neutral-50 px-4 py-3 text-[11px] font-bold uppercase tracking-wide text-neutral-700 hover:bg-neutral-100"
               >
                 <Search size={13} /> See all results for &ldquo;{trimmedQuery}&rdquo;
               </button>
@@ -133,7 +133,7 @@ export default function Header() {
           <button aria-label="Search" onClick={() => navigate('/shop')} className="lg:hidden"><Search size={21} /></button>
           <Link to="/wishlist" aria-label={`Wishlist${wishlistCount ? `, ${wishlistCount} saved` : ''}`} className="relative">
             <Heart size={21} />
-            {wishlistCount > 0 && <span className="absolute -right-1.5 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-[#D3A11E] px-1 text-[9px] font-black text-black">{wishlistCount > 9 ? '9+' : wishlistCount}</span>}
+            {wishlistCount > 0 && <span className="absolute -right-1.5 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-gold-400 px-1 text-[9px] font-black text-black">{wishlistCount > 9 ? '9+' : wishlistCount}</span>}
           </Link>
           <Link to="/profiles" aria-label="Your style profiles" className="hidden sm:block"><UserRound size={21} /></Link>
           <button onClick={() => setOpen(!open)} aria-label="Menu" className="md:hidden">{open ? <X size={23} /> : <Menu size={23} />}</button>

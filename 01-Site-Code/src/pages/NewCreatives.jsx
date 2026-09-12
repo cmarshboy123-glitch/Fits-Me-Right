@@ -57,12 +57,12 @@ export default function CreativeCorner() {
       <section className="border-b border-black bg-[#1C1711] text-white">
         <div className="mx-auto grid max-w-[1440px] lg:grid-cols-[1.05fr_.95fr]">
           <div className="flex min-h-[590px] flex-col justify-center px-5 py-20 lg:px-12 lg:py-28">
-            <p className="text-xs font-black uppercase tracking-[.24em] text-amber-300">Creative Corner · Independent fashion</p>
+            <p className="text-xs font-black uppercase tracking-[.24em] text-gold-300">Creative Corner · Independent fashion</p>
             <h1 className="mt-6 max-w-4xl text-5xl font-black leading-[.94] tracking-[-.045em] sm:text-7xl">The ideas shaping what we wear next.</h1>
             <p className="mt-7 max-w-xl text-lg leading-8 text-white/75">A living directory and editorial spotlight for independent designers—who they are, what they make, and why their point of view matters.</p>
             <div className="mt-10 flex flex-wrap gap-3"><a href="#spotlights" className="flex min-h-12 items-center gap-3 bg-[#D3A11E] px-6 text-xs font-black text-black">MEET THE DESIGNERS <ArrowRight size={16} /></a><a href="#selection" className="flex min-h-12 items-center border border-white/40 px-6 text-xs font-black">HOW WE CURATE</a></div>
           </div>
-          <div className="relative min-h-[480px] overflow-hidden border-t border-white/20 lg:border-l lg:border-t-0"><img src="/assets/unique/creative-cover-amara-v1.webp" alt="Independent Black designer directing a fitting in her atelier" className="absolute inset-0 h-full w-full object-cover" /><div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/70 to-transparent p-7 pt-28"><p className="text-[10px] font-black uppercase tracking-[.22em] text-amber-300">Current cover story</p><p className="mt-2 text-2xl font-black">Amara Osei builds clothes around movement.</p></div></div>
+          <div className="relative min-h-[480px] overflow-hidden border-t border-white/20 lg:border-l lg:border-t-0"><img src="/assets/unique/creative-cover-amara-v1.webp" alt="Independent Black designer directing a fitting in her atelier" className="absolute inset-0 h-full w-full object-cover" /><div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/70 to-transparent p-7 pt-28"><p className="text-[10px] font-black uppercase tracking-[.22em] text-gold-300">Current cover story</p><p className="mt-2 text-2xl font-black">Amara Osei builds clothes around movement.</p></div></div>
         </div>
       </section>
 
@@ -71,7 +71,7 @@ export default function CreativeCorner() {
       <section className="border-b border-black bg-[#17130E] px-4 py-16 text-white lg:px-8 lg:py-24">
         <div className="mx-auto max-w-[1440px]">
           <div className="flex flex-col justify-between gap-5 border-b border-white/25 pb-8 md:flex-row md:items-end">
-            <div><p className="text-xs font-black uppercase tracking-[.22em] text-amber-300">Runway dispatches</p><h2 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">A few seconds from somewhere new.</h2></div>
+            <div><p className="text-xs font-black uppercase tracking-[.22em] text-gold-300">Runway dispatches</p><h2 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">A few seconds from somewhere new.</h2></div>
             <p className="max-w-md text-sm leading-6 text-white/65">Short original motion studies from fashion cities around the world—an atmospheric glimpse, never the whole story.</p>
           </div>
           <div className="mt-8 grid gap-5 lg:grid-cols-2">
@@ -109,7 +109,7 @@ function RunwaySnippet({ dispatch, index }) {
           {paused ? <Play size={16} fill="currentColor" /> : <Pause size={16} fill="currentColor" />}
         </button>
         <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7">
-          <p className="text-[9px] font-black uppercase tracking-[.23em] text-amber-300">{dispatch.edition}</p>
+          <p className="text-[9px] font-black uppercase tracking-[.23em] text-gold-300">{dispatch.edition}</p>
           <h3 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">{dispatch.title}</h3>
         </div>
         <div className="absolute inset-x-0 bottom-0 h-1 bg-white/20"><span className="runway-progress block h-full bg-[#D3A11E]" /></div>
