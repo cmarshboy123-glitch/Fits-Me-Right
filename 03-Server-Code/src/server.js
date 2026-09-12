@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import { productsRouter } from './routes/products.js'
+import { liveSearchRouter } from './routes/liveSearch.js'
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -19,6 +20,7 @@ app.use(express.json())
 
 app.get('/health', (req, res) => res.json({ ok: true }))
 app.use('/api/products', productsRouter)
+app.use('/api/search/live', liveSearchRouter)
 
 app.listen(port, () => {
   console.log(`Fits Me Right API listening on port ${port}`)
