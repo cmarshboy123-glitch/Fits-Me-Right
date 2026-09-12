@@ -30,7 +30,7 @@ const rawCategoryAliases = {
   Skirts: ['skirt', 'skirts', 'skort', 'skorts'],
   Shorts: ['shorts', 'short'],
   Outerwear: ['coat', 'coats', 'jacket', 'jackets', 'blazer', 'blazers', 'parka', 'parkas', 'trench', 'trenchcoat'],
-  Knitwear: ['sweater', 'sweaters', 'jumper', 'jumpers', 'cardigan', 'cardigans', 'knitwear'],
+  Knitwear: ['sweater', 'sweaters', 'jumper', 'jumpers', 'cardigan', 'cardigans', 'knitwear', 'hoodie', 'hoodies', 'sweatshirt', 'sweatshirts', 'crewneck', 'crewnecks'],
   Suits: ['suit', 'suits', 'tuxedo', 'tuxedos'],
   Activewear: ['activewear', 'sportswear', 'joggers', 'jogger', 'leggings', 'legging', 'tracksuit', 'tracksuits'],
   Swimwear: ['swimwear', 'swimsuit', 'swimsuits', 'bikini', 'bikinis', 'trunks'],
