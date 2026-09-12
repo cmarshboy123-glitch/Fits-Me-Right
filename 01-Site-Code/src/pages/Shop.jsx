@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid'
 import { getProducts } from '../services/catalogService'
+import { searchLiveWeb } from '../services/liveSearchService'
 import { intentLabels, parseShoppingIntent, productColorFamily, productMatchesIntent, shoppingCategories, shoppingColors } from '../utils/searchIntent'
 import { webSearchDestinations } from '../utils/retailers'
 
@@ -45,6 +46,23 @@ export default function Shop() {
   const activeCount = [query, retailer, brand, gender, bodyType, priceTier, market, category, color].filter(Boolean).length
   const webResults = useMemo(() => webSearchDestinations(query), [query])
   const guidedSearch = Boolean(searchParams.get('bodyType') || searchParams.get('priceTier'))
+
+  const [liveResults, setLiveResults] = useState([])
+  const [liveLoading, setLiveLoading] = useState(false)
+
+  // Only reach for live web results once the local catalog has genuinely
+  // come up empty for a real text query — keeps API usage down to the cases
+  // that actually need it, and debounced so it fires once typing settles.
+  useEffect(() => {
+    const trimmed = query.trim()
+    if (filtered.length > 0 || trimmed.length < 3) { setLiveResults([]); return undefined }
+
+    setLiveLoading(true)
+    const timer = setTimeout(() => {
+      searchLiveWeb(trimmed).then(setLiveResults).finally(() => setLiveLoading(false))
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [query, filtered.length])
 
   const syncUrl = (event) => {
     event?.preventDefault()
@@ -90,9 +108,31 @@ export default function Shop() {
           <h2 className="text-2xl font-bold">Nothing in our marketplace matched that search.</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-neutral-600">Try clearing a filter to widen the selection{query ? ', or keep looking below — we sent your exact search to the wider web.' : '.'}</p>
           <button onClick={clearAll} className="mt-5 text-sm font-bold underline">CLEAR ALL FILTERS</button>
+
+          {liveLoading && <p className="mt-10 text-xs font-bold uppercase tracking-widest text-neutral-400">Searching the web for “{query}”…</p>}
+
+          {!liveLoading && liveResults.length > 0 && (
+            <div className="mx-auto mt-10 max-w-6xl text-left">
+              <p className="text-[10px] font-black uppercase tracking-[.2em] text-gold-700">Live results from around the web</p>
+              <p className="mt-2 max-w-2xl text-xs leading-5 text-neutral-500">Not in our marketplace, but real listings for “{query}” right now via Google Shopping. Each opens a comparison page listing every seller — prices and stock are live at the source, not from us.</p>
+              <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
+                {liveResults.filter((result) => result.link).map((result, index) => (
+                  <a key={`${result.title}-${index}`} href={result.link} target="_blank" rel="noreferrer" className="group min-w-0">
+                    <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-white shadow-soft transition duration-300 group-hover:shadow-lift">
+                      {result.thumbnail && <img src={result.thumbnail} alt="" className="h-full w-full object-contain p-4 transition duration-500 group-hover:scale-105" loading="lazy" />}
+                    </div>
+                    <p className="mt-3 truncate text-[10px] font-bold uppercase tracking-[.14em] text-gold-700">{result.source || 'Multiple sellers'}</p>
+                    <h3 className="mt-1 line-clamp-2 text-sm font-semibold leading-snug">{result.title}</h3>
+                    {result.priceLabel && <p className="mt-2 text-sm font-bold">{result.priceLabel}</p>}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
           {webResults.length > 0 && (
-            <div className="mx-auto mt-8 max-w-xl border-t border-neutral-300 pt-8">
-              <p className="text-[10px] font-black uppercase tracking-[.2em] text-neutral-500">Not in our marketplace yet — search the web directly</p>
+            <div className="mx-auto mt-10 max-w-xl border-t border-neutral-300 pt-8">
+              <p className="text-[10px] font-black uppercase tracking-[.2em] text-neutral-500">Or search the web directly</p>
               <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
                 {webResults.map(({ label, url }) => (
                   <a key={label} href={url} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full bg-black px-5 py-3 text-xs font-bold text-white transition hover:bg-gold-600">
