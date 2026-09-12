@@ -1,5 +1,4 @@
-import { DoorOpen, Gem, Search, Shirt, ShoppingBag, Store, X } from 'lucide-react'
-import { useState } from 'react'
+import { Gem, Search, Shirt, ShoppingBag, Store } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useStyle } from '../context/StyleContext'
 
@@ -11,7 +10,6 @@ const destinations = [
 ]
 
 export default function InteractiveWardrobe() {
-  const [isOpen, setIsOpen] = useState(false)
   const navigate = useNavigate()
   const { updateSelection } = useStyle()
 
@@ -25,13 +23,21 @@ export default function InteractiveWardrobe() {
   }
 
   return (
-    <section className={`literal-wardrobe ${isOpen ? 'is-open' : ''}`} aria-label="Interactive Fits Me Right wardrobe">
-      <img src="/assets/wardrobe-interior-v1.png" alt="An original warm walnut walk-in wardrobe filled with clothing, shoes, and accessories" className="wardrobe-interior" />
+    <section className="literal-wardrobe is-open" aria-label="Fits Me Right wardrobe">
+      <video
+        className="wardrobe-interior"
+        src="/assets/wardrobe-motion-v1.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-hidden="true"
+      />
       <div className="wardrobe-light" aria-hidden="true" />
 
       <div className="wardrobe-welcome">
         <p>Your Fashion Concierge</p>
-        <h1>Step inside<br />your wardrobe.</h1>
+        <h1>Your closet.<br />Every store.</h1>
         <button onClick={() => navigate('/shop')}><Search size={17} /> SEARCH EVERY STORE</button>
       </div>
 
@@ -45,18 +51,6 @@ export default function InteractiveWardrobe() {
       <button onClick={() => navigate('/thrifty-shopper')} className="wardrobe-drawer wardrobe-drawer-one"><span>THRIFT &amp; VINTAGE</span><span className="wardrobe-handle" /></button>
       <button onClick={() => navigate('/creative-corner')} className="wardrobe-drawer wardrobe-drawer-two"><span>CREATIVE CORNER</span><span className="wardrobe-handle" /></button>
       <button onClick={() => navigate('/shop')} className="wardrobe-center-cta"><Store size={18} /> ENTER THE MARKETPLACE</button>
-
-      <div className="wardrobe-door wardrobe-door-left" aria-hidden="true"><div className="wardrobe-door-panels"><span /><span /></div><span className="wardrobe-knob" /></div>
-      <div className="wardrobe-door wardrobe-door-right" aria-hidden="true"><div className="wardrobe-door-panels"><span /><span /></div><span className="wardrobe-knob" /></div>
-
-      <div className="wardrobe-entry">
-        <p>FITS ME RIGHT</p>
-        <h2>Your closet.<br />Every store.</h2>
-        <span>Open the doors and choose where to begin.</span>
-        <button onClick={() => setIsOpen(true)} aria-expanded={isOpen}><DoorOpen size={19} /> OPEN MY WARDROBE</button>
-      </div>
-
-      {isOpen && <button onClick={() => setIsOpen(false)} className="wardrobe-close" aria-label="Close wardrobe"><X size={19} /></button>}
     </section>
   )
 }
