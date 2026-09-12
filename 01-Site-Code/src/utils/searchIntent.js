@@ -45,6 +45,24 @@ const categoryAliases = Object.fromEntries(
   Object.entries(rawCategoryAliases).map(([category, aliases]) => [category, aliases.map(stripSeparators)]),
 )
 
+// Order matters: more specific multi-word phrases are listed before the
+// single words they contain (e.g. "Business Casual" before "Casual") so a
+// query like "business casual" is recognized as one dress code, not two.
+const rawDressCodeAliases = {
+  'Business Casual': ['business casual'],
+  'Professional/Formal Business': ['professional formal business', 'professional business', 'formal business'],
+  'Cocktail Dress': ['cocktail dress', 'cocktail'],
+  'Black Tie': ['black tie', 'blacktie'],
+  'Formal Attire': ['formal attire', 'formal wear', 'formalwear'],
+  'Semi-Formal': ['semi formal', 'semiformal'],
+  'Bohemian': ['bohemian', 'boho'],
+  'Active Wear': ['active wear', 'activewear'],
+  'Casual': ['casual'],
+}
+const dressCodeAliases = Object.fromEntries(
+  Object.entries(rawDressCodeAliases).map(([dressCode, aliases]) => [dressCode, aliases.map(stripSeparators)]),
+)
+
 const normalizeSize = (size) => String(size).trim().toLowerCase().replace(/^0+(?=\d)/, '')
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -66,13 +84,30 @@ export function parseShoppingIntent(input = '') {
   const maxMatch = source.match(/(?:under|below|less than|up to|max(?:imum)?(?: of)?)\s*\$?\s*(\d+(?:\.\d{1,2})?)/)
   const minMatch = source.match(/(?:over|above|more than|at least)\s*\$?\s*(\d+(?:\.\d{1,2})?)/)
   const sizeMatch = source.match(/(?:in\s+)?size\s*[:#-]?\s*([a-z0-9]+(?:\s*[x×]\s*[a-z0-9]+)?)/i)
-  const colorMatch = colorAliases.find(({ alias }) => new RegExp(`\\b${escapeRegExp(alias)}\\b`).test(source))
+
+  // Detected first, and excluded from the text color/category checks below —
+  // otherwise "black tie" reads as color "black" plus leftover text "tie"
+  // and silently drops every black-tie item that isn't literally black.
+  let dressCodeAlias = ''
+  const dressCodeEntry = Object.entries(dressCodeAliases).find(([, aliases]) => {
+    const found = aliases.find((alias) => new RegExp(`\\b${alias}\\b`).test(source))
+    if (found) dressCodeAlias = found
+    return Boolean(found)
+  })
+  const dressCode = dressCodeEntry?.[0] || ''
+  const sourceWithoutDressCode = dressCodeAlias ? source.replace(new RegExp(`\\b${escapeRegExp(dressCodeAlias)}\\b`, 'g'), ' ') : source
+
+  const colorMatch = colorAliases.find(({ alias }) => new RegExp(`\\b${escapeRegExp(alias)}\\b`).test(sourceWithoutDressCode))
   const color = colorMatch?.value || ''
+  // Category still checks the full source (not sourceWithoutDressCode) — a
+  // dress code phrase like "cocktail dress" should narrow to actual dresses,
+  // not just drop the category the way it drops color's false "black" match.
   const category = Object.entries(categoryAliases).find(([, aliases]) => aliases.some((alias) => new RegExp(`\\b${alias}\\b`).test(source)))?.[0]
 
   if (maxMatch) remainder = remainder.replace(maxMatch[0], ' ')
   if (minMatch) remainder = remainder.replace(minMatch[0], ' ')
   if (sizeMatch) remainder = remainder.replace(sizeMatch[0], ' ')
+  if (dressCodeAlias) remainder = remainder.replace(new RegExp(`\\b${escapeRegExp(dressCodeAlias)}\\b`, 'g'), ' ')
   if (colorMatch) remainder = remainder.replace(new RegExp(`\\b${escapeRegExp(colorMatch.alias)}\\b`, 'g'), ' ')
   if (category) categoryAliases[category].forEach((alias) => { remainder = remainder.replace(new RegExp(`\\b${alias}\\b`, 'g'), ' ') })
 
@@ -86,6 +121,7 @@ export function parseShoppingIntent(input = '') {
     text,
     color,
     category,
+    dressCode,
     maxPrice: maxMatch ? Number(maxMatch[1]) : null,
     minPrice: minMatch ? Number(minMatch[1]) : null,
     size: sizeMatch ? normalizeSize(sizeMatch[1]) : '',
@@ -94,7 +130,7 @@ export function parseShoppingIntent(input = '') {
 }
 
 export function productMatchesIntent(product, intent) {
-  const haystack = normalize(`${product.name} ${product.brand} ${product.vendor} ${product.category} ${product.color || ''} ${product.fitNote || ''}`)
+  const haystack = normalize(`${product.name} ${product.brand} ${product.vendor} ${product.category} ${product.color || ''} ${product.fitNote || ''} ${(product.dressCode || []).join(' ')} ${(product.bodyType || []).join(' ')}`)
   const textTokens = intent.text.split(/\s+/).filter(Boolean)
   const productColor = productColorFamily(product.color)
   const sizes = [...(product.availablePantsSizes || []), ...(product.availableShirtSizes || [])].map(normalizeSize)
@@ -104,6 +140,7 @@ export function productMatchesIntent(product, intent) {
     (!intent.category || product.category === intent.category ||
       (intent.category === 'Jeans' && ['Bottoms', 'Pants'].includes(product.category) && haystack.includes('jean')) ||
       (intent.category === 'Pants' && ['Bottoms', 'Jeans'].includes(product.category))) &&
+    (!intent.dressCode || (product.dressCode || []).includes(intent.dressCode)) &&
     (intent.maxPrice == null || product.price < intent.maxPrice) &&
     (intent.minPrice == null || product.price > intent.minPrice) &&
     (!intent.size || sizes.includes(intent.size)) &&
@@ -114,6 +151,7 @@ export function intentLabels(intent) {
   return [
     intent.color && `${intent.color[0].toUpperCase()}${intent.color.slice(1)}`,
     intent.category,
+    intent.dressCode,
     intent.maxPrice != null && `Under $${intent.maxPrice}`,
     intent.minPrice != null && `Above $${intent.minPrice}`,
     intent.size && `Size ${intent.size.toUpperCase()}`,
