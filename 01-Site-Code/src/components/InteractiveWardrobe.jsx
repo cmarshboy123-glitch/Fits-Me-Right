@@ -1,13 +1,13 @@
-import { DoorOpen, Gem, Search, Shirt, ShoppingBag, Sparkles, Store, X } from 'lucide-react'
+import { DoorOpen, Gem, Search, Shirt, ShoppingBag, Store, X } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStyle } from '../context/StyleContext'
 
 const destinations = [
-  { label: 'Shop Women', detail: 'Your edit', icon: Shirt, className: 'wardrobe-hotspot-women', action: 'Women' },
-  { label: 'Shop Men', detail: 'Your edit', icon: Shirt, className: 'wardrobe-hotspot-men', action: 'Men' },
-  { label: 'Cobbler Corner', detail: 'Shoes', icon: ShoppingBag, className: 'wardrobe-hotspot-shoes', path: '/cobbler-corner' },
-  { label: 'Just Jewels', detail: 'Accessories', icon: Gem, className: 'wardrobe-hotspot-jewels', path: '/just-jewels' },
+  { label: 'Women', icon: Shirt, className: 'wardrobe-hotspot-women', action: 'Women' },
+  { label: 'Men', icon: Shirt, className: 'wardrobe-hotspot-men', action: 'Men' },
+  { label: 'Cobbler Corner', icon: ShoppingBag, className: 'wardrobe-hotspot-shoes', path: '/cobbler-corner' },
+  { label: 'Just Jewels', icon: Gem, className: 'wardrobe-hotspot-jewels', path: '/just-jewels' },
 ]
 
 export default function InteractiveWardrobe() {
@@ -30,7 +30,7 @@ export default function InteractiveWardrobe() {
       <div className="wardrobe-light" aria-hidden="true" />
 
       <div className="wardrobe-welcome">
-        <p><Sparkles size={14} /> Your Fashion Concierge</p>
+        <p>Your Fashion Concierge</p>
         <h1>Step inside<br />your wardrobe.</h1>
         <button onClick={() => navigate('/shop')}><Search size={17} /> SEARCH EVERY STORE</button>
       </div>
@@ -38,7 +38,7 @@ export default function InteractiveWardrobe() {
       <div className="wardrobe-destinations">
         {destinations.map((destination) => {
           const Icon = destination.icon
-          return <button key={destination.label} onClick={() => go(destination)} className={`wardrobe-hotspot ${destination.className}`}><Icon size={18} /><span><small>{destination.detail}</small>{destination.label}</span></button>
+          return <button key={destination.label} onClick={() => go(destination)} className={`wardrobe-hotspot ${destination.className}`}><Icon size={17} /><span>{destination.label}</span></button>
         })}
       </div>
 

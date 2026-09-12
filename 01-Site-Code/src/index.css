@@ -59,38 +59,34 @@
   left: 50%;
   z-index: 3;
   width: min(92%, 560px);
-  padding: 1.2rem 1.5rem;
-  border: 1px solid rgba(255,255,255,.25);
-  border-radius: 1.25rem;
-  color: white;
-  text-align: center;
-  background: rgba(17, 12, 9, .62);
-  backdrop-filter: blur(12px);
+  padding: 1.4rem 1.6rem;
+  border-left: 3px solid #D3A11E;
+  color: #17120f;
+  text-align: left;
+  background: #FAF9F6;
   transform: translate(-50%, -20px);
   opacity: 0;
   transition: opacity .45s ease .65s, transform .65s ease .65s;
 }
 
 .is-open .wardrobe-welcome { opacity: 1; transform: translate(-50%, 0); }
-.wardrobe-welcome p { display: flex; align-items: center; justify-content: center; gap: .45rem; margin: 0; font-size: .68rem; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: #f0c76d; }
-.wardrobe-welcome h1 { margin: .55rem 0 .8rem; font-size: clamp(2rem, 4vw, 4.2rem); line-height: .88; letter-spacing: -.055em; }
-.wardrobe-welcome button, .wardrobe-center-cta { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border: 1px solid rgba(255,255,255,.32); border-radius: 999px; background: rgba(255,255,255,.92); color: #17120f; font-size: .69rem; font-weight: 900; letter-spacing: .08em; padding: .75rem 1rem; }
+.wardrobe-welcome p { display: flex; align-items: center; gap: .4rem; margin: 0; font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #8C6412; }
+.wardrobe-welcome h1 { margin: .5rem 0 .9rem; font-size: clamp(1.75rem, 3.4vw, 3.2rem); line-height: .96; letter-spacing: -.03em; }
+.wardrobe-welcome button, .wardrobe-center-cta { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border-radius: 999px; background: #17120f; color: white; font-size: .69rem; font-weight: 800; letter-spacing: .06em; padding: .75rem 1.15rem; transition: background .2s ease; }
+.wardrobe-welcome button:hover { background: #8C6412; }
 
 .wardrobe-destinations { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
 .wardrobe-hotspot {
   position: absolute;
   display: flex;
   align-items: center;
-  gap: .65rem;
-  min-width: 156px;
-  padding: .72rem .85rem;
-  border: 1px solid rgba(255,255,255,.36);
-  border-radius: .9rem;
+  gap: .6rem;
+  min-width: 148px;
+  padding: .68rem .9rem;
+  border-radius: .6rem;
   color: white;
   text-align: left;
-  background: rgba(18, 12, 9, .72);
-  box-shadow: 0 10px 24px rgba(0,0,0,.22);
-  backdrop-filter: blur(10px);
+  background: #17120f;
   opacity: 0;
   transform: translateY(12px);
   transition: opacity .4s ease .9s, transform .45s ease .9s, background .2s ease;
@@ -98,10 +94,8 @@
 }
 
 .is-open .wardrobe-hotspot { opacity: 1; transform: translateY(0); }
-.wardrobe-hotspot:hover { background: #b68129; }
-.wardrobe-hotspot span { display: grid; gap: .05rem; font-size: .76rem; font-weight: 850; }
-.wardrobe-hotspot small { font-size: .55rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #f0c76d; }
-.wardrobe-hotspot:hover small { color: white; }
+.wardrobe-hotspot:hover { background: #8C6412; }
+.wardrobe-hotspot span { font-size: .78rem; font-weight: 700; }
 .wardrobe-hotspot-women { top: 30%; left: 3%; }
 .wardrobe-hotspot-men { top: 30%; right: 3%; }
 .wardrobe-hotspot-shoes { right: 4%; bottom: 8%; }
@@ -113,24 +107,21 @@
   bottom: 19%;
   width: 21%;
   min-height: 54px;
-  border: 1px solid rgba(221, 181, 112, .5);
   color: white;
-  background: rgba(45, 29, 20, .86);
-  box-shadow: inset 0 0 18px rgba(0,0,0,.26);
+  background: #241811;
   opacity: 0;
   transform: translateY(15px);
   transition: opacity .4s ease 1.05s, transform .45s ease 1.05s, background .2s ease;
 }
 
 .is-open .wardrobe-drawer { opacity: 1; transform: translateY(0); }
-.wardrobe-drawer:hover { background: #7b542f; }
+.wardrobe-drawer:hover { background: #8C6412; }
 .wardrobe-drawer-one { left: 28.5%; }
 .wardrobe-drawer-two { right: 28.5%; }
-.wardrobe-drawer > span:first-child { font-size: .62rem; font-weight: 900; letter-spacing: .12em; }
-.wardrobe-handle { position: absolute; top: 10px; left: 50%; width: 42px; height: 2px; border-radius: 999px; background: #c79a52; transform: translateX(-50%); }
-.wardrobe-center-cta { position: absolute; bottom: 6%; left: 50%; z-index: 4; color: white; background: #17120f; opacity: 0; transform: translate(-50%, 12px); transition: opacity .4s ease 1.15s, transform .45s ease 1.15s, background .2s ease; }
+.wardrobe-drawer > span:first-child { font-size: .62rem; font-weight: 800; letter-spacing: .1em; }
+.wardrobe-handle { position: absolute; top: 10px; left: 50%; width: 42px; height: 2px; border-radius: 999px; background: #D3A11E; transform: translateX(-50%); }
+.wardrobe-center-cta { position: absolute; bottom: 6%; left: 50%; z-index: 4; opacity: 0; transform: translate(-50%, 12px); transition: opacity .4s ease 1.15s, transform .45s ease 1.15s, background .2s ease; }
 .is-open .wardrobe-center-cta { opacity: 1; transform: translate(-50%, 0); }
-.wardrobe-center-cta:hover { background: #b68129; }
 
 .wardrobe-door {
   position: absolute;
@@ -173,7 +164,8 @@
 .wardrobe-entry h2 { margin: 0; font-size: clamp(3.2rem, 7vw, 6.8rem); line-height: .82; letter-spacing: -.07em; text-shadow: 0 5px 24px rgba(0,0,0,.4); }
 .wardrobe-entry > span { display: block; margin: 1.3rem 0; font-size: .95rem; color: rgba(255,255,255,.8); }
 .wardrobe-entry button { display: inline-flex; align-items: center; gap: .55rem; padding: .95rem 1.35rem; border: 1px solid #e4bd72; border-radius: 999px; background: #d3a11e; color: #17120f; font-size: .72rem; font-weight: 950; letter-spacing: .08em; box-shadow: 0 10px 26px rgba(0,0,0,.3); }
-.wardrobe-close { position: absolute; top: 1rem; right: 1rem; z-index: 30; display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid rgba(255,255,255,.4); border-radius: 50%; color: white; background: rgba(20,13,9,.72); backdrop-filter: blur(8px); }
+.wardrobe-close { position: absolute; top: 1rem; right: 1rem; z-index: 30; display: grid; width: 42px; height: 42px; place-items: center; border-radius: 50%; color: white; background: #17120f; transition: background .2s ease; }
+.wardrobe-close:hover { background: #8C6412; }
 
 @media (max-width: 767px) {
   .literal-wardrobe { min-height: 760px; border-width: 6px; }
