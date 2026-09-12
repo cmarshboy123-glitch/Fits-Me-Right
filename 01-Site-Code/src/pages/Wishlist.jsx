@@ -11,7 +11,7 @@ export default function Wishlist() {
     <section className="mx-auto min-h-[70vh] max-w-[1440px] px-4 py-14 lg:px-8 lg:py-20">
       <div className="flex flex-wrap items-end justify-between gap-4 border-b border-neutral-200 pb-7">
         <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-[#D3A11E]">Saved by you</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-gold-700">Saved by you</p>
           <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">Your wishlist.</h1>
           <p className="mt-4 max-w-xl leading-7 text-neutral-600">Everything you’ve hearted across the marketplace, kept in one place on this device.</p>
         </div>

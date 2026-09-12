@@ -11,7 +11,7 @@ export default function Profiles() {
 
   return (
     <section className="mx-auto min-h-[70vh] max-w-4xl px-4 py-14 lg:px-8 lg:py-20">
-      <p className="text-xs font-bold uppercase tracking-widest text-[#D3A11E]">Your account</p>
+      <p className="text-xs font-bold uppercase tracking-widest text-gold-700">Your account</p>
       <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">Style profiles.</h1>
       <p className="mt-4 max-w-xl leading-7 text-neutral-600">Fits Me Right doesn’t need a password — profiles you save during a style edit live here, on this device, ready to reuse.</p>
 
@@ -20,7 +20,7 @@ export default function Profiles() {
           {profiles.map((profile) => (
             <div key={profile.id} className="flex items-center justify-between gap-4 rounded-2xl border border-neutral-200 bg-white p-5">
               <button onClick={() => useSavedProfile(profile.id)} className="flex min-w-0 flex-1 items-center gap-4 text-left">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#F5F1E9]"><UserRound size={19} /></span>
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gold-50"><UserRound size={19} /></span>
                 <span className="min-w-0">
                   <span className="block truncate font-black">{profile.name}</span>
                   <span className="mt-1 block truncate text-xs text-neutral-500">{summarizeSelections(profile.selections, ['gender', 'bodyType', 'dressCode'])}</span>

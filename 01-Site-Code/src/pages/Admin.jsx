@@ -132,7 +132,7 @@ export default function Admin() {
   if (!adminKey) {
     return (
       <section className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-4 py-14">
-        <p className="text-xs font-bold uppercase tracking-widest text-[#D3A11E]">Admin</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-gold-700">Admin</p>
         <h1 className="mt-3 text-3xl font-bold tracking-tight">Catalog manager</h1>
         <p className="mt-3 text-sm text-neutral-600">Enter the admin key to add, edit, or remove products.</p>
         <form onSubmit={unlock} className="mt-6 flex gap-2">
@@ -154,7 +154,7 @@ export default function Admin() {
     <section className="mx-auto min-h-[70vh] max-w-[1200px] px-4 py-14 lg:px-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-[#D3A11E]">Admin</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-gold-700">Admin</p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight">Catalog manager</h1>
           <p className="mt-1 text-sm text-neutral-600">{products.length} products live in the database.</p>
         </div>

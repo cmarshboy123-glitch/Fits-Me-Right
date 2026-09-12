@@ -31,13 +31,13 @@ const faqs = [
 export default function Help() {
   return (
     <section className="mx-auto max-w-4xl px-4 py-14 lg:px-8 lg:py-20">
-      <p className="text-xs font-bold uppercase tracking-widest text-[#D3A11E]">Support</p>
+      <p className="text-xs font-bold uppercase tracking-widest text-gold-700">Support</p>
       <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">Help &amp; contact.</h1>
       <p className="mt-5 max-w-xl leading-7 text-neutral-600">Answers to what we hear most, and a way to reach us for everything else.</p>
 
       <div className="mt-12 divide-y divide-neutral-200 rounded-2xl border border-neutral-200 bg-white">
         {faqs.map(({ q, a }) => (
-          <details key={q} className="group p-6 open:bg-[#FCFBF8]">
+          <details key={q} className="group p-6 open:bg-paper">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold marker:content-none">
               {q}
               <span className="shrink-0 text-xl leading-none text-neutral-400 transition group-open:rotate-45">+</span>
@@ -47,7 +47,7 @@ export default function Help() {
         ))}
       </div>
 
-      <div className="mt-12 rounded-[2rem] bg-[#F5F1E9] p-8 lg:p-12">
+      <div className="mt-12 rounded-[2rem] bg-gold-50 p-8 lg:p-12">
         <h2 className="text-2xl font-black">Still need something?</h2>
         <p className="mt-3 max-w-lg leading-7 text-neutral-700">Reach out and we’ll get back to you as soon as we can.</p>
         <a href="mailto:hello@fitsmeright.com" className="mt-6 inline-flex items-center gap-3 rounded-full bg-black px-7 py-4 text-sm font-black text-white"><Mail size={17} /> HELLO@FITSMERIGHT.COM</a>
