@@ -173,19 +173,19 @@ export default function Admin() {
           {error && <p className="mt-3 rounded-lg bg-red-100 px-3 py-2 text-sm font-bold text-red-700">{error}</p>}
 
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <Field label="Name"><input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="admin-input" /></Field>
-            <Field label="Brand"><input value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} className="admin-input" /></Field>
-            <Field label="Vendor / store"><input value={form.vendor} onChange={(e) => setForm({ ...form, vendor: e.target.value })} className="admin-input" /></Field>
-            <Field label="Price ($)"><input required type="number" step="0.01" min="0" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="admin-input" /></Field>
-            <Field label="Color"><input value={form.color} onChange={(e) => setForm({ ...form, color: e.target.value })} className="admin-input" /></Field>
-            <Field label="Image URL"><input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="/assets/catalog/example.webp" className="admin-input" /></Field>
+            <Field label="Name"><input required value={form.name} onChange={(e) => { const v = e.target.value; setForm((current) => ({ ...current, name: v })) }} className="admin-input" /></Field>
+            <Field label="Brand"><input value={form.brand} onChange={(e) => { const v = e.target.value; setForm((current) => ({ ...current, brand: v })) }} className="admin-input" /></Field>
+            <Field label="Vendor / store"><input value={form.vendor} onChange={(e) => { const v = e.target.value; setForm((current) => ({ ...current, vendor: v })) }} className="admin-input" /></Field>
+            <Field label="Price ($)"><input required type="number" step="0.01" min="0" value={form.price} onChange={(e) => { const v = e.target.value; setForm((current) => ({ ...current, price: v })) }} className="admin-input" /></Field>
+            <Field label="Color"><input value={form.color} onChange={(e) => { const v = e.target.value; setForm((current) => ({ ...current, color: v })) }} className="admin-input" /></Field>
+            <Field label="Image URL"><input value={form.imageUrl} onChange={(e) => { const v = e.target.value; setForm((current) => ({ ...current, imageUrl: v })) }} placeholder="/assets/catalog/example.webp" className="admin-input" /></Field>
 
-            <Field label="Collection"><select value={form.gender} onChange={(e) => setForm({ ...form, gender: e.target.value, bodyType: [] })} className="admin-input">{genders.map((g) => <option key={g}>{g}</option>)}</select></Field>
-            <Field label="Category"><select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="admin-input">{shoppingCategories.map((c) => <option key={c}>{c}</option>)}</select></Field>
-            <Field label="Price point"><select value={form.priceTier} onChange={(e) => setForm({ ...form, priceTier: e.target.value })} className="admin-input">{priceTiers.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></Field>
-            <Field label="Market"><select value={form.storeTier} onChange={(e) => setForm({ ...form, storeTier: e.target.value })} className="admin-input">{storeTiers.map((t) => <option key={t}>{t}</option>)}</select></Field>
-            <Field label="Shirt sizes (comma separated)"><input value={form.shirtSizes} onChange={(e) => setForm({ ...form, shirtSizes: e.target.value })} placeholder="XS, S, M, L, XL" className="admin-input" /></Field>
-            <Field label="Pants sizes (comma separated)"><input value={form.pantsSizes} onChange={(e) => setForm({ ...form, pantsSizes: e.target.value })} placeholder="28, 30, 32, 34" className="admin-input" /></Field>
+            <Field label="Collection"><select value={form.gender} onChange={(e) => { const v = e.target.value; setForm((current) => ({ ...current, gender: v, bodyType: [] })) }} className="admin-input">{genders.map((g) => <option key={g}>{g}</option>)}</select></Field>
+            <Field label="Category"><select value={form.category} onChange={(e) => { const v = e.target.value; setForm((current) => ({ ...current, category: v })) }} className="admin-input">{shoppingCategories.map((c) => <option key={c}>{c}</option>)}</select></Field>
+            <Field label="Price point"><select value={form.priceTier} onChange={(e) => { const v = e.target.value; setForm((current) => ({ ...current, priceTier: v })) }} className="admin-input">{priceTiers.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></Field>
+            <Field label="Market"><select value={form.storeTier} onChange={(e) => { const v = e.target.value; setForm((current) => ({ ...current, storeTier: v })) }} className="admin-input">{storeTiers.map((t) => <option key={t}>{t}</option>)}</select></Field>
+            <Field label="Shirt sizes (comma separated)"><input value={form.shirtSizes} onChange={(e) => { const v = e.target.value; setForm((current) => ({ ...current, shirtSizes: v })) }} placeholder="XS, S, M, L, XL" className="admin-input" /></Field>
+            <Field label="Pants sizes (comma separated)"><input value={form.pantsSizes} onChange={(e) => { const v = e.target.value; setForm((current) => ({ ...current, pantsSizes: v })) }} placeholder="28, 30, 32, 34" className="admin-input" /></Field>
           </div>
 
           <div className="mt-5">
@@ -209,9 +209,9 @@ export default function Admin() {
           <details className="mt-5">
             <summary className="cursor-pointer text-xs font-bold text-neutral-600">Optional — verified retailer link</summary>
             <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <Field label="Product URL"><input value={form.productUrl} onChange={(e) => setForm({ ...form, productUrl: e.target.value })} className="admin-input" /></Field>
-              <Field label="Verified at"><input value={form.verifiedAt} onChange={(e) => setForm({ ...form, verifiedAt: e.target.value })} className="admin-input" /></Field>
-              <Field label="Fit note"><input value={form.fitNote} onChange={(e) => setForm({ ...form, fitNote: e.target.value })} className="admin-input" /></Field>
+              <Field label="Product URL"><input value={form.productUrl} onChange={(e) => { const v = e.target.value; setForm((current) => ({ ...current, productUrl: v })) }} className="admin-input" /></Field>
+              <Field label="Verified at"><input value={form.verifiedAt} onChange={(e) => { const v = e.target.value; setForm((current) => ({ ...current, verifiedAt: v })) }} className="admin-input" /></Field>
+              <Field label="Fit note"><input value={form.fitNote} onChange={(e) => { const v = e.target.value; setForm((current) => ({ ...current, fitNote: v })) }} className="admin-input" /></Field>
             </div>
           </details>
 
