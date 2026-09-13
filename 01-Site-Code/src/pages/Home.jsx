@@ -26,7 +26,7 @@ export default function Home() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-[.25em] text-gold-700">The store directory</p>
-              <h2 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">55 stores. One fitting room.</h2>
+              <h2 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">{retailerNames.length} stores. One fitting room.</h2>
             </div>
             <button onClick={() => navigate('/shop')} className="flex items-center gap-2 text-sm font-bold text-gold-700 transition hover:text-gold-800">SHOP THEM ALL <ArrowRight size={16} /></button>
           </div>
