@@ -141,15 +141,15 @@ export default function Header() {
       </div>
       {open && (
         <div className="border-t border-neutral-200 bg-white px-4 py-6 md:hidden">
-          <div className="flex flex-col gap-5 text-sm font-bold">
-            <button className="text-left" onClick={() => startFor('Women')}>Women</button>
-            <button className="text-left" onClick={() => startFor('Men')}>Men</button>
-            {nav.map(([label, path]) => <Link key={path} to={path} onClick={() => setOpen(false)}>{label}</Link>)}
-            <div className="mt-1 flex flex-col gap-5 border-t border-neutral-200 pt-5 text-neutral-600">
-              <Link to="/wishlist" onClick={() => setOpen(false)}>Wishlist{wishlistCount > 0 ? ` (${wishlistCount})` : ''}</Link>
-              <Link to="/profiles" onClick={() => setOpen(false)}>Style Profiles</Link>
-              <Link to="/about" onClick={() => setOpen(false)}>Our Fit Promise</Link>
-              <Link to="/help" onClick={() => setOpen(false)}>Help &amp; Contact</Link>
+          <div className="flex flex-col text-sm font-bold">
+            <button className="py-3 text-left" onClick={() => startFor('Women')}>Women</button>
+            <button className="py-3 text-left" onClick={() => startFor('Men')}>Men</button>
+            {nav.map(([label, path]) => <Link key={path} className="py-3" to={path} onClick={() => setOpen(false)}>{label}</Link>)}
+            <div className="mt-1 flex flex-col border-t border-neutral-200 pt-2 text-neutral-600">
+              <Link className="py-3" to="/wishlist" onClick={() => setOpen(false)}>Wishlist{wishlistCount > 0 ? ` (${wishlistCount})` : ''}</Link>
+              <Link className="py-3" to="/profiles" onClick={() => setOpen(false)}>Style Profiles</Link>
+              <Link className="py-3" to="/about" onClick={() => setOpen(false)}>Our Fit Promise</Link>
+              <Link className="py-3" to="/help" onClick={() => setOpen(false)}>Help &amp; Contact</Link>
             </div>
           </div>
         </div>
