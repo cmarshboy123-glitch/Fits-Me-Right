@@ -130,13 +130,15 @@ export default function Header() {
           )}
         </div>
         <div className="ml-auto flex items-center gap-4 text-neutral-700 lg:ml-0">
-          <button aria-label="Search" onClick={() => navigate('/shop')} className="lg:hidden"><Search size={21} /></button>
-          <Link to="/wishlist" aria-label={`Wishlist${wishlistCount ? `, ${wishlistCount} saved` : ''}`} className="relative">
-            <Heart size={21} />
-            {wishlistCount > 0 && <span className="absolute -right-1.5 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-gold-400 px-1 text-[9px] font-black text-black">{wishlistCount > 9 ? '9+' : wishlistCount}</span>}
+          <button aria-label="Search" onClick={() => navigate('/shop')} className="-m-2 p-2 lg:hidden"><Search size={21} /></button>
+          <Link to="/wishlist" aria-label={`Wishlist${wishlistCount ? `, ${wishlistCount} saved` : ''}`} className="-m-2 p-2">
+            <span className="relative block">
+              <Heart size={21} />
+              {wishlistCount > 0 && <span className="absolute -right-1.5 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-gold-400 px-1 text-[9px] font-black text-black">{wishlistCount > 9 ? '9+' : wishlistCount}</span>}
+            </span>
           </Link>
-          <Link to="/profiles" aria-label="Your style profiles" className="hidden sm:block"><UserRound size={21} /></Link>
-          <button onClick={() => setOpen(!open)} aria-label="Menu" className="md:hidden">{open ? <X size={23} /> : <Menu size={23} />}</button>
+          <Link to="/profiles" aria-label="Your style profiles" className="-m-2 hidden p-2 sm:block"><UserRound size={21} /></Link>
+          <button onClick={() => setOpen(!open)} aria-label="Menu" className="-m-2 p-2 md:hidden">{open ? <X size={23} /> : <Menu size={23} />}</button>
         </div>
       </div>
       {open && (
