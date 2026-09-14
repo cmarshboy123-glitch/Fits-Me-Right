@@ -13,10 +13,12 @@ datasource db {
 }
 
 model Product {
-  // Same numeric ids already used across verifiedProducts.js,
-  // marketplaceInventory.js, and products.json — already verified unique
-  // across all three (see work/validate-catalog.js), so no remapping needed.
-  id       Int    @id
+  // Autoincrement so the database assigns ids atomically. The route used to
+  // read MAX(id) and insert with id+1 in two separate steps — safe for one
+  // request at a time, but two concurrent POSTs could read the same max and
+  // both try to insert the same id, so one would fail. A DB-native sequence
+  // can't race like that.
+  id       Int    @id @default(autoincrement())
   name     String
   gender   String
   category String

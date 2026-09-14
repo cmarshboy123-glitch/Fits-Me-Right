@@ -56,8 +56,7 @@ productsRouter.post('/', async (req, res) => {
   if (!data.name) return res.status(400).json({ error: 'name is required.' })
 
   try {
-    const { _max } = await prisma.product.aggregate({ _max: { id: true } })
-    const product = await prisma.product.create({ data: { id: (_max.id || 0) + 1, ...data } })
+    const product = await prisma.product.create({ data })
     res.status(201).json(product)
   } catch (error) {
     console.error('POST /api/products failed:', error)
