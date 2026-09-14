@@ -11,6 +11,7 @@
     "start": "node src/server.js",
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
+    "db:fix-sequence": "node scripts/fix-id-sequence.mjs",
     "db:seed": "node prisma/seed.mjs",
     "db:studio": "prisma studio"
   },
