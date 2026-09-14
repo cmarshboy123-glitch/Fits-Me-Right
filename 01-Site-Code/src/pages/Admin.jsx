@@ -13,6 +13,9 @@ const bodyTypesByGender = {
   Children: ['Slim', 'Regular', 'Tall', 'Short'],
 }
 const dressCodes = ['Casual', 'Business Casual', 'Professional/Formal Business', 'Formal Attire', 'Black Tie', 'Bohemian', 'Cocktail Dress', 'Semi-Formal']
+// Catalog is thousands of rows now — page the table instead of rendering
+// every row (and re-rendering the whole thing on every keystroke in search).
+const PAGE_SIZE = 50
 
 const blankForm = {
   name: '', gender: 'Women', category: 'Tops', price: '', priceTier: 'budget', imageUrl: '',
@@ -36,6 +39,7 @@ export default function Admin() {
   const [editingId, setEditingId] = useState(null)
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
+  const [page, setPage] = useState(0)
 
   const loadProducts = () => {
     setLoading(true)
@@ -55,6 +59,13 @@ export default function Admin() {
       String(product.id) === term,
     )
   }, [products, search])
+
+  // Jump back to page 1 whenever the search narrows/widens the result set —
+  // otherwise typing a new search could leave the view stuck on a page past
+  // the end of the new (shorter) list.
+  useEffect(() => { setPage(0) }, [search])
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const pageProducts = filtered.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE)
 
   const unlock = (event) => {
     event.preventDefault()
@@ -239,7 +250,7 @@ export default function Admin() {
               <tr><td colSpan={5} className="px-4 py-8 text-center text-neutral-500">Loading…</td></tr>
             ) : filtered.length === 0 ? (
               <tr><td colSpan={5} className="px-4 py-8 text-center text-neutral-500">No products match.</td></tr>
-            ) : filtered.map((product) => (
+            ) : pageProducts.map((product) => (
               <tr key={product.id}>
                 <td className="px-4 py-3 font-bold">{product.name}<span className="ml-2 font-normal text-neutral-400">#{product.id}</span></td>
                 <td className="px-4 py-3 text-neutral-600">{product.category}</td>
@@ -256,6 +267,16 @@ export default function Admin() {
           </tbody>
         </table>
       </div>
+
+      {filtered.length > 0 && (
+        <div className="mt-4 flex items-center justify-between gap-4">
+          <p className="text-xs text-neutral-500">Page {page + 1} of {pageCount} · {filtered.length} products</p>
+          <div className="flex gap-2">
+            <button onClick={() => setPage((current) => Math.max(0, current - 1))} disabled={page === 0} className="rounded-full border border-neutral-300 px-4 py-2 text-xs font-bold disabled:opacity-40">PREV</button>
+            <button onClick={() => setPage((current) => Math.min(pageCount - 1, current + 1))} disabled={page >= pageCount - 1} className="rounded-full border border-neutral-300 px-4 py-2 text-xs font-bold disabled:opacity-40">NEXT</button>
+          </div>
+        </div>
+      )}
 
       <style>{`.admin-input { min-height: 3rem; width: 100%; border-radius: 0.75rem; border: 1px solid #d4d4d4; padding: 0 1rem; outline: none; } .admin-input:focus { border-color: black; }`}</style>
     </section>

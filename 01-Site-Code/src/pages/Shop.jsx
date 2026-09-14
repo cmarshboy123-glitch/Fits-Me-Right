@@ -10,6 +10,10 @@ import { webSearchDestinations } from '../utils/retailers'
 const priceOptions = [['All prices', ''], ['On a Budget', 'budget'], ['Mid Range', 'treat'], ["Let's Splurge", 'splurge']]
 const womenBodyTypes = ['Straight', 'Curvy', 'Athletic', 'Petite', 'Tall', 'Plus']
 const menBodyTypes = ['Slim', 'Balanced', 'Athletic', 'Broad', 'Big & Tall', 'Short']
+// Catalog is thousands of items deep now — render a page at a time instead
+// of the whole filtered result set, so a broad or empty filter doesn't
+// dump every matching card into the DOM at once.
+const PAGE_SIZE = 24
 
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -46,6 +50,13 @@ export default function Shop() {
   const activeCount = [query, retailer, brand, gender, bodyType, priceTier, market, category, color].filter(Boolean).length
   const webResults = useMemo(() => webSearchDestinations(query), [query])
   const guidedSearch = Boolean(searchParams.get('bodyType') || searchParams.get('priceTier'))
+
+  // Reset back to the first page whenever the result set itself changes —
+  // otherwise switching to a narrower filter could leave visibleCount past
+  // the end of the new (shorter) list.
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+  useEffect(() => { setVisibleCount(PAGE_SIZE) }, [filtered])
+  const visibleProducts = filtered.slice(0, visibleCount)
 
   const [liveResults, setLiveResults] = useState([])
   const [liveLoading, setLiveLoading] = useState(false)
@@ -103,7 +114,17 @@ export default function Shop() {
       </div>
 
       <div className="flex items-center justify-between gap-5 py-6"><p className="text-sm font-bold">{filtered.length} VERIFIED ITEMS ACROSS {[...new Set(filtered.map((product) => product.vendor))].length} STORES</p><p className="max-w-md text-right text-xs text-neutral-500">Every shopping button opens the named item on the official retailer site · retailer confirms live price and stock</p></div>
-      {filtered.length ? <ProductGrid products={filtered} /> : (
+      {filtered.length ? (
+        <>
+          <ProductGrid products={visibleProducts} />
+          {visibleCount < filtered.length && (
+            <div className="mt-10 flex flex-col items-center gap-2">
+              <button onClick={() => setVisibleCount((count) => count + PAGE_SIZE)} className="flex min-h-12 items-center gap-2 rounded-full border border-neutral-300 bg-white px-8 text-sm font-bold transition hover:border-gold-400">LOAD MORE</button>
+              <p className="text-xs text-neutral-500">Showing {visibleProducts.length} of {filtered.length}</p>
+            </div>
+          )}
+        </>
+      ) : (
         <div className="rounded-2xl bg-neutral-100 px-6 py-16 text-center">
           <h2 className="text-2xl font-bold">Nothing in our marketplace matched that search.</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-neutral-600">Try clearing a filter to widen the selection{query ? ', or keep looking below — we sent your exact search to the wider web.' : '.'}</p>
