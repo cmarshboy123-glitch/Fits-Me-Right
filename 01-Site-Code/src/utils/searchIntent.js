@@ -22,6 +22,13 @@ const stripDiacritics = (value) => value.normalize('NFD').replace(/\p{Diacritic}
 const stripSeparators = (value) => value.replace(/[-_]+/g, '')
 const normalize = (value) => stripSeparators(stripDiacritics(value.toLowerCase()))
 
+// Order matters here too: category is decided by whichever entry's aliases
+// appear first in this object, so a category whose aliases are all
+// unambiguous nouns should come before one with broad style/activity
+// adjectives — otherwise "running shoes" or "sports jacket" would get
+// claimed by Activewear's "running"/"sport" before Shoes/Outerwear ever get
+// a look at "shoes"/"jacket". Activewear's activity-adjective aliases are
+// listed last for exactly that reason.
 const rawCategoryAliases = {
   Jeans: ['jeans', 'jean', 'denim'],
   Pants: ['pants', 'pant', 'trousers', 'trouser', 'slacks', 'slack', 'chinos', 'chino', 'khakis', 'khaki', 'culottes', 'culotte'],
@@ -32,12 +39,12 @@ const rawCategoryAliases = {
   Outerwear: ['coat', 'coats', 'jacket', 'jackets', 'blazer', 'blazers', 'parka', 'parkas', 'trench', 'trenchcoat'],
   Knitwear: ['sweater', 'sweaters', 'jumper', 'jumpers', 'cardigan', 'cardigans', 'knitwear', 'hoodie', 'hoodies', 'sweatshirt', 'sweatshirts', 'crewneck', 'crewnecks'],
   Suits: ['suit', 'suits', 'tuxedo', 'tuxedos'],
-  Activewear: ['activewear', 'sportswear', 'joggers', 'jogger', 'leggings', 'legging', 'tracksuit', 'tracksuits'],
   Swimwear: ['swimwear', 'swimsuit', 'swimsuits', 'bikini', 'bikinis', 'trunks'],
   Intimates: ['underwear', 'lingerie', 'bra', 'bras', 'briefs', 'boxers'],
   Shoes: ['shoe', 'shoes', 'sneaker', 'sneakers', 'boot', 'boots', 'loafer', 'loafers'],
   Jewelry: ['jewelry', 'jewellery', 'earrings', 'necklace', 'bracelet', 'ring'],
   Accessories: ['accessory', 'accessories', 'belt', 'belts', 'scarf', 'scarves', 'hat', 'hats', 'bag', 'bags'],
+  Activewear: ['activewear', 'sportswear', 'joggers', 'jogger', 'leggings', 'legging', 'tracksuit', 'tracksuits', 'athletic', 'athleisure', 'sport', 'sports', 'gym', 'workout', 'fitness', 'exercise', 'yoga', 'running'],
 }
 // Hyphens stripped once here so "tshirt" matches the "t-shirt" alias the
 // same way it matches a hyphen-stripped source string.
@@ -111,8 +118,17 @@ export function parseShoppingIntent(input = '') {
   if (colorMatch) remainder = remainder.replace(new RegExp(`\\b${escapeRegExp(colorMatch.alias)}\\b`, 'g'), ' ')
   if (category) categoryAliases[category].forEach((alias) => { remainder = remainder.replace(new RegExp(`\\b${alias}\\b`, 'g'), ' ') })
 
+  // Conversational filler ("show me some nice purple clothing") carries no
+  // filtering signal and, worse, never appears verbatim in any product's
+  // fields — left in, a single stray word like "clothing" or "please" would
+  // zero out results for an otherwise perfectly reasonable search. Stripped
+  // here, after every structured signal (price/size/dress code/color/
+  // category) has already claimed its words from remainder.
+  const stopwords = /\b(clothing|clothes|wear|wearing|apparel|items?|stuff|things|gear|outfits?|garments?|pieces?|products?|wardrobe|fashion|looks?|style|styles|some|any|a|an|the|and|or|of|in|on|to|with|nice|good|cool|cute|pretty|want|wanting|looking|need|needs|find|show|me|please|for|something|anything|cheap|affordable|inexpensive|expensive|pricey|trendy|stylish|quality|best|super|really|very|price|prices|priced)\b/gi
+
   const text = remainder
     .replace(/\$|\bdollars?\b|\bfor women\b|\bfor men\b|\bwomen'?s?\b|\bmen'?s?\b/gi, ' ')
+    .replace(stopwords, ' ')
     .replace(/\s+/g, ' ')
     .trim()
 
@@ -135,7 +151,12 @@ export function productMatchesIntent(product, intent) {
   const productColor = productColorFamily(product.color)
   const sizes = [...(product.availablePantsSizes || []), ...(product.availableShirtSizes || [])].map(normalizeSize)
 
-  return textTokens.every((token) => haystack.includes(token)) &&
+  // Broad on purpose: once color/category/price/size/dress code have already
+  // narrowed things down (each still an exact, precise filter below), any
+  // leftover descriptive word matching is enough — requiring every leftover
+  // word to hit verbatim turned one unrecognized word into a zero-result
+  // search even when the rest of the query described a real product.
+  return (textTokens.length === 0 || textTokens.some((token) => haystack.includes(token))) &&
     (!intent.color || productColor === intent.color) &&
     (!intent.category || product.category === intent.category ||
       (intent.category === 'Jeans' && ['Bottoms', 'Pants'].includes(product.category) && haystack.includes('jean')) ||
