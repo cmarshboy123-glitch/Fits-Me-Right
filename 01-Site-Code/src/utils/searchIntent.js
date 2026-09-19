@@ -41,7 +41,11 @@ const rawCategoryAliases = {
   Suits: ['suit', 'suits', 'tuxedo', 'tuxedos'],
   Swimwear: ['swimwear', 'swimsuit', 'swimsuits', 'bikini', 'bikinis', 'trunks'],
   Intimates: ['underwear', 'lingerie', 'bra', 'bras', 'briefs', 'boxers'],
-  Shoes: ['shoe', 'shoes', 'sneaker', 'sneakers', 'boot', 'boots', 'loafer', 'loafers'],
+  Shoes: [
+    'shoe', 'shoes', 'footwear', 'sneaker', 'sneakers', 'trainer', 'trainers', 'boot', 'boots', 'loafer', 'loafers',
+    'sandal', 'sandals', 'heel', 'heels', 'pump', 'pumps', 'slipper', 'slippers', 'slide', 'slides', 'clog', 'clogs',
+    'mule', 'mules', 'oxford', 'oxfords', 'espadrille', 'espadrilles', 'flat', 'flats', 'moccasin', 'moccasins',
+  ],
   Jewelry: ['jewelry', 'jewellery', 'earrings', 'necklace', 'bracelet', 'ring'],
   Accessories: ['accessory', 'accessories', 'belt', 'belts', 'scarf', 'scarves', 'hat', 'hats', 'bag', 'bags'],
   Activewear: ['activewear', 'sportswear', 'joggers', 'jogger', 'leggings', 'legging', 'tracksuit', 'tracksuits', 'athletic', 'athleisure', 'sport', 'sports', 'gym', 'workout', 'fitness', 'exercise', 'yoga', 'running'],
@@ -84,6 +88,33 @@ export function productColorFamily(color = '') {
 }
 
 export const shoppingCategories = ['Pants', 'Jeans', 'Tops', 'Dresses', 'Skirts', 'Shorts', 'Outerwear', 'Knitwear', 'Suits', 'Activewear', 'Swimwear', 'Intimates', 'Shoes', 'Jewelry', 'Accessories']
+
+// Shoe-type words in a query ("boots", "heels") narrow within the Shoes
+// category. Category alone can't — every shoe is category Shoes — and product
+// names don't always spell out the type ("Air Max Pulse" is a sneaker, a
+// "Derby Shoe" is an oxford), so each type also lists the model/style words
+// that imply it.
+const shoeTypes = [
+  { query: /\b(sneakers?|trainers?)\b/, name: /sneaker|trainer|runner|running|air max|air force|ultraboost|cloud|jordan|dunk|court|slip-on|cup/ },
+  { query: /\bboots?\b/, name: /boot|chelsea|chukka|combat/ },
+  { query: /\bloafers?\b/, name: /loafer|moccasin|monolith|penny/ },
+  { query: /\bsandals?\b/, name: /sandal|slide|gizeh|arizona|slingback|thong/ },
+  { query: /\b(heels?|pumps?)\b/, name: /heel|pump|stiletto|slingback|kitten/ },
+  { query: /\bslippers?\b/, name: /slipper|scuff|tasman|tazz|slide/ },
+  { query: /\bslides?\b/, name: /slide|slipper|scuff/ },
+  { query: /\bclogs?\b/, name: /clog|boston/ },
+  { query: /\bmules?\b/, name: /mule|clog|slide/ },
+  { query: /\boxfords?\b/, name: /oxford|derby|brogue/ },
+  { query: /\bespadrilles?\b/, name: /espadrille/ },
+  { query: /\bflats?\b/, name: /flat|ballet|mary jane/ },
+  { query: /\bmoccasins?\b/, name: /moccasin|loafer/ },
+]
+function shoeTypeMatches(product, raw) {
+  const wanted = shoeTypes.find(({ query }) => query.test(raw.toLowerCase()))
+  return !wanted || wanted.name.test(`${product.name} ${product.fitNote || ''}`.toLowerCase())
+}
+
+const kidsWords = /\b(kids?|children|childrens|child|boys?|girls?|toddlers?)'?s?\b/
 
 export function parseShoppingIntent(input = '') {
   const source = normalize(input.trim()).replace(/\bmngo\b/g, 'mango')
@@ -128,6 +159,7 @@ export function parseShoppingIntent(input = '') {
 
   const text = remainder
     .replace(/\$|\bdollars?\b|\bfor women\b|\bfor men\b|\bwomen'?s?\b|\bmen'?s?\b/gi, ' ')
+    .replace(new RegExp(kidsWords.source, 'gi'), ' ')
     .replace(stopwords, ' ')
     .replace(/\s+/g, ' ')
     .trim()
@@ -141,7 +173,7 @@ export function parseShoppingIntent(input = '') {
     maxPrice: maxMatch ? Number(maxMatch[1]) : null,
     minPrice: minMatch ? Number(minMatch[1]) : null,
     size: sizeMatch ? normalizeSize(sizeMatch[1]) : '',
-    gender: /\bwomen'?s?\b/.test(source) ? 'Women' : /\bmen'?s?\b/.test(source) ? 'Men' : '',
+    gender: /\bwomen'?s?\b/.test(source) ? 'Women' : /\bmen'?s?\b/.test(source) ? 'Men' : kidsWords.test(source) ? 'Children' : '',
   }
 }
 
@@ -165,7 +197,8 @@ export function productMatchesIntent(product, intent) {
     (intent.maxPrice == null || product.price < intent.maxPrice) &&
     (intent.minPrice == null || product.price > intent.minPrice) &&
     (!intent.size || sizes.includes(intent.size)) &&
-    (!intent.gender || product.gender === intent.gender)
+    (!intent.gender || product.gender === intent.gender) &&
+    (intent.category !== 'Shoes' || !intent.raw || shoeTypeMatches(product, intent.raw))
 }
 
 export function intentLabels(intent) {
