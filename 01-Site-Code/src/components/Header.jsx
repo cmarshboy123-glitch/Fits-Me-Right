@@ -98,7 +98,7 @@ export default function Header() {
                         onClick={() => openSuggestion(product)}
                         className="flex w-full items-center gap-3 border-b border-neutral-100 px-4 py-2.5 text-left transition hover:bg-neutral-50"
                       >
-                        <img src={product.imageUrl} alt="" className="h-11 w-9 shrink-0 rounded-md object-cover" />
+                        <img src={product.imageUrl} alt="" referrerPolicy="no-referrer" className="h-11 w-9 shrink-0 rounded-md object-cover" />
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-xs font-bold">{product.name}</span>
                           <span className="block truncate text-[10px] font-semibold uppercase tracking-wide text-neutral-400">{product.vendor} · {product.category}</span>

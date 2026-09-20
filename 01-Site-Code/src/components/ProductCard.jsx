@@ -2,8 +2,11 @@ import { ExternalLink, Heart, Search } from 'lucide-react'
 import { useWishlist } from '../context/WishlistContext'
 import { retailerSearchUrl } from '../utils/retailers'
 
+const fallbackImage = (product) => (product.category === 'Shoes' ? '/assets/department-shoes.webp' : '/assets/department-clothing.webp')
+
 export default function ProductCard({ product }) {
   const { isSaved, toggle } = useWishlist()
+  const isRetailerPhoto = /^https?:\/\//.test(product.imageUrl || '')
   const saved = isSaved(product.id)
   const visibleSizes = product.availableShirtSizes || product.availablePantsSizes
   const verifiedDate = product.verifiedAt
@@ -20,12 +23,26 @@ export default function ProductCard({ product }) {
   return (
     <article className="group min-w-0 bg-transparent">
       <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-neutral-100 shadow-soft transition duration-300 group-hover:shadow-lift">
-        <img
-          src={product.imageUrl}
-          alt={`Original product-specific catalog rendering of ${product.color ? `${product.color} ` : ''}${product.name}`}
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-          loading="lazy"
-        />
+        {isRetailerPhoto ? (
+          // The retailer's own product photo, loaded straight from their CDN.
+          // Product shots are on white, so show the whole shoe instead of cropping,
+          // and fall back to the generic placeholder if the image ever disappears.
+          <img
+            src={product.imageUrl}
+            alt={`${product.brand} ${product.name}`}
+            className="h-full w-full bg-white object-contain p-3 transition duration-500 group-hover:scale-105"
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = fallbackImage(product); event.currentTarget.className = 'h-full w-full object-cover' }}
+          />
+        ) : (
+          <img
+            src={product.imageUrl}
+            alt={`Original product-specific catalog rendering of ${product.color ? `${product.color} ` : ''}${product.name}`}
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+        )}
         <span className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[8px] font-bold uppercase tracking-[.14em] backdrop-blur ${isExact ? 'bg-white/90 text-neutral-800' : hasLink ? 'bg-white/80 text-neutral-600' : 'bg-white/80 text-neutral-500'}`}>
           {isExact ? 'Verified retailer item' : hasLink ? 'Shop this look' : 'Preview only'}
         </span>
