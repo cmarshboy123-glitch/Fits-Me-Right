@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import compression from 'compression'
 import { productsRouter } from './routes/products.js'
 import { liveSearchRouter } from './routes/liveSearch.js'
 
@@ -16,6 +17,8 @@ app.use(cors({
   },
 }))
 
+// The full catalog is several MB of JSON; gzip cuts it by roughly 90%.
+app.use(compression())
 app.use(express.json())
 
 app.get('/health', (req, res) => res.json({ ok: true }))

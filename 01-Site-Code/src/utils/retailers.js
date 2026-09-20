@@ -7,7 +7,7 @@ export const retailerNames = [
   'UNIQLO', 'GU', 'MUJI', 'YesStyle', 'MUSINSA', 'W Concept', 'Cider',
   'Pomelo', 'Love, Bonito', 'Charles & Keith',
   'Nike', 'Adidas', 'Lululemon', 'Puma', 'Under Armour', 'Supreme', 'Stüssy',
-  'Reformation', 'Reiss', 'Ugg', 'Birkenstock', 'Steve Madden',
+  'Reformation', 'Reiss', 'Ugg', 'Birkenstock', 'Steve Madden', 'Vans', 'Converse', 'Dr. Martens',
   'Gucci', 'Louis Vuitton', 'Prada', 'Saint Laurent', 'Bottega Veneta',
   'Burberry', 'Balenciaga', 'Dior', 'Fendi', 'Versace', 'Valentino',
   'Givenchy', 'Loewe', 'Celine', 'Chanel', 'Hermès', 'Alexander McQueen',
@@ -75,6 +75,9 @@ function buildDestinations(query, slug) {
     Ugg: `https://www.ugg.com/search?q=${query}`,
     Birkenstock: `https://www.birkenstock.com/us/search/?q=${query}`,
     'Steve Madden': `https://www.stevemadden.com/search?q=${query}`,
+    Vans: `https://www.vans.com/en-us/search?q=${query}`,
+    Converse: `https://www.converse.com/search?q=${query}`,
+    'Dr. Martens': `https://www.drmartens.com/us/en/search?q=${query}`,
     Gucci: 'https://www.gucci.com/us/en/',
     'Louis Vuitton': 'https://us.louisvuitton.com/eng-us/homepage',
     Prada: 'https://www.prada.com/us/en.html',
@@ -99,7 +102,9 @@ function buildDestinations(query, slug) {
 }
 
 export function retailerSearchUrl(product) {
-  const text = `${product.brand || ''} ${product.name}`.trim()
+  // Colorway suffixes ("Old Skool Sneaker – Black") narrow a retailer search to
+  // nothing when the store lists colors as filters, so search the model name.
+  const text = `${product.brand || ''} ${product.name.replace(/\s–\s[^–]+$/, '')}`.trim()
   const query = encodeURIComponent(text)
   const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
   return buildDestinations(query, slug)[product.vendor] || '#'
