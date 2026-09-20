@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { ExternalLink, Heart, Search } from 'lucide-react'
+import ShoeArt from './ShoeArt'
 import { useWishlist } from '../context/WishlistContext'
 import { retailerSearchUrl } from '../utils/retailers'
 
@@ -7,6 +9,12 @@ const fallbackImage = (product) => (product.category === 'Shoes' ? '/assets/depa
 export default function ProductCard({ product }) {
   const { isSaved, toggle } = useWishlist()
   const isRetailerPhoto = /^https?:\/\//.test(product.imageUrl || '')
+  const [photoFailed, setPhotoFailed] = useState(false)
+  // Shoes with no retailer photo get a shoe illustration in their own color
+  // instead of the generic department placeholder.
+  const isShoe = product.category === 'Shoes'
+  const isPlaceholder = !product.imageUrl || /department-(shoes|clothing)/.test(product.imageUrl)
+  const useShoeArt = isShoe && (photoFailed || isPlaceholder)
   const saved = isSaved(product.id)
   const visibleSizes = product.availableShirtSizes || product.availablePantsSizes
   const verifiedDate = product.verifiedAt
@@ -23,17 +31,24 @@ export default function ProductCard({ product }) {
   return (
     <article className="group min-w-0 bg-transparent">
       <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-neutral-100 shadow-soft transition duration-300 group-hover:shadow-lift">
-        {isRetailerPhoto ? (
+        {useShoeArt ? (
+          <ShoeArt name={product.name} color={product.color} />
+        ) : isRetailerPhoto ? (
           // The retailer's own product photo, loaded straight from their CDN.
-          // Product shots are on white, so show the whole shoe instead of cropping,
-          // and fall back to the generic placeholder if the image ever disappears.
+          // Product shots are on white, so show the whole item instead of cropping,
+          // and fall back to the placeholder/illustration if the image ever disappears.
           <img
             src={product.imageUrl}
             alt={`${product.brand} ${product.name}`}
             className="h-full w-full bg-white object-contain p-3 transition duration-500 group-hover:scale-105"
             loading="lazy"
             referrerPolicy="no-referrer"
-            onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = fallbackImage(product); event.currentTarget.className = 'h-full w-full object-cover' }}
+            onError={(event) => {
+              event.currentTarget.onerror = null
+              if (isShoe) { setPhotoFailed(true); return }
+              event.currentTarget.src = fallbackImage(product)
+              event.currentTarget.className = 'h-full w-full object-cover'
+            }}
           />
         ) : (
           <img
