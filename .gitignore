@@ -1,0 +1,3 @@
+# Claude Code's local dev-server launch config — contains this machine's
+# absolute path, so it isn't portable and shouldn't be shared via the repo.
+.claude/
