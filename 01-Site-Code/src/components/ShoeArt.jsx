@@ -1,4 +1,5 @@
-import { productColorFamily, shoppingColors } from '../utils/searchIntent'
+import { productColorFamily } from '../utils/searchIntent'
+import { shade, bodyColor } from '../utils/artColor'
 
 // Stand-in artwork for shoes that don't have a retailer photo yet: a clean side-view
 // illustration of the right kind of shoe, tinted to the product's own color.
@@ -14,25 +15,6 @@ const typeRules = [
   ['sneaker', /sneaker|trainer|runner|running|air max|air force|ultraboost|court|platform/i],
 ]
 export const shoeTypeOf = (name = '') => typeRules.find(([, re]) => re.test(name))?.[0] || 'sneaker'
-
-function shade(hex, amount) {
-  const n = parseInt(hex.slice(1), 16)
-  const mix = (c) => Math.max(0, Math.min(255, Math.round(amount < 0 ? c * (1 + amount) : c + (255 - c) * amount)))
-  const r = mix((n >> 16) & 255), g = mix((n >> 8) & 255), b = mix(n & 255)
-  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
-}
-
-function bodyColor(color = '') {
-  const family = productColorFamily(color)
-  const swatch = shoppingColors.find((c) => c.value === family)?.swatch
-  let hex = swatch && swatch.startsWith('#') ? swatch : '#a89f91'
-  if (family === 'multi') hex = '#a89f91'
-  if (family === 'white') hex = '#f4f1ea'
-  const lower = color.toLowerCase()
-  if (/\b(light|pale|pastel)\b/.test(lower)) hex = shade(hex, 0.3)
-  if (/\b(dark|deep)\b/.test(lower)) hex = shade(hex, -0.25)
-  return hex
-}
 
 const shapes = {
   sneaker: (c) => (

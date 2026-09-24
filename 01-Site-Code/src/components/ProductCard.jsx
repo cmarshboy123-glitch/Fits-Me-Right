@@ -1,20 +1,22 @@
 import { useState } from 'react'
 import { ExternalLink, Heart, Search } from 'lucide-react'
 import ShoeArt from './ShoeArt'
+import GarmentArt from './GarmentArt'
 import { useWishlist } from '../context/WishlistContext'
 import { retailerSearchUrl } from '../utils/retailers'
-
-const fallbackImage = (product) => (product.category === 'Shoes' ? '/assets/department-shoes.webp' : '/assets/department-clothing.webp')
 
 export default function ProductCard({ product }) {
   const { isSaved, toggle } = useWishlist()
   const isRetailerPhoto = /^https?:\/\//.test(product.imageUrl || '')
   const [photoFailed, setPhotoFailed] = useState(false)
-  // Shoes with no retailer photo get a shoe illustration in their own color
-  // instead of the generic department placeholder.
+  // Anything on the generic department placeholder (or whose retailer photo just
+  // failed to load) gets a color-matched illustration instead: a shoe silhouette
+  // for Shoes, a garment/jewelry/accessory silhouette for everything else. A
+  // hand-curated /assets/unique or /assets/catalog image is neither of those,
+  // so it still just renders as a normal photo below.
   const isShoe = product.category === 'Shoes'
-  const isPlaceholder = !product.imageUrl || /department-(shoes|clothing)/.test(product.imageUrl)
-  const useShoeArt = isShoe && (photoFailed || isPlaceholder)
+  const isPlaceholder = !product.imageUrl || /department-(shoes|clothing|jewelry)/.test(product.imageUrl)
+  const useArt = photoFailed || isPlaceholder
   const saved = isSaved(product.id)
   const visibleSizes = product.availableShirtSizes || product.availablePantsSizes
   const verifiedDate = product.verifiedAt
@@ -31,24 +33,19 @@ export default function ProductCard({ product }) {
   return (
     <article className="group min-w-0 bg-transparent">
       <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-neutral-100 shadow-soft transition duration-300 group-hover:shadow-lift">
-        {useShoeArt ? (
-          <ShoeArt name={product.name} color={product.color} />
+        {useArt ? (
+          isShoe ? <ShoeArt name={product.name} color={product.color} /> : <GarmentArt category={product.category} name={product.name} gender={product.gender} color={product.color} />
         ) : isRetailerPhoto ? (
           // The retailer's own product photo, loaded straight from their CDN.
           // Product shots are on white, so show the whole item instead of cropping,
-          // and fall back to the placeholder/illustration if the image ever disappears.
+          // and fall back to the illustration if the image ever disappears.
           <img
             src={product.imageUrl}
             alt={`${product.brand} ${product.name}`}
             className="h-full w-full bg-white object-contain p-3 transition duration-500 group-hover:scale-105"
             loading="lazy"
             referrerPolicy="no-referrer"
-            onError={(event) => {
-              event.currentTarget.onerror = null
-              if (isShoe) { setPhotoFailed(true); return }
-              event.currentTarget.src = fallbackImage(product)
-              event.currentTarget.className = 'h-full w-full object-cover'
-            }}
+            onError={(event) => { event.currentTarget.onerror = null; setPhotoFailed(true) }}
           />
         ) : (
           <img
