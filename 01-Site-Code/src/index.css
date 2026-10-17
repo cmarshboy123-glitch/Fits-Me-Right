@@ -84,10 +84,10 @@
 
 .wardrobe-hotspot:hover { background: #8C6412; }
 .wardrobe-hotspot span { font-size: .78rem; font-weight: 700; }
-.wardrobe-hotspot-women { top: 30%; left: 3%; }
+.wardrobe-hotspot-women { top: 46%; left: 3%; }
 .wardrobe-hotspot-men { top: 30%; right: 3%; }
 .wardrobe-hotspot-shoes { right: 4%; bottom: 8%; }
-.wardrobe-hotspot-jewels { top: 51%; left: 4%; }
+.wardrobe-hotspot-jewels { top: 60%; left: 4%; }
 
 .wardrobe-drawer {
   position: absolute;
