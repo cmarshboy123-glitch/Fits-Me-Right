@@ -24,13 +24,10 @@ export default function InteractiveWardrobe() {
 
   return (
     <section className="literal-wardrobe is-open" aria-label="Fits Me Right wardrobe">
-      <video
+      <img
         className="wardrobe-interior"
-        src="/assets/wardrobe-motion-v1.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
+        src="/assets/wardrobe-interior-v1.png"
+        alt=""
         aria-hidden="true"
       />
       <div className="wardrobe-light" aria-hidden="true" />
