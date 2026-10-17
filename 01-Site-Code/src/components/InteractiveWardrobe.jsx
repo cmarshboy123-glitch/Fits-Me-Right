@@ -26,7 +26,8 @@ export default function InteractiveWardrobe() {
     <section className="literal-wardrobe is-open" aria-label="Fits Me Right wardrobe">
       <img
         className="wardrobe-interior"
-        src="/assets/wardrobe-interior-v1.png"
+        src="/assets/wardrobe-interior-v1.webp"
+        fetchPriority="high"
         alt=""
         aria-hidden="true"
       />
