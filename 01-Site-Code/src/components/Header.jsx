@@ -67,6 +67,7 @@ export default function Header() {
         </div>
         <div className="relative ml-auto hidden max-w-sm flex-1 lg:block">
           <form
+            role="search"
             onSubmit={(event) => { event.preventDefault(); runSearch(query) }}
             className="flex items-center rounded-full border border-neutral-200 bg-neutral-100 px-4 py-2.5 transition focus-within:border-gold-400 focus-within:bg-white"
           >
@@ -130,7 +131,7 @@ export default function Header() {
           )}
         </div>
         <div className="ml-auto flex items-center gap-4 text-neutral-700 lg:ml-0">
-          <button aria-label="Search" onClick={() => navigate('/shop')} className="-m-2 p-2 lg:hidden"><Search size={21} /></button>
+          <Link to="/shop" aria-label="Search the marketplace" className="-m-2 p-2 lg:hidden"><Search size={21} /></Link>
           <Link to="/wishlist" aria-label={`Wishlist${wishlistCount ? `, ${wishlistCount} saved` : ''}`} className="-m-2 p-2">
             <span className="relative block">
               <Heart size={21} />
@@ -138,11 +139,11 @@ export default function Header() {
             </span>
           </Link>
           <Link to="/profiles" aria-label="Your style profiles" className="-m-2 hidden p-2 sm:block"><UserRound size={21} /></Link>
-          <button onClick={() => setOpen(!open)} aria-label="Menu" className="-m-2 p-2 md:hidden">{open ? <X size={23} /> : <Menu size={23} />}</button>
+          <button onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="mobile-menu" className="-m-2 p-2 md:hidden">{open ? <X size={23} /> : <Menu size={23} />}</button>
         </div>
       </div>
       {open && (
-        <div className="border-t border-neutral-200 bg-white px-4 py-6 md:hidden">
+        <div id="mobile-menu" className="border-t border-neutral-200 bg-white px-4 py-6 md:hidden">
           <div className="flex flex-col text-sm font-bold">
             <button className="py-3 text-left" onClick={() => startFor('Women')}>Women</button>
             <button className="py-3 text-left" onClick={() => startFor('Men')}>Men</button>

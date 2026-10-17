@@ -1,11 +1,10 @@
 import { Heart, Trash2 } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid'
 import { useWishlist } from '../context/WishlistContext'
 
 export default function Wishlist() {
   const { items, clear } = useWishlist()
-  const navigate = useNavigate()
 
   return (
     <section className="mx-auto min-h-[70vh] max-w-[1440px] px-4 py-14 lg:px-8 lg:py-20">
@@ -33,7 +32,7 @@ export default function Wishlist() {
             <Heart size={40} className="mx-auto text-neutral-300" strokeWidth={1.3} />
             <h2 className="mt-5 text-2xl font-black">Nothing saved yet.</h2>
             <p className="mx-auto mt-3 max-w-md text-neutral-600">Tap the heart on any item while you browse to keep it here for later.</p>
-            <button onClick={() => navigate('/shop')} className="mt-7 rounded-full bg-black px-7 py-4 text-sm font-bold text-white">BROWSE THE MARKETPLACE</button>
+            <Link to="/shop" className="mt-7 inline-block rounded-full bg-black px-7 py-4 text-sm font-bold text-white">BROWSE THE MARKETPLACE</Link>
           </div>
         </div>
       )}

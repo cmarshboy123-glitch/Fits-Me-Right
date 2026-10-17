@@ -63,8 +63,8 @@
 
 .wardrobe-welcome p { display: flex; align-items: center; gap: .4rem; margin: 0; font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #8C6412; }
 .wardrobe-welcome h1 { margin: .5rem 0 .9rem; font-size: clamp(1.6rem, 3vw, 2.6rem); line-height: .96; letter-spacing: -.03em; }
-.wardrobe-welcome button, .wardrobe-center-cta { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border-radius: 999px; background: #17120f; color: white; font-size: .69rem; font-weight: 800; letter-spacing: .06em; padding: .75rem 1.15rem; transition: background .2s ease; }
-.wardrobe-welcome button:hover { background: #8C6412; }
+.wardrobe-welcome a, .wardrobe-center-cta { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border-radius: 999px; background: #17120f; color: white; font-size: .69rem; font-weight: 800; letter-spacing: .06em; padding: .75rem 1.15rem; transition: background .2s ease; }
+.wardrobe-welcome a:hover { background: #8C6412; }
 
 .wardrobe-destinations { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
 .wardrobe-hotspot {
@@ -95,6 +95,10 @@
   bottom: 19%;
   width: 21%;
   min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   color: white;
   background: #241811;
   transition: background .2s ease;

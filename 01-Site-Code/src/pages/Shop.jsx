@@ -30,6 +30,20 @@ export default function Shop() {
 
   useEffect(() => { getProducts().then(setProducts) }, [])
 
+  // The header search (and links like "Women" on the home page) change the URL while
+  // this page is already mounted, so the form state has to follow the URL.
+  useEffect(() => {
+    setQuery(searchParams.get('q') || '')
+    setRetailer(searchParams.get('store') || '')
+    setBrand(searchParams.get('brand') || '')
+    setGender(searchParams.get('gender') || '')
+    setBodyType(searchParams.get('bodyType') || '')
+    setPriceTier(searchParams.get('priceTier') || '')
+    setMarket(searchParams.get('market') || '')
+    setCategory(searchParams.get('category') || '')
+    setColor(searchParams.get('color') || '')
+  }, [searchParams])
+
   const catalogProducts = products
   const stores = useMemo(() => [...new Set(catalogProducts.map((product) => product.vendor))].sort(), [catalogProducts])
   const brands = useMemo(() => [...new Set(catalogProducts.map((product) => product.brand).filter(Boolean))].sort(), [catalogProducts])

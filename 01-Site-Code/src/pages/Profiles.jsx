@@ -1,5 +1,5 @@
 import { ArrowRight, Trash2, UserRound } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useStyle } from '../context/StyleContext'
 import { summarizeSelections } from '../utils/summarizeSelections'
 
@@ -39,7 +39,7 @@ export default function Profiles() {
             <UserRound size={40} className="mx-auto text-neutral-300" strokeWidth={1.3} />
             <h2 className="mt-5 text-2xl font-black">No profiles saved yet.</h2>
             <p className="mx-auto mt-3 max-w-md text-neutral-600">Complete a style edit and choose to save it — you can keep separate profiles for work, weekends, or anyone else you shop for.</p>
-            <button onClick={() => navigate('/style/gender')} className="mt-7 rounded-full bg-black px-7 py-4 text-sm font-bold text-white">START A STYLE EDIT</button>
+            <Link to="/style/gender" className="mt-7 inline-block rounded-full bg-black px-7 py-4 text-sm font-bold text-white">START A STYLE EDIT</Link>
           </div>
         </div>
       )}

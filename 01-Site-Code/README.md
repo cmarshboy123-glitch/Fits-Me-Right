@@ -35,4 +35,4 @@ The heart on any product card saves it to `/wishlist`. The account icon opens `/
 
 ## Publish the site
 
-Run `npm run build` to create the deployable `dist` folder. Netlify, Vercel, and Cloudflare Workers (`wrangler.jsonc`) configurations are included. See [HOSTING.md](./HOSTING.md) for ordinary static hosting and Squarespace-domain options.
+Run `npm run build` to create the deployable `dist` folder. The live site runs on Kinsta's Sevalla static hosting; Netlify, Vercel, and Cloudflare Workers (`wrangler.jsonc`) configurations are also included. See [HOSTING.md](./HOSTING.md) for how to deploy a change, the API allow-list, and connecting the domain.

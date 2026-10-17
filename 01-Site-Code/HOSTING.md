@@ -1,50 +1,47 @@
 # Publishing Fits Me Right
 
-Fits Me Right is a React single-page application. The production-ready files are created in `dist` by running:
+Fits Me Right is a React single-page application. The production files are created in `dist` by:
 
 ```bash
 npm install
 npm run build
 ```
 
-## Recommended: host the app, use the Squarespace domain
+## Where it runs today
 
-This preserves the complete search, filters, guided flow, routing, and future API integration.
+| Piece | Where | Notes |
+|---|---|---|
+| Website (this folder) | Kinsta **Sevalla** static site `fits-me-right`, https://fits-me-right-n7dpm.kinsta.page | Built from the public GitHub repo, root directory `01-Site-Code`, build `npm run build`, publish directory `dist`, error file `index.html` (single-page routing) |
+| Product API (`03-Server-Code`) | Heroku app `fits-me-right-api` | Serves the full catalog; the site falls back to a small bundled catalog if it can't be reached |
+| Domain | `fitsmeright.com`, registered at Squarespace | Add the DNS records Sevalla shows under the site's Domains tab |
+| Older copy | Cloudflare Workers, https://fits-me-right.cmarshboy123.workers.dev | Still works; deploy with `npm run deploy` |
 
-1. Deploy this repository to Netlify, Vercel, Cloudflare Workers, Render, or another static host.
-2. Use `npm run build` as the build command and `dist` as the publish/output directory.
-3. Add `shop.fitsmeright.com` as the custom domain at the host.
-4. If the domain is registered at Squarespace, open its DNS settings and add the CNAME or A record supplied by the host.
-5. Use the main Squarespace site for editorial or company pages if desired, and link its Shop navigation to `https://shop.fitsmeright.com`.
+### Deploying a change to Sevalla
 
-The included `netlify.toml`, `vercel.json`, and `wrangler.jsonc` preserve React Router pages when someone visits a deep URL such as `/style/body-type` directly — each host reads its own file, so no shared `_redirects` file is needed (and one caused a real deploy failure on Cloudflare Workers — see below, don't re-add it).
+The repo is connected as a public repository, so pushes to GitHub do **not** deploy by themselves.
 
-### Cloudflare Workers
+1. Push to `main` on GitHub.
+2. In Sevalla open Static sites, `fits-me-right`, Deployments, then **Deploy now** (branch `main`).
 
-`wrangler.jsonc` is already configured for a static-assets Worker (`assets.directory: "./dist"`, SPA fallback via `not_found_handling`). Point the Cloudflare dashboard's build command at `npm run build`, or deploy directly:
+### The API only answers sites on its allow-list
 
-```bash
-npm run build
-npx wrangler deploy
-```
+The Heroku app reads a comma-separated `CORS_ORIGINS` config var. Any new address the site is served from (a new domain, a preview URL) must be added there, otherwise the site silently falls back to the small bundled catalog: Thrifty Shopper shows "coming soon" and the shop has far fewer items. Currently allowed: the Cloudflare address, `http://localhost:5180`, the `kinsta.page` address, `https://fitsmeright.com` and `https://www.fitsmeright.com`.
 
-`scripts/copy-assets.mjs` runs automatically via `postinstall`/`prebuild`, so the images in `02-Public-Assets` are synced into `public/assets` on every install and build — no manual step needed.
+### Connecting `fitsmeright.com`
 
-**Do not add a `public/_redirects` file.** That format is for Netlify/Pages-style hosts; Cloudflare Workers' static-assets deploy validates it against its own redirect engine and rejects a catch-all `/* /index.html 200` rule as an infinite loop, which fails the deploy outright. SPA fallback on Workers is handled entirely by `not_found_handling` in `wrangler.jsonc`.
+1. In Sevalla, Domains, **Add custom domain** (`fitsmeright.com`, then `www.fitsmeright.com`).
+2. Sevalla shows a TXT record (ownership) and an A or CNAME record (pointing). Add both at the registrar: Squarespace Domains, then DNS Settings, then Add record.
+3. Remove the old "Squarespace Defaults" A, HTTPS and `www` records, which conflict. Leave the email-security records alone.
+4. Wait for the records to spread; HTTPS is issued automatically once the domain verifies.
 
-If the Cloudflare dashboard's own Build/Deploy commands are configured directly on the project (Settings → Builds), they take precedence over anything documented here — check there first if a deploy fails and this file is up to date.
+## Other hosts
 
-## Use Fits Me Right as the main website
+`netlify.toml`, `vercel.json` and `wrangler.jsonc` all keep React Router pages working when someone opens a deep URL such as `/style/body-type` directly. Each host reads its own file, so no shared `_redirects` file is needed.
 
-Deploy the app to a static host and point `fitsmeright.com` and `www.fitsmeright.com` to it with the DNS records provided by that host. A domain registered through Squarespace can point to a third-party site; Squarespace can remain the domain registrar.
+**Do not add a `public/_redirects` file.** Cloudflare Workers' static-assets deploy rejects a catch-all `/* /index.html 200` rule as an infinite loop, which fails the deploy outright. Single-page fallback on Workers is handled by `not_found_handling` in `wrangler.jsonc`.
 
-## Squarespace-only rebuild
+`scripts/copy-assets.mjs` runs automatically via `postinstall`/`prebuild`, so the images in `02-Public-Assets` are copied into `public/assets` on every install and build. A new image only shows in `npm run dev` after running `node scripts/copy-assets.mjs`.
 
-Squarespace does not accept a Vite/React repository as a native template. Rebuilding the entire experience inside Squarespace would require recreating its pages and filters with Squarespace blocks and custom code, and the product filtering logic would need an external service. Embedding the hosted app in a code block is possible in some plans, but is less reliable for full-screen navigation, mobile behavior, analytics, accessibility, and checkout handoff.
+## Squarespace
 
-For this project, the recommended production architecture is:
-
-- Squarespace: optional domain registration and marketing/editorial pages.
-- Static app host: the Fits Me Right React marketplace.
-- Retailers: exact outbound product pages.
-- Future catalog API: replace `getProducts()` in `src/services/catalogService.js` without rewriting the interface.
+Squarespace does not accept a Vite/React repository as a template, and rebuilding the filters and guided flow with its blocks would need an external service for the product logic. Squarespace is used only as the domain registrar.

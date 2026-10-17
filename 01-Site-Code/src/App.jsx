@@ -1,18 +1,20 @@
+import { lazy } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
-import GuidedFlow from './pages/GuidedFlow'
-import CobblerCorner from './pages/CobblerCorner'
-import JustJewels from './pages/JustJewels'
-import NewCreatives from './pages/NewCreatives'
-import Shop from './pages/Shop'
-import ThriftyShopper from './pages/ThriftyShopper'
-import Wishlist from './pages/Wishlist'
-import Profiles from './pages/Profiles'
-import About from './pages/About'
-import Help from './pages/Help'
-import Admin from './pages/Admin'
-import NotFound from './pages/NotFound'
+
+const GuidedFlow = lazy(() => import('./pages/GuidedFlow'))
+const CobblerCorner = lazy(() => import('./pages/CobblerCorner'))
+const JustJewels = lazy(() => import('./pages/JustJewels'))
+const NewCreatives = lazy(() => import('./pages/NewCreatives'))
+const Shop = lazy(() => import('./pages/Shop'))
+const ThriftyShopper = lazy(() => import('./pages/ThriftyShopper'))
+const Wishlist = lazy(() => import('./pages/Wishlist'))
+const Profiles = lazy(() => import('./pages/Profiles'))
+const About = lazy(() => import('./pages/About'))
+const Help = lazy(() => import('./pages/Help'))
+const Admin = lazy(() => import('./pages/Admin'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 
 export default function App() {
   return (

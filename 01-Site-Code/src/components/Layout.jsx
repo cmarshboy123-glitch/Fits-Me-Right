@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom'
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Header from './Header'
 import Footer from './Footer'
 import RouteLoader from './RouteLoader'
@@ -31,9 +31,14 @@ export default function Layout() {
 
   return (
     <>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[110] focus:rounded-full focus:bg-black focus:px-5 focus:py-3 focus:text-sm focus:font-bold focus:text-white">Skip to main content</a>
       <RouteLoader active={isRouteLoading} />
       <Header />
-      <main><Outlet /></main>
+      <main id="main-content" tabIndex={-1} className="outline-none">
+        <Suspense fallback={<div className="min-h-[70vh]" aria-busy="true" />}>
+          <Outlet />
+        </Suspense>
+      </main>
       <Footer />
     </>
   )

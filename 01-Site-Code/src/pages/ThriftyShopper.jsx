@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ArrowRight, Recycle } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid'
 import { getProducts } from '../services/catalogService'
 import { parseShoppingIntent, productMatchesIntent } from '../utils/searchIntent'
@@ -10,7 +10,6 @@ const PAGE_SIZE = 24
 const quickSearches = ['Levi’s', 'Vintage dress', 'Denim jacket', 'Sneakers', 'Bags', 'Under $20']
 
 export default function ThriftyShopper() {
-  const navigate = useNavigate()
   const [active, setActive] = useState('Women')
   const [products, setProducts] = useState([])
   const [query, setQuery] = useState('')
@@ -40,8 +39,8 @@ export default function ThriftyShopper() {
           <h1 className="mt-5 max-w-2xl text-4xl font-black leading-[.95] tracking-[-.03em] sm:text-6xl">Thrifty<br />Shopper.</h1>
           <p className="mt-6 max-w-xl leading-7 text-neutral-700">One-of-one vintage and resale pieces — real sellers, real prices, real photos. Every item is unique, so once it's gone, it's gone.</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <button onClick={() => navigate('/style/gender')} className="flex items-center gap-3 rounded-full bg-black px-6 py-4 text-xs font-black text-white">BUILD YOUR STYLE EDIT <ArrowRight size={16} /></button>
-            <button onClick={() => navigate('/shop?market=Resale+%26+Vintage')} className="rounded-full border border-neutral-300 bg-white/70 px-6 py-4 text-xs font-black">SHOP THE FULL MARKETPLACE</button>
+            <Link to="/style/gender" className="flex items-center gap-3 rounded-full bg-black px-6 py-4 text-xs font-black text-white">BUILD YOUR STYLE EDIT <ArrowRight size={16} /></Link>
+            <Link to="/shop?market=Resale+%26+Vintage" className="rounded-full border border-neutral-300 bg-white/70 px-6 py-4 text-xs font-black">SHOP THE FULL MARKETPLACE</Link>
           </div>
         </div>
         <div className="hidden place-items-center bg-[#D7A928] px-6 py-16 lg:grid">
