@@ -14,7 +14,8 @@ export default function ThriftyShopper() {
   const [products, setProducts] = useState([])
   const [query, setQuery] = useState('')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
-  useEffect(() => { getProducts().then((items) => setProducts(items.filter((item) => item.storeTier === 'Resale & Vintage'))) }, [])
+  const [loaded, setLoaded] = useState(false)
+  useEffect(() => { getProducts().then((items) => { setProducts(items.filter((item) => item.storeTier === 'Resale & Vintage')); setLoaded(true) }) }, [])
 
   const intent = useMemo(() => parseShoppingIntent(query), [query])
   const hasQuery = query.trim().length > 0
@@ -93,6 +94,8 @@ export default function ThriftyShopper() {
               <button onClick={() => setQuery('')} className="min-h-[44px] rounded-full border border-black px-6 text-sm font-bold">CLEAR SEARCH</button>
             </div>
           </div>
+        ) : !loaded ? (
+          <div className="rounded-2xl bg-neutral-100 py-20 text-center" aria-busy="true"><p className="text-sm font-bold text-neutral-500">Loading vintage &amp; resale finds…</p></div>
         ) : <div className="rounded-2xl bg-neutral-100 py-20 text-center"><h2 className="text-2xl font-bold">New finds are coming soon.</h2><p className="mt-2 text-neutral-600">Check back as more vintage and resale pieces are added.</p></div>}
       </section>
 

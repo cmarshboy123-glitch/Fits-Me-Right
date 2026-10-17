@@ -12,7 +12,8 @@ export default function CobblerCorner() {
   const [products, setProducts] = useState([])
   const [query, setQuery] = useState('')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
-  useEffect(() => { getProducts().then((items) => setProducts(items.filter((item) => item.category === 'Shoes'))) }, [])
+  const [loaded, setLoaded] = useState(false)
+  useEffect(() => { getProducts().then((items) => { setProducts(items.filter((item) => item.category === 'Shoes')); setLoaded(true) }) }, [])
 
   // The same intent parser the main search uses, so "black boots under $150",
   // "birkenstock sandals" or "size 8 sneakers" all work here too (shoe-type
@@ -81,6 +82,8 @@ export default function CobblerCorner() {
               <button onClick={() => setQuery('')} className="min-h-[44px] rounded-full border border-black px-6 text-sm font-bold">CLEAR SEARCH</button>
             </div>
           </div>
+        ) : !loaded ? (
+          <div className="rounded-2xl bg-neutral-100 py-20 text-center" aria-busy="true"><p className="text-sm font-bold text-neutral-500">Loading the shoe collection…</p></div>
         ) : <div className="rounded-2xl bg-neutral-100 py-20 text-center"><h2 className="text-2xl font-bold">New steps are coming soon.</h2><p className="mt-2 text-neutral-600">Our cobblers are putting on the finishing touches.</p></div>}
       </section>
     </>

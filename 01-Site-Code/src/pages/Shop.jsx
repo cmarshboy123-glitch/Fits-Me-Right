@@ -28,7 +28,8 @@ export default function Shop() {
   const [category, setCategory] = useState(searchParams.get('category') || '')
   const [color, setColor] = useState(searchParams.get('color') || '')
 
-  useEffect(() => { getProducts().then(setProducts) }, [])
+  const [loaded, setLoaded] = useState(false)
+  useEffect(() => { getProducts().then((items) => { setProducts(items); setLoaded(true) }) }, [])
 
   // The header search (and links like "Women" on the home page) change the URL while
   // this page is already mounted, so the form state has to follow the URL.
@@ -80,14 +81,14 @@ export default function Shop() {
   // that actually need it, and debounced so it fires once typing settles.
   useEffect(() => {
     const trimmed = query.trim()
-    if (filtered.length > 0 || trimmed.length < 3) { setLiveResults([]); return undefined }
+    if (!loaded || filtered.length > 0 || trimmed.length < 3) { setLiveResults([]); return undefined }
 
     setLiveLoading(true)
     const timer = setTimeout(() => {
       searchLiveWeb(trimmed).then(setLiveResults).finally(() => setLiveLoading(false))
     }, 500)
     return () => clearTimeout(timer)
-  }, [query, filtered.length])
+  }, [query, filtered.length, loaded])
 
   const syncUrl = (event) => {
     event?.preventDefault()
@@ -138,6 +139,8 @@ export default function Shop() {
             </div>
           )}
         </>
+      ) : !loaded ? (
+        <div className="rounded-2xl bg-neutral-100 px-6 py-16 text-center" aria-busy="true"><p className="text-sm font-bold text-neutral-500">Loading the marketplace…</p></div>
       ) : (
         <div className="rounded-2xl bg-neutral-100 px-6 py-16 text-center">
           <h2 className="text-2xl font-bold">Nothing in our marketplace matched that search.</h2>
