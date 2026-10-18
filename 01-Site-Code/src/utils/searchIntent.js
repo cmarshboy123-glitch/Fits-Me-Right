@@ -477,6 +477,65 @@ export function searchCatalog(products, rawQuery) {
   return { intent, correctedQuery, results: [], relaxed: null, partial: false }
 }
 
+// ---------------------------------------------------------------------------
+// Live web listings
+//
+// Google Shopping returns whatever it likes for a query, so "grey henley" can come
+// back with olive and black ones. These checks keep only the listings that fit the
+// words that were actually typed: right color, right garment, right gender, right price.
+// Titles often leave the color out, so a listing that names no color is kept but marked,
+// and ones that confirm the searched color come first.
+// ---------------------------------------------------------------------------
+const colorFamilyPatterns = shoppingColors.map(({ value, aliases }) => [
+  value,
+  new RegExp(`\\b(${aliases.map((alias) => escapeRegExp(stripSeparators(alias.toLowerCase()))).join('|')})\\b`),
+])
+
+function titleHasWord(title, words, token) {
+  const stemmed = stem(token)
+  if (words.has(stemmed) || title.includes(token)) return true
+  for (const term of synonymIndex.get(stemmed) || []) {
+    if (title.includes(term) || title.includes(term.replace(/\s+/g, ''))) return true
+  }
+  if (token.length >= 5) {
+    const limit = token.length >= 8 ? 2 : 1
+    for (const word of words) if (withinEdits(stemmed, word, limit)) return true
+  }
+  return false
+}
+
+export function filterWebResults(results, intent) {
+  const tokens = searchTokens(intent)
+  const confirmsColor = (result) => {
+    if (!intent.color) return true
+    const title = normalize(String(result.title || ''))
+    return colorFamilyPatterns.some(([value, pattern]) => value === intent.color && pattern.test(title))
+  }
+
+  const kept = results.filter((result) => {
+    const title = normalize(String(result.title || ''))
+    const words = new Set(wordsOf(stripDiacritics(String(result.title || '').toLowerCase()).replace(/[-_]+/g, ' ')).map(stem))
+    for (const word of wordsOf(title)) words.add(stem(word))
+
+    if (intent.color) {
+      const mentioned = colorFamilyPatterns.filter(([, pattern]) => pattern.test(title)).map(([value]) => value)
+      if (mentioned.length > 0 && !mentioned.includes(intent.color)) return false
+    }
+    if (intent.gender === 'Women' && /\bmen'?s?\b/.test(title) && !/\bwomen/.test(title)) return false
+    if (intent.gender === 'Men' && /\bwomen/.test(title)) return false
+    if (result.price != null && intent.maxPrice != null && result.price > intent.maxPrice) return false
+    if (result.price != null && intent.minPrice != null && result.price < intent.minPrice) return false
+
+    if (tokens.length > 0) return tokens.some((token) => titleHasWord(title, words, token))
+    if (intent.category) return categoryAliases[intent.category].some((alias) => words.has(stem(alias)) || title.includes(alias))
+    return true
+  })
+
+  return kept
+    .map((result) => ({ ...result, colorConfirmed: confirmsColor(result) }))
+    .sort((a, b) => Number(b.colorConfirmed) - Number(a.colorConfirmed))
+}
+
 export function intentLabels(intent) {
   return [
     intent.color && `${intent.color[0].toUpperCase()}${intent.color.slice(1)}`,

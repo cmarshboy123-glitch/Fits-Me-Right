@@ -44,7 +44,8 @@ export default function Admin() {
   const loadProducts = () => {
     setLoading(true)
     invalidateCatalogCache()
-    getProducts().then(setProducts).finally(() => setLoading(false))
+    // Items pulled from retailer feeds live in a static file, not the database, so they can't be edited here.
+    getProducts().then((items) => setProducts(items.filter((item) => !item.fromFeed))).finally(() => setLoading(false))
   }
 
   useEffect(() => { loadProducts() }, [])

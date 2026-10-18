@@ -19,11 +19,24 @@ async function loadBundledCatalog() {
   return [...verifiedProducts, ...marketplaceInventory, ...normalizedMockProducts]
 }
 
+// Real products pulled from stores' public product feeds (see work/build-extra-catalog.mjs),
+// shipped as a static file next to the site and added to whatever the API returns.
+async function loadExtraCatalog() {
+  try {
+    const response = await fetch('/catalog-extra.json')
+    if (!response.ok) return []
+    const items = await response.json()
+    return Array.isArray(items) ? items.map((item) => ({ ...item, fromFeed: true })) : []
+  } catch {
+    return []
+  }
+}
+
 // Hold the in-flight request itself, not just the finished result, so the header and
 // the page both asking for the catalog at once share one download.
 let catalogPromise = null
 
-async function fetchCatalog() {
+async function fetchBaseCatalog() {
   try {
     const response = await fetch(API_URL)
     if (!response.ok) throw new Error(`API responded with ${response.status}`)
@@ -34,6 +47,12 @@ async function fetchCatalog() {
     console.warn('Falling back to bundled catalog — live API unreachable:', error)
     return loadBundledCatalog()
   }
+}
+
+async function fetchCatalog() {
+  const [base, extra] = await Promise.all([fetchBaseCatalog(), loadExtraCatalog()])
+  const known = new Set(base.map((product) => product.id))
+  return [...base, ...extra.filter((product) => !known.has(product.id))]
 }
 
 // Serves the live Postgres-backed catalog when reachable, falling back to the

@@ -21,6 +21,16 @@ The concierge path moves from gender to body type to price point, then opens the
 
 Natural-language searches are parsed into structured intent. For example, `black jeans under $100 size 10` becomes color, category, maximum-price, and size filters rather than a literal phrase match. Marketplace inventory is normalized in `src/data/marketplaceInventory.js`; the same fields can later be returned by retailer or affiliate APIs.
 
+## Real items from store feeds
+
+`public/catalog-extra.json` holds about 1,400 real, in-stock products (real name, price, photo and exact product page) from clothing stores that publish a public product feed: Stüssy, Princess Polly, Kith, Alo Yoga, Outdoor Voices, Taylor Stitch, Faherty, Everlane, Marine Layer, Pangaia, Girlfriend Collective, Culture Kings and Mack Weldon. The site adds them to whatever the API returns (`src/services/catalogService.js`). Refresh prices and stock with:
+
+```bash
+node work/build-extra-catalog.mjs
+```
+
+Retailers don't publish body-type fit or dress codes, so those two fields are assigned generically (every body type for the gender; dress code guessed from the garment). Items from the feed can't be edited in `/admin`, since they aren't in the database.
+
 ## Wishlist and style profiles
 
 The heart on any product card saves it to `/wishlist`. The account icon opens `/profiles`, which lists style profiles saved from the guided flow. Both are stored per-browser in `localStorage` — there is no account system or server-side storage.

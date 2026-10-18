@@ -27,9 +27,9 @@ const shirtSizes = ['XXS', 'XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', 'Not 
 const womenPants = ['00', '0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20W', '22W', '24W', 'Not sure']
 const menPants = ['28 × 30', '30 × 30', '32 × 30', '32 × 32', '34 × 32', '36 × 32', '38 × 32', '40 × 32', '42 × 32', '44 × 32', '46 × 32', '48 × 32', 'Not sure']
 const prices = [
-  { value: 'budget', title: 'On a Budget', detail: 'Under $100', stores: ['H&M', 'Old Navy', 'Uniqlo', 'ASOS'] },
-  { value: 'treat', title: 'Money to Spend', detail: '$100–$300', stores: ['Macy’s', 'Nordstrom', 'COS', 'Reformation'] },
-  { value: 'splurge', title: 'Let’s Splurge', detail: 'Above $300', stores: ['Saks Fifth Avenue', 'Net-a-Porter', 'Gucci', 'Prada'] },
+  { value: 'budget', title: 'On a Budget', detail: 'Under $60', stores: ['H&M', 'Old Navy', 'Uniqlo', 'ASOS'] },
+  { value: 'treat', title: 'Money to Spend', detail: '$60–$180', stores: ['Macy’s', 'Nordstrom', 'COS', 'Reformation'] },
+  { value: 'splurge', title: 'Let’s Splurge', detail: 'Above $180', stores: ['Saks Fifth Avenue', 'Net-a-Porter', 'Gucci', 'Prada'] },
 ]
 const womenDressCodes = ['Casual', 'Business Casual', 'Professional/Formal Business', 'Formal Attire', 'Cocktail Dress', 'Bohemian', 'Active Wear', 'Semi-Formal']
 const menDressCodes = [...womenDressCodes.slice(0, 6), 'Black Tie', ...womenDressCodes.slice(6)]

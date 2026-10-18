@@ -4,7 +4,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid'
 import { getProducts } from '../services/catalogService'
 import { searchLiveWeb } from '../services/liveSearchService'
-import { intentLabels, productColorFamily, productMatchesIntent, searchCatalog, shoppingCategories, shoppingColors } from '../utils/searchIntent'
+import { filterWebResults, intentLabels, productColorFamily, productMatchesIntent, searchCatalog, shoppingCategories, shoppingColors } from '../utils/searchIntent'
 import { webSearchDestinations } from '../utils/retailers'
 
 const priceOptions = [['All prices', ''], ['On a Budget', 'budget'], ['Money to Spend', 'treat'], ["Let's Splurge", 'splurge']]
@@ -87,6 +87,8 @@ export default function Shop() {
   const [liveResults, setLiveResults] = useState([])
   const [liveLoading, setLiveLoading] = useState(false)
   const [liveRequested, setLiveRequested] = useState(false)
+  // Keep only the listings that fit what was actually typed (right color, garment, gender, price).
+  const webListings = useMemo(() => (search ? filterWebResults(liveResults, search.intent).filter((result) => result.link) : []), [liveResults, search])
   const canSearchWeb = loaded && Boolean(search) && liveQuery.length >= 3
   const wantLive = canSearchWeb && (filtered.length < THIN_RESULTS || Boolean(search.relaxed) || liveRequested)
 
@@ -181,12 +183,16 @@ export default function Shop() {
         <div className="mt-14 border-t border-neutral-200 pt-10">
           {liveLoading && <p className="text-xs font-bold uppercase tracking-widest text-neutral-400" role="status">Searching the web for “{liveQuery}”…</p>}
 
-          {!liveLoading && liveResults.length > 0 && (
+          {!liveLoading && liveResults.length > 0 && webListings.length === 0 && (
+            <p className="text-sm text-neutral-600">The web had nothing that matched “{liveQuery}” closely enough to show. Try the store searches below.</p>
+          )}
+
+          {!liveLoading && webListings.length > 0 && (
             <div>
               <p className="text-[10px] font-black uppercase tracking-[.2em] text-gold-700">Live results from around the web</p>
-              <p className="mt-2 max-w-2xl text-xs leading-5 text-neutral-500">Real listings for “{liveQuery}” right now via Google Shopping. Each opens a comparison page listing every seller — prices and stock are live at the source, not from us.</p>
+              <p className="mt-2 max-w-2xl text-xs leading-5 text-neutral-500">{webListings.length} real listing{webListings.length === 1 ? '' : 's'} for “{liveQuery}” right now via Google Shopping, filtered to match your words. Each opens a comparison page listing every seller — prices and stock are live at the source, not from us.</p>
               <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
-                {liveResults.filter((result) => result.link).map((result, index) => (
+                {webListings.map((result, index) => (
                   <a key={`${result.title}-${index}`} href={result.link} target="_blank" rel="noreferrer" className="group min-w-0">
                     <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-white shadow-soft transition duration-300 group-hover:shadow-lift">
                       {result.thumbnail && <img src={result.thumbnail} alt="" className="h-full w-full object-contain p-4 transition duration-500 group-hover:scale-105" loading="lazy" referrerPolicy="no-referrer" />}
@@ -194,6 +200,7 @@ export default function Shop() {
                     <p className="mt-3 truncate text-[10px] font-bold uppercase tracking-[.14em] text-gold-700">{result.source || 'Multiple sellers'}</p>
                     <h3 className="mt-1 line-clamp-2 text-sm font-semibold leading-snug">{result.title}</h3>
                     {result.priceLabel && <p className="mt-2 text-sm font-bold">{result.priceLabel}</p>}
+                    {search.intent.color && !result.colorConfirmed && <p className="mt-1 text-[10px] text-neutral-400">Color not listed by seller</p>}
                   </a>
                 ))}
               </div>
