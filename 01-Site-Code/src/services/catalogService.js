@@ -19,14 +19,31 @@ async function loadBundledCatalog() {
   return [...verifiedProducts, ...marketplaceInventory, ...normalizedMockProducts]
 }
 
+// Stores don't publish body-type fit, so feed items list every body type for their gender.
+const FEED_BODY_TYPES = {
+  Women: ['Straight', 'Curvy', 'Athletic', 'Petite', 'Tall', 'Plus'],
+  Men: ['Slim', 'Athletic', 'Regular', 'Broad', 'Big & Tall', 'Short'],
+  Children: ['Slim', 'Regular', 'Tall', 'Short'],
+}
+
 // Real products pulled from stores' public product feeds (see work/build-extra-catalog.mjs),
-// shipped as a static file next to the site and added to whatever the API returns.
+// shipped as a static file next to the site and added to whatever the API returns. The file
+// is compact (it is downloaded by every visitor), so the fields every item shares are filled in here.
 async function loadExtraCatalog() {
   try {
     const response = await fetch('/catalog-extra.json')
     if (!response.ok) return []
-    const items = await response.json()
-    return Array.isArray(items) ? items.map((item) => ({ ...item, fromFeed: true })) : []
+    const { checkedOn, stores = {}, items = [] } = await response.json()
+    return items.map((item) => ({
+      ...item,
+      brand: item.brand || item.vendor,
+      storeTier: 'Everyday & Designer',
+      bodyType: FEED_BODY_TYPES[item.gender] || FEED_BODY_TYPES.Women,
+      productUrl: `${stores[item.vendor]}/products/${item.handle}`,
+      verifiedAt: checkedOn,
+      fitNote: 'Listing details from the retailer; fit guidance not provided',
+      fromFeed: true,
+    }))
   } catch {
     return []
   }
@@ -51,8 +68,10 @@ async function fetchBaseCatalog() {
 
 async function fetchCatalog() {
   const [base, extra] = await Promise.all([fetchBaseCatalog(), loadExtraCatalog()])
-  const known = new Set(base.map((product) => product.id))
-  return [...base, ...extra.filter((product) => !known.has(product.id))]
+  // A store's product may already be in the catalog (same page), so skip repeats.
+  const knownIds = new Set(base.map((product) => product.id))
+  const knownPages = new Set(base.map((product) => product.productUrl).filter(Boolean))
+  return [...base, ...extra.filter((product) => !knownIds.has(product.id) && !knownPages.has(product.productUrl))]
 }
 
 // Serves the live Postgres-backed catalog when reachable, falling back to the

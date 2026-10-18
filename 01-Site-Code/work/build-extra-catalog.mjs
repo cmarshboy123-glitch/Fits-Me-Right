@@ -4,10 +4,12 @@
 //
 //   node work/build-extra-catalog.mjs              fetch the feeds live
 //   node work/build-extra-catalog.mjs --cache=DIR  reuse feeds saved earlier in DIR
+//   node work/build-extra-catalog.mjs --save=DIR   also save the feeds into DIR
+//   node work/build-extra-catalog.mjs --cap=300    most items to take from any one store
 //
 // Re-run it to refresh prices and stock. Retailers don't publish body-type fit or dress
-// codes, so those two fields are assigned generically (every body type for the gender;
-// dress code guessed from the garment), and fitNote says where the data came from.
+// codes, so body types are filled in generically when the site loads the file (every body
+// type for the gender) and the dress code is guessed from the garment here.
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -15,41 +17,77 @@ import { productColorFamily, shoppingColors } from '../src/utils/searchIntent.js
 
 const here = path.dirname(fileURLToPath(import.meta.url))
 const OUTPUT = path.resolve(here, '..', 'public', 'catalog-extra.json')
-const cacheArg = process.argv.find((arg) => arg.startsWith('--cache='))
-const CACHE_DIR = cacheArg ? cacheArg.slice('--cache='.length) : ''
+const argValue = (name) => process.argv.find((arg) => arg.startsWith(`--${name}=`))?.slice(name.length + 3) || ''
+const CACHE_DIR = argValue('cache')
+const SAVE_DIR = argValue('save')
 const CHECKED_ON = new Date().toISOString().slice(0, 10)
 const FIRST_ID = 100000
-const PER_STORE_CAP = 110
+const PER_STORE_CAP = Number(argValue('cap')) || 260
+const MAX_PAGES = 40
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'
 
+// `fallback` is the gender used when a product doesn't say (a store that sells to one gender).
 const stores = [
   { name: 'Stüssy', base: 'https://www.stussy.com' },
-  { name: 'Princess Polly', base: 'https://us.princesspolly.com' },
+  { name: 'Princess Polly', base: 'https://us.princesspolly.com', fallback: 'Women' },
   { name: 'Kith', base: 'https://kith.com' },
   { name: 'Alo Yoga', base: 'https://www.aloyoga.com' },
   { name: 'Outdoor Voices', base: 'https://www.outdoorvoices.com' },
-  { name: 'Taylor Stitch', base: 'https://www.taylorstitch.com' },
+  { name: 'Taylor Stitch', base: 'https://www.taylorstitch.com', fallback: 'Men' },
   { name: 'Faherty', base: 'https://fahertybrand.com' },
   { name: 'Everlane', base: 'https://www.everlane.com' },
   { name: 'Marine Layer', base: 'https://www.marinelayer.com' },
   { name: 'Pangaia', base: 'https://pangaia.com' },
-  { name: 'Girlfriend Collective', base: 'https://girlfriend.com' },
+  { name: 'Girlfriend Collective', base: 'https://girlfriend.com', fallback: 'Women' },
   { name: 'Culture Kings', base: 'https://www.culturekings.com' },
-  { name: 'Mack Weldon', base: 'https://mackweldon.com' },
+  { name: 'Mack Weldon', base: 'https://mackweldon.com', fallback: 'Men' },
+  { name: 'Aimé Leon Dore', base: 'https://www.aimeleondore.com', fallback: 'Men' },
+  { name: 'Show Me Your Mumu', base: 'https://www.showmeyourmumu.com', fallback: 'Women' },
+  { name: 'Beyond Yoga', base: 'https://beyondyoga.com' },
+  { name: 'Edikted', base: 'https://www.edikted.com', fallback: 'Women' },
+  { name: 'White Fox', base: 'https://www.whitefoxboutique.com' },
+  { name: 'Meshki', base: 'https://meshki.us', fallback: 'Women' },
+  { name: 'Los Angeles Apparel', base: 'https://losangelesapparel.net' },
+  { name: 'Noah', base: 'https://noahny.com' },
+  { name: 'Bode', base: 'https://bode.com' },
+  { name: 'Tentree', base: 'https://www.tentree.com' },
+  { name: 'Bonobos', base: 'https://bonobos.com', fallback: 'Men' },
+  { name: 'Johnnie-O', base: 'https://johnnie-o.com', fallback: 'Men' },
+  { name: 'Southern Tide', base: 'https://southerntide.com', fallback: 'Men' },
+  { name: 'Set Active', base: 'https://setactive.co' },
+  { name: 'Tommy John', base: 'https://tommyjohn.com' },
+  { name: 'Ministry of Supply', base: 'https://ministryofsupply.com' },
+  { name: 'Rails', base: 'https://www.rails.com' },
+  { name: 'Saturday NYC', base: 'https://www.saturdaysnyc.com', fallback: 'Men' },
+  { name: 'Ten Thousand', base: 'https://www.tenthousand.cc', fallback: 'Men' },
+  { name: 'Steve Madden', base: 'https://www.stevemadden.com' },
+  { name: 'MUJI', base: 'https://www.muji.us' },
+  { name: 'The Sak', base: 'https://www.thesak.com', fallback: 'Women' },
 ]
 
 const slugOf = (name) => name.replace(/[^a-z0-9]/gi, '_')
 
 async function loadFeed(store) {
-  if (CACHE_DIR) return JSON.parse(fs.readFileSync(path.join(CACHE_DIR, `${slugOf(store.name)}.json`), 'utf8'))
+  const cacheFile = (dir) => path.join(dir, `${slugOf(store.name)}.json`)
+  if (CACHE_DIR && fs.existsSync(cacheFile(CACHE_DIR))) return JSON.parse(fs.readFileSync(cacheFile(CACHE_DIR), 'utf8'))
+
   const all = []
-  for (let page = 1; page <= 6; page += 1) {
-    const response = await fetch(`${store.base}/products.json?limit=250&page=${page}`, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(30000) })
-    if (!response.ok) break
-    const { products = [] } = await response.json()
+  for (let page = 1; page <= MAX_PAGES; page += 1) {
+    let products = []
+    try {
+      const response = await fetch(`${store.base}/products.json?limit=250&page=${page}`, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(40000) })
+      if (!response.ok) break
+      products = (await response.json()).products || []
+    } catch {
+      break
+    }
     all.push(...products)
     if (products.length < 250) break
-    await new Promise((resolve) => setTimeout(resolve, 400))
+    await new Promise((resolve) => setTimeout(resolve, 350))
+  }
+  if (SAVE_DIR) {
+    fs.mkdirSync(SAVE_DIR, { recursive: true })
+    fs.writeFileSync(cacheFile(SAVE_DIR), JSON.stringify(all))
   }
   return all
 }
@@ -60,7 +98,7 @@ const tagsOf = (product) => (Array.isArray(product.tags) ? product.tags : String
 function genderOf(store, product, tags) {
   const type = String(product.product_type || '')
   const has = (pattern) => tags.some((tag) => pattern.test(tag))
-  switch (store) {
+  switch (store.name) {
     case 'Alo Yoga':
       if (/^women/i.test(type) || has(/^master-woman-all$/i)) return 'Women'
       if (/^men/i.test(type) || has(/^master-man-all$/i)) return 'Men'
@@ -79,17 +117,11 @@ function genderOf(store, product, tags) {
       if (/^women/i.test(type) || has(/^division:Womens$/i)) return 'Women'
       if (/^men/i.test(type) || has(/^division:Mens$/i)) return 'Men'
       return ''
-    case 'Girlfriend Collective':
-    case 'Princess Polly':
-      return 'Women'
     case 'Kith':
       if (has(/^kith womens?$/i)) return 'Women'
       if (has(/^kids$/i)) return 'Children'
       if (has(/^mens$|^ea\d+mens$|^mens_/i)) return 'Men'
       return ''
-    case 'Mack Weldon':
-    case 'Taylor Stitch':
-      return 'Men'
     case 'Marine Layer':
       if (/^womens/i.test(type)) return 'Women'
       if (/^mens/i.test(type)) return 'Men'
@@ -108,35 +140,55 @@ function genderOf(store, product, tags) {
       if (has(/^(MENS|UNISEX)$/i)) return 'Men'
       return ''
     default:
-      return ''
+      return genericGender(store, product, tags)
   }
+}
+
+// For stores without their own rule: look for an explicit women's / men's / kids' signal in the
+// tags, type and name, then fall back to the store's usual customer.
+function genericGender(store, product, tags) {
+  // Names can say "Women's" or "Men's", but words like "Hot Girl" or "Baby Pink" are just
+  // product names, so kids are only recognized from the store's own tags and type.
+  const structured = [...tags, product.product_type || ''].join(' | ').toLowerCase()
+  const signals = `${structured} | ${String(product.title || '').toLowerCase()}`
+  const women = /\b(women'?s?|womens|woman|ladies|female)\b/.test(signals)
+  const men = /(^|[^a-z])(men'?s?|mens|man|male)([^a-z]|$)/.test(signals.replace(/women'?s?|womens|woman|female/g, ' '))
+  const kids = /\b(kids?|boys?|girls?|toddler|youth)\b/.test(structured) && !women && !men
+  if (kids) return 'Children'
+  if (women && !men) return 'Women'
+  if (men && !women) return 'Men'
+  return store.fallback || ''
 }
 
 // ---- category ---------------------------------------------------------------
 const rules = [
-  ['skip', /gift ?card|e-?gift|sample|insurance|shipping|bundle|sticker|poster|candle|\bmug\b|keychain|phone case|fragrance|perfume|skateboard|\bdeck\b|\bbook\b|vinyl|lighter|towel|blanket|pillow|customi[sz]ation|\bpatch\b|\bpin\b|\bkit\b/i],
+  ['skip', /gift ?card|e-?gift|sample|insurance|shipping|bundle|sticker|poster|candle|\bmug\b|keychain|phone case|fragrance|perfume|skateboard|\bdeck\b|\bbook\b|vinyl|lighter|towel|blanket|pillow|customi[sz]ation|\bpatch\b|\bpin\b|\bkit\b|\bsheet\b|duvet|\brug\b|mattress|\bsoap\b|\blotion\b|\bgift\b|water bottle|notebook|journal|\bpet\b|\bdog\b/i],
   ['Accessories', /\bsocks?\b/i],
-  ['Shoes', /sneaker|trainer|\bboots?\b|sandal|loafer|\bslides?\b|clog|\bmules?\b|flip.?flop|footwear|\bshoes?\b/i],
+  ['Shoes', /sneaker|trainer|\bboots?\b|sandal|loafer|\bslides?\b|clog|\bmules?\b|flip.?flop|footwear|\bshoes?\b|\bpumps?\b|\bhigh heels?\b|\bblock heels?\b|\bballet flats?\b|slipper|espadrille/i],
   ['Jewelry', /necklace|earring|bracelet|\brings?\b|pendant|anklet/i],
-  ['Accessories', /\b(cap(?! sleeve)|hat|beanie|snapback|strapback|bucket|visor|socks?|bag|tote|backpack|belt|scarf|gloves?|wallet|sunglass(es)?|headband|bandana|duffle|pouch|crossbody|lanyard|umbrella|balaclava|neck gaiter)\b/i],
+  ['Accessories', /\b(cap(?! sleeve)|hat|beanie|snapback|strapback|bucket|visor|bag|tote|backpack|belt|scarf|gloves?|wallet|sunglass(es)?|headband|bandana|duffle|pouch|crossbody|lanyard|umbrella|balaclava|neck gaiter|purse|clutch|satchel|hobo|handbag|scrunchie|hair clip)\b/i],
   ['Swimwear', /swim|bikini|trunks|boardshort|rash ?guard/i],
-  ['Intimates', /underwear|\bbriefs?\b|\bboxers?\b(?! ?(short|pant))|bralette|\bthong\b|panty|panties|lingerie|undershirt/i],
+  ['Intimates', /underwear|\bbriefs?\b|\bboxers?\b(?! ?(short|pant))|bralette|\bthong\b|panty|panties|lingerie|undershirt|shapewear/i],
   ['Activewear', /sports? bra|legging|bike short|tracksuit|\bbra\b/i],
+  ['Suits', /\bsuits?\b(?!case)|tuxedo/i],
   ['Outerwear', /jacket|\bcoat|overcoat|parka|puffer|anorak|windbreaker|trench|bomber|blazer|shacket|poncho|\bcape\b|gilet/i],
   ['Knitwear', /sweater|cardigan|hoodie|sweatshirt|crewneck|crew neck|pullover|jumper|turtleneck|fleece/i],
   ['Outerwear', /\bvest\b/i],
   ['Jeans', /\bjeans?\b|\bdenim\b(?!.*(jacket|shirt|vest|top|dress|skirt|short|cap|hat|bag))/i],
   ['Skirts', /\bskirts?\b|\bskort/i],
   ['Shorts', /\bshorts?\b(?![ -]?sleeve)|sweatshorts/i],
-  ['Dresses', /\bdress(es)?\b(?! (shirt|pant|sock|shoe|trouser|belt))|jumpsuit|playsuit|romper|\bgown\b|\bmuumuu\b/i],
+  ['Dresses', /\bdress(es)?\b(?! (shirt|pant|sock|shoe|trouser|belt))|jumpsuit|playsuit|romper|\bgown\b|\bmuumuu\b|\bmaxi\b|\bmidi\b/i],
   ['Pants', /\bpants?\b|trouser|chino|cargo|jogger|sweatpant|slacks?|culotte|\bbottoms?\b/i],
-  ['Tops', /\btees?\b|t-shirt|shirt|\bcrop top|\btank\b|\bpolo\b|henley|blouse|\btop\b|bodysuit|\bcami|singlet|tube|\bknit\b/i],
+  ['Tops', /\btees?\b|t-shirt|shirt|\bcrop top|\btank\b|\bpolo\b|henley|blouse|\btop\b|bodysuit|\bcami|singlet|tube|\bknit\b|\bcorset\b|\bbustier\b|\bhalter\b/i],
 ]
 
 // The product's own name is more reliable than the store's internal type field, so it
-// is tried first and the type is only a fallback for names that say nothing ("Slim Jean" vs "Denim").
+// is tried first and the type is only a fallback for names that say nothing.
 function categoryOf(title, type) {
-  for (const text of [title, type]) {
+  // Names like "Enchanted Dress ~ Ballet Slipper Ruffle Tulle" put the garment first and
+  // describe it after a separator, so the part before the separator is tried before anything else.
+  const head = String(title).split(/\s+(?:~|\||–|—|-)\s+/)[0]
+  for (const text of [head, title, type]) {
     for (const [category, pattern] of rules) {
       if (pattern.test(text)) return category === 'skip' ? '' : category
     }
@@ -157,7 +209,7 @@ function colorOf(product, tags, variants) {
     if (value) raw.push(value)
   }
   for (const tag of tags) {
-    const match = tag.match(/^(?:primary )?colou?r(?:-family)?\s*[:\-]\s*(.+)$/i) || tag.match(/^(?:colorgroup|palette)\s*:\s*(.+)$/i)
+    const match = tag.match(/^(?:primary )?colou?r(?:-family)?\s*[:\-]\s*(.+)$/i) || tag.match(/^(?:colorgroup|palette|colou?rway)\s*:\s*(.+)$/i)
     if (match) raw.push(match[1])
   }
   const titleTail = String(product.title).split(/\s+[-–—|]\s+|\s+in\s+/i).slice(1).join(' ')
@@ -216,17 +268,14 @@ function sizesOf(product, variants, category) {
     const inseam = inseamIndex >= 0 ? Number(String(variant[`option${inseamIndex + 1}`] || '').replace(/[^0-9]/g, '')) : 0
     if (['Pants', 'Jeans', 'Shorts'].includes(category) && waist >= 26 && waist <= 48 && inseam >= 26 && inseam <= 38) pants.add(`${waist} × ${inseam}`)
   }
+  const rank = (size) => (LETTER_ORDER.indexOf(size) === -1 ? 99 : LETTER_ORDER.indexOf(size))
   return {
-    shirt: [...shirt].sort((a, b) => (LETTER_ORDER.indexOf(a) === -1 ? 99 : LETTER_ORDER.indexOf(a)) - (LETTER_ORDER.indexOf(b) === -1 ? 99 : LETTER_ORDER.indexOf(b)) || a.localeCompare(b)),
+    shirt: [...shirt].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b)),
     pants: [...pants].sort((a, b) => parseFloat(a) - parseFloat(b)),
   }
 }
 
 // ---- the rest ---------------------------------------------------------------
-const WOMEN_BODY = ['Straight', 'Curvy', 'Athletic', 'Petite', 'Tall', 'Plus']
-const MEN_BODY = ['Slim', 'Athletic', 'Regular', 'Broad', 'Big & Tall', 'Short']
-const CHILD_BODY = ['Slim', 'Regular', 'Tall', 'Short']
-
 function dressCodesOf(category, name) {
   const text = name.toLowerCase()
   if (category === 'Activewear' || /legging|sports bra|training|\byoga\b|\brun(ning)?\b|athletic/.test(text)) return ['Casual', 'Active Wear']
@@ -250,22 +299,26 @@ function imageOf(product) {
   return src.includes('cdn.shopify.com') ? `${src}${src.includes('?') ? '&' : '?'}width=640` : src
 }
 
+// Compact on purpose: this file is downloaded by every visitor. Fields every item shares
+// (body types, store tier, the check date, the store address) are filled in by the site.
 function convert(store, product) {
   const tags = tagsOf(product)
   const variants = (product.variants || []).filter((variant) => variant.available)
   if (variants.length === 0) return null
 
-  const gender = genderOf(store.name, product, tags)
+  const gender = genderOf(store, product, tags)
   const category = categoryOf(product.title, product.product_type)
   const image = imageOf(product)
-  const price = Math.min(...variants.map((variant) => Number(variant.price)).filter((value) => value > 0))
-  if (!gender || !category || !image || !Number.isFinite(price)) return null
+  const prices = variants.map((variant) => Number(variant.price)).filter((value) => value > 0)
+  const price = prices.length ? Math.min(...prices) : NaN
+  if (!gender || !category || !image || !Number.isFinite(price) || !product.handle) return null
 
   const color = colorOf(product, tags, variants)
   if (!color) return null
 
   const name = cleanName(product.title)
   const sizes = sizesOf(product, variants, category)
+  const brand = String(product.vendor || '').trim()
   return {
     name,
     gender,
@@ -274,16 +327,12 @@ function convert(store, product) {
     priceTier: priceTierOf(price),
     imageUrl: image,
     vendor: store.name,
-    brand: store.name,
+    ...(brand && brand.toLowerCase() !== store.name.toLowerCase() && brand.length < 40 ? { brand } : {}),
     color,
-    storeTier: 'Everyday & Designer',
-    bodyType: gender === 'Men' ? MEN_BODY : gender === 'Children' ? CHILD_BODY : WOMEN_BODY,
     dressCode: dressCodesOf(category, name),
     availableShirtSizes: sizes.shirt,
     ...(sizes.pants.length ? { availablePantsSizes: sizes.pants } : {}),
-    productUrl: `${store.base}/products/${product.handle}`,
-    verifiedAt: CHECKED_ON,
-    fitNote: 'Listing details from the retailer; fit guidance not provided',
+    handle: product.handle,
   }
 }
 
@@ -301,7 +350,7 @@ function balanced(items, cap) {
   return picked
 }
 
-const catalog = []
+const items = []
 const summary = []
 for (const store of stores) {
   const feed = await loadFeed(store)
@@ -315,17 +364,21 @@ for (const store of stores) {
     if (item && !seen.has(key)) { seen.add(key); converted.push(item) }
   }
   const chosen = balanced(converted, PER_STORE_CAP)
-  catalog.push(...chosen)
-  summary.push(`${store.name.padEnd(22)} feed ${String(feed.length).padStart(4)}  usable ${String(converted.length).padStart(4)}  added ${String(chosen.length).padStart(3)}`)
+  items.push(...chosen)
+  summary.push(`${store.name.padEnd(22)} feed ${String(feed.length).padStart(5)}  usable ${String(converted.length).padStart(5)}  added ${String(chosen.length).padStart(4)}`)
 }
 
-catalog.forEach((item, index) => { item.id = FIRST_ID + index })
-fs.writeFileSync(OUTPUT, JSON.stringify(catalog))
+items.forEach((item, index) => { item.id = FIRST_ID + index })
+const file = {
+  checkedOn: CHECKED_ON,
+  stores: Object.fromEntries(stores.filter((store) => items.some((item) => item.vendor === store.name)).map((store) => [store.name, store.base])),
+  items,
+}
+fs.writeFileSync(OUTPUT, JSON.stringify(file))
 
-const count = (key) => catalog.reduce((acc, item) => { acc[item[key]] = (acc[item[key]] || 0) + 1; return acc }, {})
+const count = (key) => items.reduce((acc, item) => { acc[item[key]] = (acc[item[key]] || 0) + 1; return acc }, {})
 console.log(summary.join('\n'))
-console.log(`\nTotal ${catalog.length} items -> ${path.relative(process.cwd(), OUTPUT)} (${Math.round(fs.statSync(OUTPUT).size / 1024)} KB)`)
+console.log(`\nTotal ${items.length} items -> ${path.relative(process.cwd(), OUTPUT)} (${Math.round(fs.statSync(OUTPUT).size / 1024)} KB)`)
 console.log('gender', JSON.stringify(count('gender')))
 console.log('category', JSON.stringify(count('category')))
 console.log('tier', JSON.stringify(count('priceTier')))
-console.log('color families', JSON.stringify(catalog.reduce((acc, item) => { const f = productColorFamily(item.color); acc[f] = (acc[f] || 0) + 1; return acc }, {})))
