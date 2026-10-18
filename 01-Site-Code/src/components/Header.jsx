@@ -1,10 +1,10 @@
 import { Heart, Menu, Search, UserRound, X } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useStyle } from '../context/StyleContext'
 import { useWishlist } from '../context/WishlistContext'
 import { getProducts } from '../services/catalogService'
-import { parseShoppingIntent, productMatchesIntent } from '../utils/searchIntent'
+import { searchCatalog } from '../utils/searchIntent'
 import { retailerSearchUrl, webSearchDestinations } from '../utils/retailers'
 import BrandMark from './BrandMark'
 
@@ -35,11 +35,12 @@ export default function Header() {
   }
 
   const trimmedQuery = query.trim()
+  const deferredQuery = useDeferredValue(trimmedQuery)
   const suggestions = useMemo(() => {
-    if (!trimmedQuery || !products.length) return []
-    const intent = parseShoppingIntent(trimmedQuery)
-    return products.filter((product) => productMatchesIntent(product, intent)).slice(0, 6)
-  }, [trimmedQuery, products])
+    if (!deferredQuery || !products.length) return []
+    const { results, relaxed } = searchCatalog(products, deferredQuery)
+    return relaxed ? [] : results.slice(0, 6)
+  }, [deferredQuery, products])
   const webResults = useMemo(() => (suggestions.length === 0 ? webSearchDestinations(trimmedQuery) : []), [trimmedQuery, suggestions.length])
 
   const runSearch = (value) => {

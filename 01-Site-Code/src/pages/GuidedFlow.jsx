@@ -28,7 +28,7 @@ const womenPants = ['00', '0', '2', '4', '6', '8', '10', '12', '14', '16', '18',
 const menPants = ['28 × 30', '30 × 30', '32 × 30', '32 × 32', '34 × 32', '36 × 32', '38 × 32', '40 × 32', '42 × 32', '44 × 32', '46 × 32', '48 × 32', 'Not sure']
 const prices = [
   { value: 'budget', title: 'On a Budget', detail: 'Under $100', stores: ['H&M', 'Old Navy', 'Uniqlo', 'ASOS'] },
-  { value: 'treat', title: 'Mid Range', detail: '$100–$300', stores: ['Macy’s', 'Nordstrom', 'COS', 'Reformation'] },
+  { value: 'treat', title: 'Money to Spend', detail: '$100–$300', stores: ['Macy’s', 'Nordstrom', 'COS', 'Reformation'] },
   { value: 'splurge', title: 'Let’s Splurge', detail: 'Above $300', stores: ['Saks Fifth Avenue', 'Net-a-Porter', 'Gucci', 'Prada'] },
 ]
 const womenDressCodes = ['Casual', 'Business Casual', 'Professional/Formal Business', 'Formal Attire', 'Cocktail Dress', 'Bohemian', 'Active Wear', 'Semi-Formal']

@@ -5,7 +5,7 @@ import { AdminAuthError, clearStoredAdminKey, createProduct, deleteProduct, getS
 import { shoppingCategories } from '../utils/searchIntent'
 
 const genders = ['Women', 'Men', 'Children']
-const priceTiers = [['budget', 'On a Budget'], ['treat', 'Mid Range'], ['splurge', "Let's Splurge"]]
+const priceTiers = [['budget', 'On a Budget'], ['treat', 'Money to Spend'], ['splurge', "Let's Splurge"]]
 const storeTiers = ['Everyday & Designer', 'Luxury', 'Asian Market']
 const bodyTypesByGender = {
   Women: ['Straight', 'Curvy', 'Athletic', 'Petite', 'Tall', 'Plus'],
