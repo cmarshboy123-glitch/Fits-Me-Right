@@ -31,7 +31,9 @@ const FEED_BODY_TYPES = {
 // is compact (it is downloaded by every visitor), so the fields every item shares are filled in here.
 async function loadExtraCatalog() {
   try {
-    const response = await fetch('/catalog-extra.json')
+    // The host lets browsers keep static files for 30 days; "no-cache" makes the browser check
+    // for a newer copy every time (a quick "unchanged" reply when there isn't one).
+    const response = await fetch('/catalog-extra.json', { cache: 'no-cache' })
     if (!response.ok) return []
     const { checkedOn, stores = {}, items = [] } = await response.json()
     return items.map((item) => ({
