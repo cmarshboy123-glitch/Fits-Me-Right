@@ -1,18 +1,18 @@
 export const shoppingColors = [
-  { value: 'black', label: 'Black', swatch: '#171717', aliases: ['black', 'charcoal', 'onyx', 'jet'] },
-  { value: 'white', label: 'White', swatch: '#fffdfa', aliases: ['white', 'ivory', 'off white', 'off-white'] },
-  { value: 'grey', label: 'Grey', swatch: '#8b8b86', aliases: ['grey', 'gray', 'silver grey', 'heather'] },
-  { value: 'brown', label: 'Brown', swatch: '#6f442d', aliases: ['brown', 'chocolate', 'cocoa', 'camel', 'espresso', 'mocha', 'tan', 'taupe', 'tobacco'] },
-  { value: 'beige', label: 'Beige & Cream', swatch: '#d8c6a4', aliases: ['beige', 'cream', 'sand', 'ecru', 'oatmeal', 'natural', 'khaki', 'champagne', 'nude'] },
-  { value: 'red', label: 'Red', swatch: '#a82c2c', aliases: ['red', 'burgundy', 'wine', 'maroon', 'crimson', 'scarlet'] },
+  { value: 'black', label: 'Black', swatch: '#171717', aliases: ['black', 'onyx', 'jet', 'pepper'] },
+  { value: 'white', label: 'White', swatch: '#fffdfa', aliases: ['white', 'ivory', 'off white', 'off-white', 'eggshell', 'bone'] },
+  { value: 'grey', label: 'Grey', swatch: '#8b8b86', aliases: ['grey', 'gray', 'silver grey', 'heather', 'charcoal', 'anthracite', 'graphite', 'pewter', 'basalt'] },
+  { value: 'brown', label: 'Brown', swatch: '#6f442d', aliases: ['brown', 'chocolate', 'cocoa', 'camel', 'espresso', 'mocha', 'tan', 'taupe', 'tobacco', 'cognac', 'sienna', 'chestnut', 'teak', 'coffee', 'habana', 'tortoise', 'mink', 'carafe', 'palisander', 'walnut', 'mahogany'] },
+  { value: 'beige', label: 'Beige & Cream', swatch: '#d8c6a4', aliases: ['beige', 'cream', 'sand', 'ecru', 'oatmeal', 'natural', 'khaki', 'champagne', 'nude', 'desert'] },
+  { value: 'red', label: 'Red', swatch: '#a82c2c', aliases: ['red', 'burgundy', 'wine', 'maroon', 'crimson', 'scarlet', 'zinfandel', 'cherry'] },
   { value: 'orange', label: 'Orange', swatch: '#d46a22', aliases: ['orange', 'rust', 'terracotta', 'coral', 'peach'] },
-  { value: 'yellow', label: 'Yellow', swatch: '#d8ad23', aliases: ['yellow', 'mustard', 'goldenrod', 'lemon'] },
-  { value: 'green', label: 'Green', swatch: '#446348', aliases: ['green', 'olive', 'sage', 'emerald', 'mint', 'khaki green'] },
+  { value: 'yellow', label: 'Yellow', swatch: '#d8ad23', aliases: ['yellow', 'mustard', 'goldenrod', 'lemon', 'honey', 'butterscotch'] },
+  { value: 'green', label: 'Green', swatch: '#446348', aliases: ['green', 'olive', 'sage', 'emerald', 'mint', 'khaki green', 'lime', 'thyme', 'forest', 'hunter'] },
   { value: 'blue', label: 'Blue', swatch: '#355b82', aliases: ['blue', 'navy', 'cobalt', 'teal', 'turquoise', 'aqua', 'indigo', 'mid wash', 'light wash', 'dark wash', 'raw denim'] },
   { value: 'purple', label: 'Purple', swatch: '#745282', aliases: ['purple', 'violet', 'lavender', 'lilac', 'plum'] },
   { value: 'pink', label: 'Pink', swatch: '#d78fa3', aliases: ['pink', 'rose', 'blush', 'fuchsia', 'magenta'] },
   { value: 'metallic', label: 'Metallic', swatch: '#b7aa8c', aliases: ['metallic', 'gold', 'silver', 'bronze', 'copper'] },
-  { value: 'multi', label: 'Multicolor', swatch: 'linear-gradient(135deg,#b83b3b,#d6a72b,#3f7550,#496ba8)', aliases: ['multicolor', 'multi color', 'multi-color', 'print', 'printed', 'patterned', 'floral'] },
+  { value: 'multi', label: 'Multicolor', swatch: 'linear-gradient(135deg,#b83b3b,#d6a72b,#3f7550,#496ba8)', aliases: ['multicolor', 'multi color', 'multi-color', 'print', 'printed', 'patterned', 'floral', 'assorted'] },
 ]
 
 // So "hermes" finds "Hermès" — most people won't type the accent.
@@ -165,7 +165,10 @@ export function parseShoppingIntent(input = '') {
   if (sizeMatch) remainder = remainder.replace(sizeMatch[0], ' ')
   if (dressCodeAlias) remainder = remainder.replace(new RegExp(`\\b${escapeRegExp(dressCodeAlias)}\\b`, 'g'), ' ')
   if (colorMatch) remainder = remainder.replace(new RegExp(`\\b${escapeRegExp(colorMatch.alias)}\\b`, 'g'), ' ')
-  if (category) categoryAliases[category].forEach((alias) => { remainder = remainder.replace(new RegExp(`\\b${alias}\\b`, 'g'), ' ') })
+  // Activewear is a broad bucket ("black joggers" shouldn't list every black
+  // tank top), so a specific item word in it stays in the search as a word to match.
+  const keepCategoryWord = category === 'Activewear' && ['joggers', 'jogger', 'leggings', 'legging', 'tracksuit', 'tracksuits'].includes(categoryWord)
+  if (category) categoryAliases[category].forEach((alias) => { if (!(keepCategoryWord && alias === categoryWord)) remainder = remainder.replace(new RegExp(`\\b${alias}\\b`, 'g'), ' ') })
 
   // Conversational filler ("show me some nice purple clothing") carries no
   // filtering signal and, worse, never appears verbatim in any product's
@@ -222,7 +225,7 @@ const synonymGroups = [
   ['bootcut', 'flare', 'flared'],
   ['straight leg', 'straight'],
   ['cargo', 'utility'],
-  ['jogger', 'sweatpants', 'joggers'],
+  ['jogger', 'sweatpants', 'sweat pants', 'track pants', 'trackpants'],
   ['hoodie', 'hooded sweatshirt'],
   ['tee', 't shirt', 'tshirt'],
   ['trainers', 'sneakers', 'kicks'],
@@ -320,12 +323,34 @@ function searchTokens(intent) {
   return intent.text.split(/\s+/).filter((token) => token.length > 1)
 }
 
+// Products are filed under one category, but shoppers don't think that way: joggers
+// filed under Activewear are still pants, and a zip hoodie filed under Activewear
+// is still a sweatshirt. A product in a neighboring category counts when its own
+// name uses one of the category's words ("Tapered Jogger Pant" for "pants").
+// Short, ambiguous words ("short", as in short sleeve) are left out on purpose.
+const categoryNeighbors = {
+  Pants: ['Jeans', 'Activewear', 'Bottoms'],
+  Jeans: ['Pants', 'Bottoms'],
+  Knitwear: ['Activewear', 'Outerwear', 'Tops'],
+  Tops: ['Knitwear', 'Activewear'],
+  Outerwear: ['Activewear', 'Knitwear', 'Suits'],
+  Activewear: ['Pants', 'Knitwear', 'Tops'],
+}
+
+function inCategory(product, intent) {
+  if (!intent.category || product.category === intent.category) return true
+  if (intent.category === 'Jeans' && ['Bottoms', 'Pants'].includes(product.category) && indexOf(product).joinedAll.includes('jean')) return true
+  if (intent.category === 'Pants' && ['Bottoms', 'Jeans'].includes(product.category)) return true
+
+  if (!(categoryNeighbors[intent.category] || []).includes(product.category)) return false
+  const { nameWords } = indexOf(product)
+  return categoryAliases[intent.category].some((alias) => alias.length >= 3 && nameWords.has(stem(alias)))
+}
+
 function passesFilters(product, intent, { ignoreColor = false } = {}) {
   const sizes = [...(product.availablePantsSizes || []), ...(product.availableShirtSizes || [])].map(normalizeSize)
   return (ignoreColor || !intent.color || productColorFamily(product.color) === intent.color) &&
-    (!intent.category || product.category === intent.category ||
-      (intent.category === 'Jeans' && ['Bottoms', 'Pants'].includes(product.category) && indexOf(product).joinedAll.includes('jean')) ||
-      (intent.category === 'Pants' && ['Bottoms', 'Jeans'].includes(product.category))) &&
+    inCategory(product, intent) &&
     (!intent.dressCode || (product.dressCode || []).includes(intent.dressCode)) &&
     (intent.maxPrice == null || product.price < intent.maxPrice) &&
     (intent.minPrice == null || product.price > intent.minPrice) &&
@@ -342,7 +367,7 @@ function scoreProduct(product, intent, tokens, options) {
   const entry = indexOf(product)
   // "hoodie" selects the whole Knitwear category, but items literally called a
   // hoodie should come before the cardigans.
-  const categoryBonus = intent.categoryWord && entry.joinedName.includes(intent.categoryWord) ? 4 : 0
+  const categoryBonus = intent.categoryWord && (entry.nameWords.has(stem(intent.categoryWord)) || entry.joinedName.includes(intent.categoryWord)) ? 4 : 0
   if (tokens.length === 0) return { score: 1 + categoryBonus, matchedAll: true }
 
   let total = 0

@@ -16,7 +16,7 @@ const menBodyTypes = ['Slim', 'Balanced', 'Athletic', 'Broad', 'Big & Tall', 'Sh
 const PAGE_SIZE = 24
 // Below this many matches in our own catalog, real listings from around the web
 // are fetched automatically to fill the gaps.
-const THIN_RESULTS = 6
+const THIN_RESULTS = 40
 
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams()
