@@ -18,7 +18,10 @@ export default function ProductCard({ product }) {
   const isPlaceholder = !product.imageUrl || /department-(shoes|clothing|jewelry)/.test(product.imageUrl)
   const useArt = photoFailed || isPlaceholder
   const saved = isSaved(product.id)
-  const visibleSizes = product.availableShirtSizes || product.availablePantsSizes
+  // Clothing sizes mean nothing on jewelry and accessories, and an empty list
+  // would just leave a dangling "Listed sizes" label.
+  const sizeList = [product.availableShirtSizes, product.availablePantsSizes].find((sizes) => sizes?.length)
+  const visibleSizes = !['Jewelry', 'Accessories'].includes(product.category) && sizeList ? sizeList : null
   const verifiedDate = product.verifiedAt
     ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${product.verifiedAt}T00:00:00Z`))
     : null
