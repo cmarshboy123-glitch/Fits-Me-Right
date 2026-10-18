@@ -1,9 +1,20 @@
 import { Outlet, useLocation } from 'react-router-dom'
 import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import ErrorBoundary from './ErrorBoundary'
 import Header from './Header'
 import Footer from './Footer'
 import RouteLoader from './RouteLoader'
-import { getPageTitle } from '../utils/pageTitle'
+import { getPageMeta } from '../utils/pageTitle'
+
+function setMeta(name, content) {
+  let tag = document.head.querySelector(`meta[name="${name}"]`)
+  if (!tag) {
+    tag = document.createElement('meta')
+    tag.name = name
+    document.head.appendChild(tag)
+  }
+  tag.content = content
+}
 
 export default function Layout() {
   const location = useLocation()
@@ -15,7 +26,10 @@ export default function Layout() {
   }, [location.pathname])
 
   useEffect(() => {
-    document.title = getPageTitle(location.pathname)
+    const { title, description, noindex } = getPageMeta(location.pathname)
+    document.title = title
+    setMeta('description', description)
+    setMeta('robots', noindex ? 'noindex, follow' : 'index, follow')
   }, [location.pathname])
 
   useLayoutEffect(() => {
@@ -35,9 +49,11 @@ export default function Layout() {
       <RouteLoader active={isRouteLoading} />
       <Header />
       <main id="main-content" tabIndex={-1} className="outline-none">
-        <Suspense fallback={<div className="min-h-[70vh]" aria-busy="true" />}>
-          <Outlet />
-        </Suspense>
+        <ErrorBoundary key={location.pathname}>
+          <Suspense fallback={<div className="min-h-[70vh]" aria-busy="true" />}>
+            <Outlet />
+          </Suspense>
+        </ErrorBoundary>
       </main>
       <Footer />
     </>

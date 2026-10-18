@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /wishlist
+Disallow: /profiles
 
 Sitemap: https://fitsmeright.com/sitemap.xml

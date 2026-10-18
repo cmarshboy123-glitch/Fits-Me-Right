@@ -29,6 +29,7 @@ export default function Shop() {
   const [color, setColor] = useState(searchParams.get('color') || '')
 
   const [loaded, setLoaded] = useState(false)
+  const [filtersOpen, setFiltersOpen] = useState(false)
   useEffect(() => { getProducts().then((items) => { setProducts(items); setLoaded(true) }) }, [])
 
   // The header search (and links like "Women" on the home page) change the URL while
@@ -112,7 +113,11 @@ export default function Shop() {
       <form onSubmit={syncUrl} className="mt-8 flex max-w-4xl rounded-full border border-neutral-300 bg-white p-1.5 shadow-soft transition focus-within:border-gold-400"><input value={query} onChange={(event) => setQuery(event.target.value)} className="min-w-0 flex-1 bg-transparent px-5 py-3 outline-none" placeholder="Try “black pants under $100” or “brown trousers size 10”" aria-label="Search all products" /><button className="flex items-center gap-2 rounded-full bg-black px-6 text-sm font-bold text-white transition hover:bg-gold-700"><Search size={18} /><span className="hidden sm:inline">SEARCH</span></button></form>
       {query && understood.length > 0 && <div className="mt-3 flex max-w-4xl flex-wrap items-center gap-2"><span className="mr-1 text-[10px] font-black uppercase tracking-[.18em] text-neutral-500">We understood</span>{understood.map((label) => <span key={label} className="rounded-full border border-neutral-300 bg-white px-3 py-1.5 text-[11px] font-bold">{label}</span>)}</div>}
 
-      <div className="mt-9 rounded-[2rem] bg-neutral-50 p-5 shadow-soft sm:p-7">
+      <button type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} aria-controls="shop-filters" className="mt-8 flex min-h-12 w-full items-center justify-between rounded-2xl bg-neutral-50 px-5 text-xs font-bold shadow-soft lg:hidden">
+        <span className="flex items-center gap-2"><SlidersHorizontal size={15} /> FILTERS {activeCount > 0 && <span className="rounded-full bg-gold-400 px-2 py-0.5 text-[10px] text-black">{activeCount}</span>}</span>
+        <span>{filtersOpen ? 'HIDE' : 'SHOW'}</span>
+      </button>
+      <div id="shop-filters" className={`${filtersOpen ? 'mt-3' : 'hidden'} rounded-[2rem] bg-neutral-50 p-5 shadow-soft sm:p-7 lg:mt-9 lg:block`}>
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><div className="flex items-center gap-2 text-xs font-bold"><SlidersHorizontal size={15} /> FILTER THE MARKET {activeCount > 0 && <span className="rounded-full bg-gold-400 px-2 py-0.5 text-[10px] text-black">{activeCount}</span>}</div>{activeCount > 0 && <button onClick={clearAll} className="flex items-center gap-1.5 text-xs font-bold text-neutral-600 transition hover:text-black"><X size={14} /> CLEAR ALL</button>}</div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <FilterSelect label="Collection" value={gender} onChange={(value) => { setGender(value); setBodyType('') }} options={[['All people', ''], ['Women', 'Women'], ['Men', 'Men'], ['Children', 'Children']]} />
@@ -128,7 +133,7 @@ export default function Shop() {
         <button onClick={syncUrl} className="mt-6 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-black px-6 text-xs font-black text-white transition hover:bg-gold-700 sm:w-auto">APPLY SEARCH FILTERS <Search size={15} /></button>
       </div>
 
-      <div className="flex items-center justify-between gap-5 py-6"><p className="text-sm font-bold">{filtered.length} VERIFIED ITEMS ACROSS {[...new Set(filtered.map((product) => product.vendor))].length} STORES</p><p className="max-w-md text-right text-xs text-neutral-500">Every shopping button opens the named item on the official retailer site · retailer confirms live price and stock</p></div>
+      <div className="flex flex-col gap-2 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-5"><p className="text-sm font-bold">{filtered.length} VERIFIED ITEMS ACROSS {[...new Set(filtered.map((product) => product.vendor))].length} STORES</p><p className="max-w-md text-xs text-neutral-500 sm:text-right">Every shopping button opens the named item on the official retailer site · retailer confirms live price and stock</p></div>
       {filtered.length ? (
         <>
           <ProductGrid products={visibleProducts} />

@@ -10,29 +10,40 @@ const stepTitles = {
 }
 
 const DEFAULT_TITLE = 'Fits Me Right — Your Fashion Concierge'
+const DEFAULT_DESCRIPTION = 'Fits Me Right is your fashion concierge — search clothing, shoes, and accessories across dozens of stores and brands by style, body type, price, and fit, then shop the exact item at the retailer.'
 
+// [pattern, title, description, keepOutOfSearch]
 const routes = [
-  [/^\/$/, () => DEFAULT_TITLE],
-  [/^\/shop\b/, () => 'Shop the Marketplace'],
-  [/^\/cobbler-corner\b/, () => 'Cobbler Corner — Shoes'],
-  [/^\/just-jewels\b/, () => 'Just Jewels — Jewelry & Accessories'],
-  [/^\/thrifty-shopper\b/, () => 'Thrifty Shopper'],
-  [/^\/creative-corner\b/, () => 'Creative Corner'],
-  [/^\/wishlist\b/, () => 'Your Wishlist'],
-  [/^\/profiles\b/, () => 'Style Profiles'],
-  [/^\/about\b/, () => 'Our Fit Promise'],
-  [/^\/help\b/, () => 'Help & Contact'],
-  [/^\/admin\b/, () => 'Catalog Manager'],
-  [/^\/style\/([\w-]+)/, (match) => `${stepTitles[match[1]] || 'Style Edit'} — Style Edit`],
+  [/^\/$/, DEFAULT_TITLE, DEFAULT_DESCRIPTION],
+  [/^\/shop\b/, 'Shop the Marketplace', 'Search clothing, shoes, jewelry and accessories across dozens of stores at once, filtered by body type, size, color, price and brand.'],
+  [/^\/cobbler-corner\b/, 'Cobbler Corner — Shoes', 'Compare sneakers, boots, sandals, heels and more across leading retailers, then step directly into the store.'],
+  [/^\/just-jewels\b/, 'Just Jewels — Jewelry & Accessories', 'Necklaces, earrings, rings, bracelets, bags, belts and the small details that make an outfit yours, from stores across the market.'],
+  [/^\/thrifty-shopper\b/, 'Thrifty Shopper', 'One-of-one vintage and resale pieces from real independent sellers, with real prices and photos.'],
+  [/^\/creative-corner\b/, 'Creative Corner', 'A directory and editorial spotlight for independent fashion designers and the ideas shaping what we wear next.'],
+  [/^\/wishlist\b/, 'Your Wishlist', DEFAULT_DESCRIPTION, true],
+  [/^\/profiles\b/, 'Style Profiles', DEFAULT_DESCRIPTION, true],
+  [/^\/about\b/, 'Our Fit Promise', 'Fits Me Right is an independent discovery experience, not a retailer. Here is how we search, how we link out, and what we promise.'],
+  [/^\/help\b/, 'Help & Contact', 'Answers to common questions about Fits Me Right, prices, sizes and links, plus how to reach us.'],
+  [/^\/admin\b/, 'Catalog Manager', DEFAULT_DESCRIPTION, true],
 ]
 
-export function getPageTitle(pathname) {
-  for (const [pattern, build] of routes) {
-    const match = pathname.match(pattern)
-    if (match) {
-      const title = build(match)
-      return title === DEFAULT_TITLE ? title : `${title} | Fits Me Right`
+const styleStepPattern = /^\/style\/([\w-]+)/
+
+export function getPageMeta(pathname) {
+  for (const [pattern, title, description, noindex] of routes) {
+    if (pattern.test(pathname)) {
+      return { title: title === DEFAULT_TITLE ? title : `${title} | Fits Me Right`, description, noindex: Boolean(noindex) }
     }
   }
-  return 'Page Not Found | Fits Me Right'
+
+  const step = pathname.match(styleStepPattern)
+  if (step) {
+    return { title: `${stepTitles[step[1]] || 'Style Edit'} — Style Edit | Fits Me Right`, description: DEFAULT_DESCRIPTION, noindex: step[1] !== 'gender' }
+  }
+
+  return { title: 'Page Not Found | Fits Me Right', description: DEFAULT_DESCRIPTION, noindex: true }
+}
+
+export function getPageTitle(pathname) {
+  return getPageMeta(pathname).title
 }
