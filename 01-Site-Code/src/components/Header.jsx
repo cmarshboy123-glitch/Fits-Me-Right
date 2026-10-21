@@ -9,6 +9,7 @@ import { retailerSearchUrl, webSearchDestinations } from '../utils/retailers'
 import BrandMark from './BrandMark'
 
 const nav = [
+  ['Need It Fast', '/fast'],
   ['Cobbler Corner', '/cobbler-corner'],
   ['Just Jewels', '/just-jewels'],
   ['Thrifty Shopper', '/thrifty-shopper'],

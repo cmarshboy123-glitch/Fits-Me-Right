@@ -1,3 +1,5 @@
+import { withoutUrgency } from './fastDelivery.js'
+
 export const shoppingColors = [
   { value: 'black', label: 'Black', swatch: '#171717', aliases: ['black', 'onyx', 'jet', 'pepper'] },
   { value: 'white', label: 'White', swatch: '#fffdfa', aliases: ['white', 'ivory', 'off white', 'off-white', 'eggshell', 'bone'] },
@@ -444,7 +446,8 @@ const byScore = (a, b) => b.score - a.score
 // word matches); if that finds nothing it loosens the search step by step and
 // says what it dropped, rather than showing an empty page.
 export function searchCatalog(products, rawQuery) {
-  const { query, changed } = correctQuery(products, rawQuery)
+  // "tuxedo asap" or "dress for tonight": the urgency isn't a product word, so it is dropped.
+  const { query, changed } = correctQuery(products, withoutUrgency(rawQuery) || rawQuery)
   const correctedQuery = changed ? query : null
   const intent = parseShoppingIntent(query)
   const tokens = searchTokens(intent)

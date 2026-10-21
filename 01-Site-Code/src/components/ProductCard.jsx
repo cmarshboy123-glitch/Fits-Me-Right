@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { ExternalLink, Heart, Search } from 'lucide-react'
+import { ExternalLink, Heart, Search, Zap } from 'lucide-react'
+import { fastDeliveryFor } from '../utils/fastDelivery'
 import ShoeArt from './ShoeArt'
 import GarmentArt from './GarmentArt'
 import { useWishlist } from '../context/WishlistContext'
@@ -18,6 +19,7 @@ export default function ProductCard({ product }) {
   const isPlaceholder = !product.imageUrl || /department-(shoes|clothing|jewelry)/.test(product.imageUrl)
   const useArt = photoFailed || isPlaceholder
   const saved = isSaved(product.id)
+  const fastOption = fastDeliveryFor(product.vendor)
   // Clothing sizes mean nothing on jewelry and accessories, and an empty list
   // would just leave a dangling "Listed sizes" label.
   const sizeList = [product.availableShirtSizes, product.availablePantsSizes].find((sizes) => sizes?.length)
@@ -80,6 +82,7 @@ export default function ProductCard({ product }) {
         {product.fitNote && <p className="mt-1 text-[11px] leading-4 text-neutral-500">{product.fitNote}</p>}
         {visibleSizes && <p className="mt-2 truncate text-[10px] font-bold uppercase tracking-wide text-neutral-500">Listed sizes {visibleSizes.join(' · ')}</p>}
         <p className="mt-2 text-sm font-bold">${product.price.toFixed(2)} <span className="text-[9px] font-medium uppercase tracking-wide text-neutral-400">price snapshot</span></p>
+        {fastOption && <p className="mt-2 flex items-center gap-1 text-[10px] font-bold text-gold-800"><Zap size={11} aria-hidden="true" /> Same-day delivery may be available via {fastOption.provider}</p>}
         {hasLink ? (
           <a href={linkUrl} target="_blank" rel="noreferrer" className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-neutral-950 px-3 py-3 text-[10px] font-bold text-white transition hover:bg-gold-600">
             {isExact ? <>OPEN EXACT ITEM AT {product.vendor.toUpperCase()} <ExternalLink size={13} /></> : <>SEARCH THIS AT {product.vendor.toUpperCase()} <Search size={13} /></>}

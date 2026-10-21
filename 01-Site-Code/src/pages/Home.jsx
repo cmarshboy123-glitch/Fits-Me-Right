@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Zap } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import InteractiveWardrobe from '../components/InteractiveWardrobe'
 import { luxuryRetailers, retailerNames } from '../utils/retailers'
@@ -17,7 +17,13 @@ const storeSearch = (retailer) => `/shop?q=${encodeURIComponent(retailer)}`
 export default function Home() {
   return (
     <>
-      <div className="bg-paper px-3 pb-8 pt-4 sm:px-4 lg:px-8"><InteractiveWardrobe /></div>
+      <div className="bg-paper px-3 pb-8 pt-4 sm:px-4 lg:px-8">
+        <InteractiveWardrobe />
+        <Link to="/fast" className="mx-auto mt-4 flex max-w-[1440px] flex-col gap-3 rounded-2xl bg-black px-6 py-5 text-white transition hover:bg-neutral-800 sm:flex-row sm:items-center sm:justify-between">
+          <span className="flex items-center gap-3"><Zap size={22} className="shrink-0 text-gold-300" /><span><span className="font-black">Need it tonight?</span> <span className="text-white/75">Same-day delivery and pickup for last-minute events, tuxedos included.</span></span></span>
+          <span className="flex shrink-0 items-center gap-2 text-xs font-black text-gold-300">SEE FAST OPTIONS <ArrowRight size={15} /></span>
+        </Link>
+      </div>
 
       <section className="bg-white">
         <div className="mx-auto max-w-[1440px] px-4 py-14 lg:px-8">

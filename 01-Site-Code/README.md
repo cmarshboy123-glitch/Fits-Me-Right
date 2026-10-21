@@ -31,6 +31,12 @@ node work/build-extra-catalog.mjs
 
 Retailers don't publish body-type fit or dress codes, so those two fields are assigned generically (every body type for the gender; dress code guessed from the garment). Items from the feed can't be edited in `/admin`, since they aren't in the database.
 
+## Fast delivery (`/fast`)
+
+The "Need it fast" page, the same-day filter in the shop (`?fast=1`), and the note on product cards come from `src/utils/fastDelivery.js`. Fits Me Right doesn't deliver anything: the page points shoppers to stores that sell through DoorDash and to same-day pickup, and says plainly what's realistic for a deadline (a tuxedo rental, for example, needs a week or more). Only retailers with a recent published announcement are listed; update `fastDeliveryRetailers` and `FAST_DELIVERY_CHECKED` when that changes, and keep the sources current.
+
+Running our own delivery (a "get it in an hour" button inside the site) would mean DoorDash Drive: a DoorDash developer account, a sandbox build and review with DoorDash before production keys, a pickup address for every store item, and per-delivery fees (reported at roughly $7 to $11 in the U.S.). It also needs stores' agreement to hand over items, so it isn't built.
+
 ## Wishlist and style profiles
 
 The heart on any product card saves it to `/wishlist`. The account icon opens `/profiles`, which lists style profiles saved from the guided flow. Both are stored per-browser in `localStorage` — there is no account system or server-side storage.

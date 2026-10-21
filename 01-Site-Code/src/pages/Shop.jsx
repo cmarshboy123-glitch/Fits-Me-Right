@@ -1,4 +1,4 @@
-import { ArrowRight, ExternalLink, Search, SlidersHorizontal, X } from 'lucide-react'
+import { ArrowRight, ExternalLink, Search, SlidersHorizontal, X, Zap } from 'lucide-react'
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid'
@@ -6,6 +6,7 @@ import { getProducts } from '../services/catalogService'
 import { searchLiveWeb } from '../services/liveSearchService'
 import { filterWebResults, intentLabels, productColorFamily, productMatchesIntent, searchCatalog, shoppingCategories, shoppingColors } from '../utils/searchIntent'
 import { webSearchDestinations } from '../utils/retailers'
+import { doorDashSearchUrl, fastDeliveryFor, mapsSearchUrl, urgencyPattern, withoutUrgency } from '../utils/fastDelivery'
 
 const priceOptions = [['All prices', ''], ['On a Budget', 'budget'], ['Money to Spend', 'treat'], ["Let's Splurge", 'splurge']]
 const womenBodyTypes = ['Straight', 'Curvy', 'Athletic', 'Petite', 'Tall', 'Plus']
@@ -30,6 +31,7 @@ export default function Shop() {
   const [market, setMarket] = useState(searchParams.get('market') || '')
   const [category, setCategory] = useState(searchParams.get('category') || '')
   const [color, setColor] = useState(searchParams.get('color') || '')
+  const [fast, setFast] = useState(searchParams.get('fast') || '')
 
   const [loaded, setLoaded] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -47,6 +49,7 @@ export default function Shop() {
     setMarket(searchParams.get('market') || '')
     setCategory(searchParams.get('category') || '')
     setColor(searchParams.get('color') || '')
+    setFast(searchParams.get('fast') || '')
   }, [searchParams])
 
   const catalogProducts = products
@@ -65,10 +68,11 @@ export default function Shop() {
       (!gender || product.gender === gender) && (!bodyType || product.bodyType?.includes(catalogBodyType)) &&
       (!priceTier || product.priceTier === priceTier) && (!market || product.storeTier === market) &&
       (!category || productMatchesIntent(product, { text: '', color: '', category, maxPrice: null, minPrice: null, size: '', gender: '' })) &&
-      (!color || productColorFamily(product.color) === color)
-  }), [catalogProducts, search, retailer, brand, gender, bodyType, priceTier, market, category, color])
+      (!color || productColorFamily(product.color) === color) &&
+      (!fast || fastDeliveryFor(product.vendor))
+  }), [catalogProducts, search, retailer, brand, gender, bodyType, priceTier, market, category, color, fast])
 
-  const activeCount = [query, retailer, brand, gender, bodyType, priceTier, market, category, color].filter(Boolean).length
+  const activeCount = [query, retailer, brand, gender, bodyType, priceTier, market, category, color, fast].filter(Boolean).length
   const guidedSearch = Boolean(searchParams.get('bodyType') || searchParams.get('priceTier'))
 
   // Reset back to the first page whenever the result set itself changes —
@@ -82,7 +86,7 @@ export default function Shop() {
   // can't fully answer. Fetched on its own when our results are thin or only a
   // loosened match; otherwise offered behind a button, because the search quota
   // is shared by every visitor.
-  const liveQuery = (search?.correctedQuery || deferredQuery).trim()
+  const liveQuery = withoutUrgency(search?.correctedQuery || deferredQuery)
   const webResults = useMemo(() => webSearchDestinations(liveQuery), [liveQuery])
   const [liveResults, setLiveResults] = useState([])
   const [liveLoading, setLiveLoading] = useState(false)
@@ -109,12 +113,12 @@ export default function Shop() {
   const syncUrl = (event) => {
     event?.preventDefault()
     const params = new URLSearchParams()
-    Object.entries({ q: query, store: retailer, brand, gender, bodyType, priceTier, market, category, color }).forEach(([key, value]) => { if (value) params.set(key, value) })
+    Object.entries({ q: query, store: retailer, brand, gender, bodyType, priceTier, market, category, color, fast }).forEach(([key, value]) => { if (value) params.set(key, value) })
     setSearchParams(params)
   }
 
   const clearAll = () => {
-    setQuery(''); setRetailer(''); setBrand(''); setGender(''); setBodyType(''); setPriceTier(''); setMarket(''); setCategory(''); setColor(''); setSearchParams({})
+    setQuery(''); setRetailer(''); setBrand(''); setGender(''); setBodyType(''); setPriceTier(''); setMarket(''); setCategory(''); setColor(''); setFast(''); setSearchParams({})
   }
 
   return (
@@ -145,11 +149,25 @@ export default function Shop() {
         </div>
         <div className="mt-5"><p className="mb-2 text-[10px] font-black uppercase tracking-[.18em] text-neutral-500">Quick color edit</p><div className="flex flex-wrap gap-2"><button onClick={() => setColor('')} aria-pressed={!color} className={`min-h-10 rounded-full px-4 text-[11px] font-bold ${!color ? 'bg-black text-white' : 'border border-neutral-300 bg-white'}`}>ALL</button>{shoppingColors.map((option) => <button key={option.value} onClick={() => setColor(option.value)} aria-label={`Filter by ${option.label}`} aria-pressed={color === option.value} title={option.label} className={`flex min-h-10 items-center gap-2 rounded-full px-3 text-[11px] font-bold ${color === option.value ? 'bg-black text-white' : 'border border-neutral-300 bg-white'}`}><span className="h-4 w-4 rounded-full border border-black/20" style={{ background: option.swatch }} />{option.label}</button>)}</div></div>
         <FilterButtons label="Price point" value={priceTier} onChange={setPriceTier} options={priceOptions} pill />
+        <FilterButtons label="Delivery speed" value={fast} onChange={setFast} options={[['Any speed', ''], ['Same-day delivery options', '1']]} />
         <FilterButtons label="Market" value={market} onChange={setMarket} options={[['All fashion', ''], ['Luxury', 'Luxury'], ['Asian Market', 'Asian Market'], ['Everyday & Designer', 'Everyday & Designer'], ['Resale & Vintage', 'Resale & Vintage']]} />
         <button onClick={syncUrl} className="mt-6 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-black px-6 text-xs font-black text-white transition hover:bg-gold-700 sm:w-auto">APPLY SEARCH FILTERS <Search size={15} /></button>
       </div>
 
       <div className="flex flex-col gap-2 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-5"><p className="text-sm font-bold">{filtered.length} VERIFIED ITEMS ACROSS {[...new Set(filtered.map((product) => product.vendor))].length} STORES</p><p className="max-w-md text-xs text-neutral-500 sm:text-right">Every shopping button opens the named item on the official retailer site · retailer confirms live price and stock</p></div>
+
+      {(fast || urgencyPattern.test(query)) && (
+        <div className="mb-8 rounded-2xl border border-gold-200 bg-gold-50 px-5 py-5">
+          <p className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[.2em] text-gold-800"><Zap size={13} aria-hidden="true" /> Need it fast?</p>
+          <p className="mt-2 text-sm font-bold">{fast ? 'Showing only stores that offer same-day delivery. Availability depends on your address.' : 'In a hurry? Some stores deliver the same day, and many have store pickup.'}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-black">
+            <a href={doorDashSearchUrl(withoutUrgency(liveQuery) || 'clothing')} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 underline">Search DoorDash for “{withoutUrgency(liveQuery) || 'clothing'}” <ExternalLink size={12} /></a>
+            <a href={mapsSearchUrl(withoutUrgency(liveQuery))} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 underline">Find it in stores near me <ExternalLink size={12} /></a>
+            <Link to="/fast" className="inline-flex items-center gap-1.5 underline">All fast options <ArrowRight size={12} /></Link>
+            {!fast && <button type="button" onClick={() => setFast('1')} className="underline">Show only same-day stores</button>}
+          </div>
+        </div>
+      )}
 
       {search?.relaxed && filtered.length > 0 && (
         <div className="mb-8 rounded-2xl border border-gold-200 bg-gold-50 px-5 py-4 text-sm" role="status">

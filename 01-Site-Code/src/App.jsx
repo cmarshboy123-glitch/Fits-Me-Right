@@ -8,6 +8,7 @@ const CobblerCorner = lazy(() => import('./pages/CobblerCorner'))
 const JustJewels = lazy(() => import('./pages/JustJewels'))
 const NewCreatives = lazy(() => import('./pages/NewCreatives'))
 const Shop = lazy(() => import('./pages/Shop'))
+const FastDelivery = lazy(() => import('./pages/FastDelivery'))
 const ThriftyShopper = lazy(() => import('./pages/ThriftyShopper'))
 const Wishlist = lazy(() => import('./pages/Wishlist'))
 const Profiles = lazy(() => import('./pages/Profiles'))
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="creative-feature" element={<Navigate to="/creative-corner" replace />} />
         <Route path="new-creatives" element={<Navigate to="/creative-corner" replace />} />
         <Route path="shop" element={<Shop />} />
+        <Route path="fast" element={<FastDelivery />} />
         <Route path="wishlist" element={<Wishlist />} />
         <Route path="profiles" element={<Profiles />} />
         <Route path="about" element={<About />} />
