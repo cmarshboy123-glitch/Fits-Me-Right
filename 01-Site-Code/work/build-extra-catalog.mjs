@@ -45,7 +45,7 @@ const stores = [
   { name: 'Show Me Your Mumu', base: 'https://www.showmeyourmumu.com', fallback: 'Women' },
   { name: 'Beyond Yoga', base: 'https://beyondyoga.com' },
   { name: 'Edikted', base: 'https://www.edikted.com', fallback: 'Women' },
-  { name: 'White Fox', base: 'https://www.whitefoxboutique.com' },
+  { name: 'White Fox', base: 'https://www.whitefoxboutique.com', fallback: 'Women' },
   { name: 'Meshki', base: 'https://meshki.us', fallback: 'Women' },
   { name: 'Los Angeles Apparel', base: 'https://losangelesapparel.net' },
   { name: 'Noah', base: 'https://noahny.com' },
@@ -350,6 +350,156 @@ function balanced(items, cap) {
   return picked
 }
 
+// ---- ME+EM ------------------------------------------------------------------
+// ME+EM (meandem.com) isn't a Shopify store, so there is no product feed. Its robots.txt allows
+// product pages, and each one carries standard schema.org product data plus the in-stock sizes.
+// The pages are read gently (a few at a time) and what was extracted is saved to the cache.
+const MEEM_BASE = 'https://www.meandem.com'
+const MEEM_US = `${MEEM_BASE}/us`
+
+async function fetchText(url, attempts = 3) {
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetch(url, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(60000), redirect: 'follow' })
+      if (response.ok) return await response.text()
+      if (response.status === 404) return ''
+    } catch { /* retry */ }
+    await new Promise((resolve) => setTimeout(resolve, 1500 * attempt))
+  }
+  return ''
+}
+
+function extractMeEmPage(html, url) {
+  let product = null
+  for (const match of html.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)) {
+    try {
+      const data = JSON.parse(match[1])
+      if (data['@type'] === 'Product') { product = data; break }
+    } catch { /* not valid JSON */ }
+  }
+  if (!product) return null
+
+  const offer = Array.isArray(product.offers) ? product.offers[0] : product.offers
+  // The page also lists size choices for the products it recommends; only the block whose
+  // SKUs start with this product's own SKU belongs to it.
+  const flat = html.replace(/\\"/g, '"')
+  let sizeLabels = []
+  for (const match of flat.matchAll(/"sizes":\[((?:\{[^[\]{}]*\},?)+)\]/g)) {
+    try {
+      const sizes = JSON.parse(`[${match[1]}]`)
+      if (String(sizes[0]?.sku || '').startsWith(product.productSku || '\u0000')) { sizeLabels = sizes.filter((size) => !size.disabled).map((size) => size.label); break }
+    } catch { /* skip */ }
+  }
+  return {
+    url,
+    name: product.name,
+    category: product.category,
+    color: product.color,
+    price: Number(offer?.price),
+    currency: offer?.priceCurrency,
+    inStock: /InStock/i.test(offer?.availability || ''),
+    image: Array.isArray(product.image) ? product.image[0] : product.image,
+    path: product.url,
+    sizeLabels,
+  }
+}
+
+async function loadMeEmPages() {
+  const cacheFile = (dir) => path.join(dir, 'ME_EM_pages.json')
+  if (CACHE_DIR && fs.existsSync(cacheFile(CACHE_DIR))) return JSON.parse(fs.readFileSync(cacheFile(CACHE_DIR), 'utf8'))
+
+  const sitemap = await fetchText(`${MEEM_US}/sitemap-oms.xml`)
+  // Product pages are single-segment slugs with several words; category pages are short.
+  const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]).filter((url) => /^https:\/\/www\.meandem\.com\/us\/[a-z0-9]+(?:-[a-z0-9]+){2,}$/.test(url))
+  console.log(`ME+EM: ${urls.length} candidate product pages`)
+
+  const pages = []
+  let next = 0
+  let done = 0
+  const worker = async () => {
+    while (next < urls.length) {
+      const url = urls[next]
+      next += 1
+      const page = extractMeEmPage(await fetchText(url), url)
+      if (page) pages.push(page)
+      done += 1
+      if (done % 100 === 0) console.log(`ME+EM: ${done}/${urls.length} pages read`)
+      await new Promise((resolve) => setTimeout(resolve, 250))
+    }
+  }
+  await Promise.all(Array.from({ length: 4 }, worker))
+
+  if (SAVE_DIR) {
+    fs.mkdirSync(SAVE_DIR, { recursive: true })
+    fs.writeFileSync(cacheFile(SAVE_DIR), JSON.stringify(pages))
+  }
+  return pages
+}
+
+function meEmSizes(labels, category) {
+  const shirt = new Set()
+  const pants = new Set()
+  for (const label of labels) {
+    letterSizesIn(label).forEach((size) => shirt.add(size))
+    const number = String(label).match(/^(\d{1,2}(?:\.5)?)\b/)?.[1]
+    if (number && (category === 'Shoes' ? Number(number) >= 3 : Number(number) <= 24)) pants.add(number)
+  }
+  const rank = (size) => (LETTER_ORDER.indexOf(size) === -1 ? 99 : LETTER_ORDER.indexOf(size))
+  return { shirt: [...shirt].sort((a, b) => rank(a) - rank(b)), pants: [...pants].sort((a, b) => parseFloat(a) - parseFloat(b)) }
+}
+
+// Some ME+EM pages leave the color field empty but end their address with it
+// ("…-maxi-dress-navy", "…-hoody-dark-charcoal-melange").
+const COLOR_MODIFIERS = new Set(['dark', 'light', 'pale', 'bright', 'warm', 'deep', 'double', 'soft', 'mid'])
+function colorFromAddress(url) {
+  const words = url.split('/').pop().split('-')
+  for (let i = words.length - 1; i >= Math.max(1, words.length - 3); i -= 1) {
+    if (!productColorFamily(words[i])) continue
+    const start = COLOR_MODIFIERS.has(words[i - 1]) ? i - 1 : i
+    return words.slice(start).join(' ')
+  }
+  return ''
+}
+
+async function loadMeEm() {
+  const pages = await loadMeEmPages()
+  const seen = new Set()
+  const result = []
+  let skipped = { notInStock: 0, noCategory: 0, noColor: 0, noPrice: 0 }
+  for (const page of pages) {
+    if (!page.inStock) { skipped.notInStock += 1; continue }
+    if (!(page.price > 0) || page.currency !== 'USD' || !page.image) { skipped.noPrice += 1; continue }
+    const category = categoryOf(page.name, page.category || '')
+    if (!category) { skipped.noCategory += 1; continue }
+    const colorText = String(page.color || colorFromAddress(page.url)).replace(/\s+/g, ' ').trim()
+    const color = colorText && productColorFamily(colorText) ? titleCase(colorText) : ''
+    if (!color) { skipped.noColor += 1; continue }
+    const key = `${page.name}|${color}`
+    if (seen.has(key)) continue
+    seen.add(key)
+
+    const file = String(page.image).split('/').pop()
+    const sizes = meEmSizes(page.sizeLabels, category)
+    result.push({
+      name: page.name,
+      gender: 'Women',
+      category,
+      price: Math.round(page.price * 100) / 100,
+      priceTier: priceTierOf(page.price),
+      // ME+EM's own storefront serves product photos through this resizer, which returns a small WebP.
+      imageUrl: `${MEEM_BASE}/_next/image?url=${encodeURIComponent(`/oms/client/dynamic/images/${file}`)}&w=640&q=75`,
+      vendor: 'ME+EM',
+      color,
+      dressCode: dressCodesOf(category, page.name),
+      availableShirtSizes: sizes.shirt,
+      ...(sizes.pants.length ? { availablePantsSizes: sizes.pants } : {}),
+      url: `${MEEM_BASE}${page.path}`,
+    })
+  }
+  console.log(`ME+EM: kept ${result.length} of ${pages.length} pages`, JSON.stringify(skipped))
+  return result
+}
+
 const items = []
 const summary = []
 for (const store of stores) {
@@ -368,10 +518,17 @@ for (const store of stores) {
   summary.push(`${store.name.padEnd(22)} feed ${String(feed.length).padStart(5)}  usable ${String(converted.length).padStart(5)}  added ${String(chosen.length).padStart(4)}`)
 }
 
+const meEmItems = await loadMeEm()
+items.push(...meEmItems)
+summary.push(`${'ME+EM'.padEnd(22)} (site)  added ${String(meEmItems.length).padStart(4)}`)
+
 items.forEach((item, index) => { item.id = FIRST_ID + index })
 const file = {
   checkedOn: CHECKED_ON,
-  stores: Object.fromEntries(stores.filter((store) => items.some((item) => item.vendor === store.name)).map((store) => [store.name, store.base])),
+  stores: {
+    ...Object.fromEntries(stores.filter((store) => items.some((item) => item.vendor === store.name)).map((store) => [store.name, store.base])),
+    ...(meEmItems.length ? { 'ME+EM': MEEM_US } : {}),
+  },
   items,
 }
 fs.writeFileSync(OUTPUT, JSON.stringify(file))

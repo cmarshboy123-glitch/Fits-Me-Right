@@ -41,7 +41,7 @@ async function loadExtraCatalog() {
       brand: item.brand || item.vendor,
       storeTier: 'Everyday & Designer',
       bodyType: FEED_BODY_TYPES[item.gender] || FEED_BODY_TYPES.Women,
-      productUrl: `${stores[item.vendor]}/products/${item.handle}`,
+      productUrl: item.url || `${stores[item.vendor]}/products/${item.handle}`,
       verifiedAt: checkedOn,
       fitNote: 'Listing details from the retailer; fit guidance not provided',
       fromFeed: true,
