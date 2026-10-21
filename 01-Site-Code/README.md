@@ -23,7 +23,7 @@ Natural-language searches are parsed into structured intent. For example, `black
 
 ## Real items from store feeds
 
-`public/catalog-extra.json` holds about 1,400 real, in-stock products (real name, price, photo and exact product page) from clothing stores that publish a public product feed: Stüssy, Princess Polly, Kith, Alo Yoga, Outdoor Voices, Taylor Stitch, Faherty, Everlane, Marine Layer, Pangaia, Girlfriend Collective, Culture Kings and Mack Weldon. The site adds them to whatever the API returns (`src/services/catalogService.js`). Refresh prices and stock with:
+`public/catalog-extra.json` holds about 25,000 real, in-stock products (real name, price, photo and exact product page) from about 75 clothing stores: those that publish a public product feed (Kith, Alo Yoga, Everlane, Faherty, Cult Gaia, Frame and others; the list is in `work/build-extra-catalog.mjs`), plus ME+EM, whose product pages are read directly because it has no feed. Only stores that price in US dollars are used. The site adds the items to whatever the API returns (`src/services/catalogService.js`). The file is stored compactly (shared values in tables, one short row per item, about 0.9 MB over the wire), the search code keeps its per-item lookup tables small, and the page header only loads the catalog once someone uses search. Refresh prices and stock with:
 
 ```bash
 node work/build-extra-catalog.mjs

@@ -282,13 +282,13 @@ function indexOf(product) {
   if (entry) return entry
   const spacedName = stripDiacritics(String(product.name || '').toLowerCase()).replace(/[-_]+/g, ' ')
   const rest = stripDiacritics(`${product.brand || ''} ${product.vendor || ''} ${product.category || ''} ${product.color || ''} ${product.fitNote || ''} ${(product.dressCode || []).join(' ')} ${(product.bodyType || []).join(' ')}`.toLowerCase()).replace(/[-_]+/g, ' ')
-  const nameWords = new Set(wordsOf(spacedName).map(stem))
-  const restWords = new Set(wordsOf(rest).map(stem))
+  // Plain arrays and strings, not Sets: with tens of thousands of products the per-item
+  // lookup tables are what use the memory, and these lists are only a handful of words long.
   entry = {
     spacedName,
     joinedName: spacedName.replace(/\s+/g, ''),
-    nameWords,
-    restWords,
+    nameWords: wordsOf(spacedName).map(stem),
+    rest: ` ${wordsOf(rest).map(stem).join(' ')} `,
     joinedAll: `${spacedName} ${rest}`.replace(/\s+/g, ''),
     spacedAll: `${spacedName} ${rest}`,
   }
@@ -299,9 +299,9 @@ function indexOf(product) {
 // How well one search word matches a product: 0 means not at all.
 function scoreToken(entry, token) {
   const stemmed = stem(token)
-  if (entry.nameWords.has(stemmed)) return 3
+  if (entry.nameWords.includes(stemmed)) return 3
   if (entry.joinedName.includes(token)) return 2.5
-  if (entry.restWords.has(stemmed) || entry.joinedAll.includes(token)) return 1
+  if (entry.rest.includes(` ${stemmed} `) || entry.joinedAll.includes(token)) return 1
 
   const related = synonymIndex.get(stemmed) || []
   for (const term of related) {
@@ -315,7 +315,7 @@ function scoreToken(entry, token) {
   if (token.length >= 4) {
     const limit = token.length >= 8 ? 2 : 1
     for (const word of entry.nameWords) if (withinEdits(stemmed, word, limit)) return 1.3
-    for (const word of entry.restWords) if (withinEdits(stemmed, word, limit)) return 0.6
+    for (const word of entry.rest.trim().split(' ')) if (withinEdits(stemmed, word, limit)) return 0.6
   }
   return 0
 }
@@ -346,7 +346,7 @@ function inCategory(product, intent) {
 
   if (!(categoryNeighbors[intent.category] || []).includes(product.category)) return false
   const { nameWords } = indexOf(product)
-  return categoryAliases[intent.category].some((alias) => alias.length >= 3 && nameWords.has(stem(alias)))
+  return categoryAliases[intent.category].some((alias) => alias.length >= 3 && nameWords.includes(stem(alias)))
 }
 
 function passesFilters(product, intent, { ignoreColor = false } = {}) {
@@ -369,7 +369,7 @@ function scoreProduct(product, intent, tokens, options) {
   const entry = indexOf(product)
   // "hoodie" selects the whole Knitwear category, but items literally called a
   // hoodie should come before the cardigans.
-  const categoryBonus = intent.categoryWord && (entry.nameWords.has(stem(intent.categoryWord)) || entry.joinedName.includes(intent.categoryWord)) ? 4 : 0
+  const categoryBonus = intent.categoryWord && (entry.nameWords.includes(stem(intent.categoryWord)) || entry.joinedName.includes(intent.categoryWord)) ? 4 : 0
   if (tokens.length === 0) return { score: 1 + categoryBonus, matchedAll: true }
 
   let total = 0

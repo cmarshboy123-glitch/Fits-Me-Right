@@ -26,7 +26,13 @@ export default function Header() {
   const { updateSelection } = useStyle()
   const { count: wishlistCount } = useWishlist()
 
-  useEffect(() => { getProducts().then(setProducts) }, [])
+  // The catalog is large, so it is only fetched once someone starts using the search box.
+  const catalogRequested = useRef(false)
+  const requestCatalog = () => {
+    if (catalogRequested.current) return
+    catalogRequested.current = true
+    getProducts().then(setProducts)
+  }
   useEffect(() => () => clearTimeout(blurTimeout.current), [])
 
   const startFor = (gender) => {
@@ -76,7 +82,7 @@ export default function Header() {
             <input
               value={query}
               onChange={(event) => { setQuery(event.target.value); setShowSuggestions(true) }}
-              onFocus={() => setShowSuggestions(true)}
+              onFocus={() => { requestCatalog(); setShowSuggestions(true) }}
               onBlur={() => { blurTimeout.current = setTimeout(() => setShowSuggestions(false), 150) }}
               onKeyDown={(event) => { if (event.key === 'Escape') event.currentTarget.blur() }}
               className="w-full bg-transparent text-sm outline-none"

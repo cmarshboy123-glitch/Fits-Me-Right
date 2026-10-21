@@ -14,6 +14,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { productColorFamily, shoppingColors } from '../src/utils/searchIntent.js'
+import { slugify } from '../src/utils/slugify.js'
 
 const here = path.dirname(fileURLToPath(import.meta.url))
 const OUTPUT = path.resolve(here, '..', 'public', 'catalog-extra.json')
@@ -63,6 +64,46 @@ const stores = [
   { name: 'Steve Madden', base: 'https://www.stevemadden.com' },
   { name: 'MUJI', base: 'https://www.muji.us' },
   { name: 'The Sak', base: 'https://www.thesak.com', fallback: 'Women' },
+  { name: 'Naadam', base: 'https://naadam.co' },
+  { name: 'Cuyana', base: 'https://www.cuyana.com', fallback: 'Women' },
+  { name: 'Nanushka', base: 'https://www.nanushka.com', fallback: 'Women' },
+  { name: 'Doen', base: 'https://shopdoen.com', fallback: 'Women' },
+  { name: 'Cult Gaia', base: 'https://cultgaia.com', fallback: 'Women' },
+  { name: 'Christy Dawn', base: 'https://christydawn.com', fallback: 'Women' },
+  { name: 'Staud', base: 'https://staud.clothing', fallback: 'Women' },
+  { name: 'ASTR the Label', base: 'https://astrthelabel.com', fallback: 'Women' },
+  { name: 'Reigning Champ', base: 'https://reigningchamp.com' },
+  { name: 'Kotn', base: 'https://kotn.com' },
+  { name: 'Cotopaxi', base: 'https://www.cotopaxi.com' },
+  { name: 'Allbirds', base: 'https://www.allbirds.com' },
+  { name: 'Outerknown', base: 'https://www.outerknown.com' },
+  { name: 'Rowing Blazers', base: 'https://rowingblazers.com' },
+  { name: 'Fear of God', base: 'https://fearofgod.com' },
+  { name: 'Palace', base: 'https://www.palaceskateboards.com' },
+  { name: 'Lack of Color', base: 'https://lackofcolor.com' },
+  { name: 'Brain Dead', base: 'https://wearebraindead.com' },
+  { name: 'BAPE', base: 'https://us.bape.com' },
+  { name: 'Pleasures', base: 'https://pleasuresnow.com' },
+  { name: 'Stampd', base: 'https://stampd.com' },
+  { name: 'Alexander Wang', base: 'https://www.alexanderwang.com' },
+  { name: 'Gorjana', base: 'https://www.gorjana.com', fallback: 'Women' },
+  { name: 'Pura Vida', base: 'https://www.puravidabracelets.com', fallback: 'Women' },
+  { name: 'Stance', base: 'https://www.stance.com' },
+  { name: 'LNA', base: 'https://lnaclothing.com' },
+  { name: 'Good American', base: 'https://www.goodamerican.com', fallback: 'Women' },
+  { name: 'Agolde', base: 'https://agolde.com' },
+  { name: 'Citizens of Humanity', base: 'https://citizensofhumanity.com' },
+  { name: 'Mother Denim', base: 'https://motherdenim.com', fallback: 'Women' },
+  { name: 'Re/Done', base: 'https://shopredone.com' },
+  { name: 'Frame', base: 'https://frame-store.com' },
+  { name: 'Public School', base: 'https://publicschoolnyc.com' },
+  { name: 'Satisfy Running', base: 'https://satisfyrunning.com' },
+  { name: 'Vessi', base: 'https://vessi.com' },
+  { name: 'Rothy’s', base: 'https://rothys.com', fallback: 'Women' },
+  { name: 'Birdies', base: 'https://birdies.com', fallback: 'Women' },
+  { name: 'Dolce Vita', base: 'https://www.dolcevita.com', fallback: 'Women' },
+  { name: 'Brandy Melville', base: 'https://www.brandymelvilleusa.com', fallback: 'Women' },
+  { name: 'Matisse Footwear', base: 'https://matissefootwear.com', fallback: 'Women' },
 ]
 
 const slugOf = (name) => name.replace(/[^a-z0-9]/gi, '_')
@@ -168,10 +209,11 @@ const rules = [
   ['Jewelry', /necklace|earring|bracelet|\brings?\b|pendant|anklet/i],
   ['Accessories', /\b(cap(?! sleeve)|hat|beanie|snapback|strapback|bucket|visor|bag|tote|backpack|belt|scarf|gloves?|wallet|sunglass(es)?|headband|bandana|duffle|pouch|crossbody|lanyard|umbrella|balaclava|neck gaiter|purse|clutch|satchel|hobo|handbag|scrunchie|hair clip)\b/i],
   ['Swimwear', /swim|bikini|trunks|boardshort|rash ?guard/i],
+  ['Jeans', /\bjeans?\b/i],
   ['Intimates', /underwear|\bbriefs?\b|\bboxers?\b(?! ?(short|pant))|bralette|\bthong\b|panty|panties|lingerie|undershirt|shapewear/i],
   ['Activewear', /sports? bra|legging|bike short|tracksuit|\bbra\b/i],
   ['Suits', /\bsuits?\b(?!case)|tuxedo/i],
-  ['Outerwear', /jacket|\bcoat|overcoat|parka|puffer|anorak|windbreaker|trench|bomber|blazer|shacket|poncho|\bcape\b|gilet/i],
+  ['Outerwear', /jacket|\bcoat|overcoat|parka|puffer|anorak|windbreaker|trench|bomber|blazer|shacket|poncho|\bcape\b(?![\w ]{0,14}\b(top|tee|tank)\b)|gilet/i],
   ['Knitwear', /sweater|cardigan|hoodie|sweatshirt|crewneck|crew neck|pullover|jumper|turtleneck|fleece/i],
   ['Outerwear', /\bvest\b/i],
   ['Jeans', /\bjeans?\b|\bdenim\b(?!.*(jacket|shirt|vest|top|dress|skirt|short|cap|hat|bag))/i],
@@ -522,16 +564,75 @@ const meEmItems = await loadMeEm()
 items.push(...meEmItems)
 summary.push(`${'ME+EM'.padEnd(22)} (site)  added ${String(meEmItems.length).padStart(4)}`)
 
-items.forEach((item, index) => { item.id = FIRST_ID + index })
-const file = {
-  checkedOn: CHECKED_ON,
-  stores: {
-    ...Object.fromEntries(stores.filter((store) => items.some((item) => item.vendor === store.name)).map((store) => [store.name, store.base])),
-    ...(meEmItems.length ? { 'ME+EM': MEEM_US } : {}),
-  },
-  items,
+// ---- compact file -------------------------------------------------------------
+// Every visitor downloads this file, so values that repeat (store, color, size lists, photo
+// folder) are stored once in a table and each item holds only positions in those tables.
+// src/services/catalogService.js expands it back; keep the two in step (FORMAT_VERSION).
+const FORMAT_VERSION = 2
+
+function splitImage(url) {
+  // Shopify's ?v=<timestamp> only busts caches, so it is dropped.
+  const clean = url.replace(/\?v=\d+(&|$)/, (_, next) => (next === '&' ? '?' : ''))
+  const match = clean.match(/^(.*(?:\/|%2F))([^/%?&]+)((?:[?&].*)?)$/)
+  return match ? [match[1], match[2], match[3]] : [clean, '', '']
 }
-fs.writeFileSync(OUTPUT, JSON.stringify(file))
+
+function compactCatalog(list, storeBases) {
+  const table = () => {
+    const values = []
+    const lookup = new Map()
+    return {
+      values,
+      index: (value) => {
+        const key = JSON.stringify(value)
+        if (!lookup.has(key)) { lookup.set(key, values.length); values.push(value) }
+        return lookup.get(key)
+      },
+    }
+  }
+  const vendors = table(), colors = table(), categories = table(), genders = table(), dress = table(), shirt = table(), pants = table(), brands = table(), bases = table(), tails = table()
+  brands.index('')
+  pants.index([])
+
+  const rows = list.map((item) => {
+    const [base, file, tail] = splitImage(item.imageUrl)
+    const prefix = storeBases[item.vendor]
+    const page = item.url || `${prefix}${item.handle}`
+    return [
+      vendors.index(item.vendor),
+      genders.index(item.gender),
+      categories.index(item.category),
+      item.price,
+      item.name,
+      colors.index(item.color),
+      dress.index(item.dressCode),
+      shirt.index(item.availableShirtSizes),
+      pants.index(item.availablePantsSizes || []),
+      brands.index(item.brand || ''),
+      bases.index(base),
+      file,
+      tails.index(tail),
+      // Left empty when the address is just the product name in dashed form (the site rebuilds it).
+      page.startsWith(prefix) ? (page.slice(prefix.length) === slugify(item.name) ? '' : page.slice(prefix.length)) : page,
+    ]
+  })
+
+  return {
+    v: FORMAT_VERSION,
+    checkedOn: CHECKED_ON,
+    firstId: FIRST_ID,
+    stores: storeBases,
+    vendors: vendors.values, colors: colors.values, categories: categories.values, genders: genders.values,
+    dress: dress.values, shirt: shirt.values, pants: pants.values, brands: brands.values, imageBases: bases.values, imageTails: tails.values,
+    rows,
+  }
+}
+
+const storeBases = {
+  ...Object.fromEntries(stores.filter((store) => items.some((item) => item.vendor === store.name)).map((store) => [store.name, `${store.base}/products/`])),
+  ...(meEmItems.length ? { 'ME+EM': `${MEEM_US}/` } : {}),
+}
+fs.writeFileSync(OUTPUT, JSON.stringify(compactCatalog(items, storeBases)))
 
 const count = (key) => items.reduce((acc, item) => { acc[item[key]] = (acc[item[key]] || 0) + 1; return acc }, {})
 console.log(summary.join('\n'))
