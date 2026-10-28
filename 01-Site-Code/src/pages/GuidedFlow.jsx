@@ -1,6 +1,6 @@
 ﻿import { ArrowLeft, ArrowRight, BookmarkPlus, Check, RotateCcw, Ruler, Shirt, SlidersHorizontal, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import BodyShape from '../components/BodyShape'
 import ProductGrid from '../components/ProductGrid'
 import { useStyle } from '../context/StyleContext'
@@ -116,6 +116,7 @@ export default function GuidedFlow() {
           <p className="text-[11px] font-bold uppercase tracking-[.22em] text-gold-800">A note on fit</p>
           <h2 className="mt-5 text-2xl font-black tracking-tight">Bodies are individual. These are simply starting points.</h2>
           <p className="mt-4 text-sm leading-6 text-neutral-700">Choose the proportion closest to yours. Next, set a spending range to see which stores belong in your edit.</p>
+          <Link to={`/fit-guide?gender=${selections.gender === 'Men' ? 'Men' : 'Women'}`} className="mt-5 inline-flex items-center gap-2 text-xs font-black underline">WHAT STYLISTS SUGGEST FOR EACH <ArrowRight size={14} /></Link>
         </aside>
         <div className="grid grid-cols-2 sm:grid-cols-3">
           {bodyTypes.map((value) => <button key={value} onClick={() => choose('bodyType', value)} className={`group flex min-h-64 flex-col items-center justify-between border-b border-r border-neutral-300 p-5 text-center transition-colors hover:bg-[#FBF3E4] ${selections.bodyType === value ? 'bg-[#E8C45D] text-black' : 'bg-white'}`}>

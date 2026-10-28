@@ -37,6 +37,10 @@ The "Need it fast" page, the same-day filter in the shop (`?fast=1`), and the no
 
 Running our own delivery (a "get it in an hour" button inside the site) would mean DoorDash Drive: a DoorDash developer account, a sandbox build and review with DoorDash before production keys, a pickup address for every store item, and per-delivery fees (reported at roughly $7 to $11 in the U.S.). It also needs stores' agreement to hand over items, so it isn't built.
 
+## Fit guide (`/fit-guide`)
+
+Short styling suggestions for each of the site's body types, written from published stylist guides and kept in `src/data/fitGuide.js` (the page is `src/pages/FitGuide.jsx`; the body-type step of the style flow links to it). Every entry names its sources, and the page says plainly that these are opinions that the guides don't always agree on. Each "shop the ideas" button is a plain `/shop?gender=…&q=…` search for a garment the advice mentions; stores don't publish body-type fit, so results are not filtered by shape. When you change a button's search, check that it still returns plenty of items.
+
 ## Wishlist and style profiles
 
 The heart on any product card saves it to `/wishlist`. The account icon opens `/profiles`, which lists style profiles saved from the guided flow. Both are stored per-browser in `localStorage` — there is no account system or server-side storage.

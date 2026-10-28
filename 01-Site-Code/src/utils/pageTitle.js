@@ -16,7 +16,8 @@ const DEFAULT_DESCRIPTION = 'Fits Me Right is your fashion concierge — search 
 const routes = [
   [/^\/$/, DEFAULT_TITLE, DEFAULT_DESCRIPTION],
   [/^\/shop\b/, 'Shop the Marketplace', 'Search clothing, shoes, jewelry and accessories across dozens of stores at once, filtered by body type, size, color, price and brand.'],
-  [/^\/fast\b/, 'Need It Fast — Same-Day Delivery & Pickup', 'Need a tuxedo, suit or dress today? See same-day delivery through DoorDash, store pickup, and what is realistic for your deadline.'],
+  [/^\/fit-guide\b/, 'Fit Guide — Styling Tips by Body Type', 'Short, sourced styling suggestions for six women’s and six men’s body types, each with shortcuts into the shop.'],
+  [/^\/fast\b/,'Need It Fast — Same-Day Delivery & Pickup', 'Need a tuxedo, suit or dress today? See same-day delivery through DoorDash, store pickup, and what is realistic for your deadline.'],
   [/^\/cobbler-corner\b/, 'Cobbler Corner — Shoes', 'Compare sneakers, boots, sandals, heels and more across leading retailers, then step directly into the store.'],
   [/^\/just-jewels\b/, 'Just Jewels — Jewelry & Accessories', 'Necklaces, earrings, rings, bracelets, bags, belts and the small details that make an outfit yours, from stores across the market.'],
   [/^\/thrifty-shopper\b/, 'Thrifty Shopper', 'One-of-one vintage and resale pieces from real independent sellers, with real prices and photos.'],
