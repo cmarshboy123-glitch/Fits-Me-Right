@@ -1,5 +1,6 @@
 import { ArrowRight, Mail } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { CONTACT_EMAIL } from '../data/legalPages'
 
 const faqs = [
   {
@@ -55,7 +56,7 @@ export default function Help() {
       <div className="mt-12 rounded-[2rem] bg-gold-50 p-8 lg:p-12">
         <h2 className="text-2xl font-black">Still need something?</h2>
         <p className="mt-3 max-w-lg leading-7 text-neutral-700">Reach out and we’ll get back to you as soon as we can.</p>
-        <a href="mailto:hello@fitsmeright.com" className="mt-6 inline-flex items-center gap-3 rounded-full bg-black px-7 py-4 text-sm font-black text-white"><Mail size={17} /> HELLO@FITSMERIGHT.COM</a>
+        <a href={`mailto:${CONTACT_EMAIL}`} className="mt-6 inline-flex items-center gap-3 rounded-full bg-black px-7 py-4 text-sm font-black text-white"><Mail size={17} /> {CONTACT_EMAIL.toUpperCase()}</a>
       </div>
 
       <div className="mt-10 flex flex-wrap gap-4 text-sm font-bold">

@@ -2,6 +2,10 @@ import { ArrowRight, Leaf, MapPin, Pause, Play, Scissors, Sparkles } from 'lucid
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+// The three studios below, their pieces and their photos are illustrative examples. Set this to
+// false only once they are real people who agreed to be featured (and the prices are theirs).
+const SAMPLE_EDITION = true
+
 const designers = [
   {
     name: 'Amara Osei', studio: 'Maison Osei', location: 'Accra · Brooklyn', discipline: 'Ready-to-wear',
@@ -65,6 +69,12 @@ export default function CreativeCorner() {
           <div className="relative min-h-[480px] overflow-hidden border-t border-white/20 lg:border-l lg:border-t-0"><img src="/assets/unique/creative-cover-amara-v1.webp" alt="Independent Black designer directing a fitting in her atelier" className="absolute inset-0 h-full w-full object-cover" /><div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/70 to-transparent p-7 pt-28"><p className="text-[10px] font-black uppercase tracking-[.22em] text-gold-300">Current cover story</p><p className="mt-2 text-2xl font-black">Amara Osei builds clothes around movement.</p></div></div>
         </div>
       </section>
+
+      {SAMPLE_EDITION && (
+        <section className="border-b border-black bg-gold-400 px-4 py-4 lg:px-8">
+          <p className="mx-auto max-w-[1440px] text-sm font-bold leading-6"><span className="mr-2 text-[10px] font-black uppercase tracking-[.2em]">Sample edition</span>The designers, studios, pieces and photos on this page are illustrative examples. They are not real people or products for sale. Real independent designers will be featured here as they join.</p>
+        </section>
+      )}
 
       <section className="border-b border-black bg-[#F3E8D4]"><div className="mx-auto grid max-w-[1440px] grid-cols-2 md:grid-cols-4">{[['03', 'Studios in this edition'], ['03', 'Cities represented'], ['03', 'Design disciplines'], ['Quarterly', 'New editorial rotation']].map(([value, label]) => <div key={label} className="border-r border-t border-black p-6 last:border-r-0 md:border-t-0 lg:p-8"><p className="text-3xl font-black">{value}</p><p className="mt-2 text-xs font-bold uppercase tracking-wider text-neutral-600">{label}</p></div>)}</div></section>
 

@@ -4,6 +4,9 @@
 
 export const LEGAL_UPDATED = 'October 28, 2026'
 export const CONTACT_EMAIL = 'hello@fitsmeright.com'
+// Who runs the site (a person's name or a registered business name, plus a city/state). Left empty
+// until the owner decides; the terms show a "Who runs Fits Me Right" section as soon as it is set.
+export const OPERATOR_NAME = ''
 
 export const legalPages = {
   privacy: {
@@ -65,6 +68,10 @@ export const legalPages = {
         h: 'What Fits Me Right is',
         p: ['Fits Me Right is an independent site for discovering clothing. We don’t sell products, take orders or process payments. Every item links to the store that sells it, and any purchase is between you and that store.'],
       },
+      ...(OPERATOR_NAME ? [{
+        h: 'Who runs Fits Me Right',
+        p: [`Fits Me Right is operated by ${OPERATOR_NAME}. You can reach us at ${CONTACT_EMAIL}.`],
+      }] : []),
       {
         h: 'We are not the stores',
         p: ['We are not affiliated with, endorsed by or sponsored by the retailers or brands shown. Their names, logos and trademarks belong to them and appear only to show where an item is sold. Product photos and descriptions belong to the retailers.'],
