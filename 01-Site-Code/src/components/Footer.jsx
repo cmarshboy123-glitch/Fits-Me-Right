@@ -12,7 +12,7 @@ export default function Footer() {
         <div><p className="text-xs font-bold uppercase tracking-[.16em]">Shop</p><div className="mt-5 flex flex-col gap-3 text-sm text-neutral-600"><Link to="/shop">All Stores</Link><Link to="/style/gender">Your Style Edit</Link><Link to="/fast">Need It Fast</Link><Link to="/fit-guide">Fit Guide</Link><Link to="/cobbler-corner">Cobbler Corner</Link><Link to="/just-jewels">Just Jewels</Link><Link to="/thrifty-shopper">Thrifty Shopper</Link><Link to="/wishlist">Your Wishlist</Link></div></div>
         <div><p className="text-xs font-bold uppercase tracking-[.16em]">About</p><div className="mt-5 flex flex-col gap-3 text-sm text-neutral-600"><Link to="/creative-corner">Creative Corner</Link><Link to="/about">Our Fit Promise</Link><Link to="/help">Help & Contact</Link></div></div>
       </div>
-      <div className="border-t border-neutral-200 px-4 py-5 text-center text-xs text-neutral-500">© 2026 Fits Me Right. Style, considered.</div>
+      <div className="border-t border-neutral-200 px-4 py-5 text-center text-xs text-neutral-500"><div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2"><span>© 2026 Fits Me Right. Style, considered.</span><Link to="/privacy" className="underline">Privacy</Link><Link to="/terms" className="underline">Terms</Link><Link to="/disclosures" className="underline">How our listings work</Link></div></div>
     </footer>
   )
 }

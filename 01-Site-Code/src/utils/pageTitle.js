@@ -25,7 +25,10 @@ const routes = [
   [/^\/wishlist\b/, 'Your Wishlist', DEFAULT_DESCRIPTION, true],
   [/^\/profiles\b/, 'Style Profiles', DEFAULT_DESCRIPTION, true],
   [/^\/about\b/, 'Our Fit Promise', 'Fits Me Right is an independent discovery experience, not a retailer. Here is how we search, how we link out, and what we promise.'],
-  [/^\/help\b/, 'Help & Contact', 'Answers to common questions about Fits Me Right, prices, sizes and links, plus how to reach us.'],
+  [/^\/privacy\b/, 'Privacy', 'What Fits Me Right does and doesn’t do with your information: no accounts, no ads, no tracking.'],
+  [/^\/terms\b/, 'Terms of Use', 'The ground rules for using Fits Me Right, an independent clothing discovery site.'],
+  [/^\/disclosures\b/, 'How Our Listings Work', 'Where our products come from, how current the prices are, and what Fits Me Right does and doesn’t earn.'],
+  [/^\/help\b/,'Help & Contact', 'Answers to common questions about Fits Me Right, prices, sizes and links, plus how to reach us.'],
   [/^\/admin\b/, 'Catalog Manager', DEFAULT_DESCRIPTION, true],
 ]
 

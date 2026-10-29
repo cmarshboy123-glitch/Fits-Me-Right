@@ -15,6 +15,11 @@ const faqs = [
     a: 'Prices and size availability are snapshots meant to help you compare. The retailer always has the final, live price and stock — we note the date a listing was last checked where we can.',
   },
   {
+    q: 'Where do the listings come from, and do you earn money from them?',
+    a: 'Most are real products from stores’ own public product pages and feeds. Some are sample listings, which are labeled “Shop this look” and “example price.” We don’t earn anything when you click or buy. The full explanation is on our How our listings work page.',
+    link: ['/disclosures', 'How our listings work'],
+  },
+  {
     q: 'Do I need an account?',
     a: 'No. Wishlist items and saved style profiles are stored in your browser on this device — there’s no sign-up, login, or password.',
   },
@@ -36,13 +41,13 @@ export default function Help() {
       <p className="mt-5 max-w-xl leading-7 text-neutral-600">Answers to what we hear most, and a way to reach us for everything else.</p>
 
       <div className="mt-12 divide-y divide-neutral-200 rounded-2xl border border-neutral-200 bg-white">
-        {faqs.map(({ q, a }) => (
+        {faqs.map(({ q, a, link }) => (
           <details key={q} className="group p-6 open:bg-paper">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold marker:content-none">
               {q}
               <span className="shrink-0 text-xl leading-none text-neutral-400 transition group-open:rotate-45">+</span>
             </summary>
-            <p className="mt-3 leading-6 text-neutral-600">{a}</p>
+            <p className="mt-3 leading-6 text-neutral-600">{a}{link && <> <Link to={link[0]} className="font-bold text-black underline">{link[1]}</Link>.</>}</p>
           </details>
         ))}
       </div>

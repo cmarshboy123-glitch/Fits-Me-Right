@@ -28,6 +28,10 @@ export default function ProductCard({ product }) {
     ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${product.verifiedAt}T00:00:00Z`))
     : null
 
+  const shortDate = product.verifiedAt
+    ? new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(new Date(`${product.verifiedAt}T00:00:00Z`))
+    : null
+
   // Every product opens somewhere real: an exact, hand-verified item page when we have
   // one, otherwise a live search at that retailer for this item so nothing dead-ends.
   const isExact = Boolean(product.productUrl)
@@ -81,7 +85,7 @@ export default function ProductCard({ product }) {
         <h3 className="mt-2 text-sm font-semibold leading-snug">{product.name}</h3>
         {product.fitNote && <p className="mt-1 text-[11px] leading-4 text-neutral-500">{product.fitNote}</p>}
         {visibleSizes && <p className="mt-2 truncate text-[10px] font-bold uppercase tracking-wide text-neutral-500">Listed sizes {visibleSizes.join(' · ')}</p>}
-        <p className="mt-2 text-sm font-bold">${product.price.toFixed(2)} <span className="text-[9px] font-medium uppercase tracking-wide text-neutral-400">price snapshot</span></p>
+        <p className="mt-2 text-sm font-bold">${product.price.toFixed(2)} <span className="text-[9px] font-medium uppercase tracking-wide text-neutral-400">{shortDate ? `price as of ${shortDate}` : "example price"}</span></p>
         {fastOption && <p className="mt-2 flex items-center gap-1 text-[10px] font-bold text-gold-800"><Zap size={11} aria-hidden="true" /> Same-day delivery may be available via {fastOption.provider}</p>}
         {hasLink ? (
           <a href={linkUrl} target="_blank" rel="noreferrer" className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-neutral-950 px-3 py-3 text-[10px] font-bold text-white transition hover:bg-gold-600">

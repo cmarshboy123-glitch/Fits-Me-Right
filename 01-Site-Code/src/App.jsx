@@ -15,6 +15,7 @@ const Wishlist = lazy(() => import('./pages/Wishlist'))
 const Profiles = lazy(() => import('./pages/Profiles'))
 const About = lazy(() => import('./pages/About'))
 const Help = lazy(() => import('./pages/Help'))
+const Legal = lazy(() => import('./pages/Legal'))
 const Admin = lazy(() => import('./pages/Admin'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
@@ -37,6 +38,9 @@ export default function App() {
         <Route path="profiles" element={<Profiles />} />
         <Route path="about" element={<About />} />
         <Route path="help" element={<Help />} />
+        <Route path="privacy" element={<Legal page="privacy" />} />
+        <Route path="terms" element={<Legal page="terms" />} />
+        <Route path="disclosures" element={<Legal page="disclosures" />} />
         <Route path="admin" element={<Admin />} />
         <Route path="*" element={<NotFound />} />
       </Route>
