@@ -1,6 +1,6 @@
 export const retailerNames = [
   'Nordstrom', "Macy's", 'Zara', 'H&M', 'ASOS', "Bloomingdale's", 'Bershka',
-  'Saks Fifth Avenue', 'Neiman Marcus', 'Anthropologie', 'Urban Outfitters',
+  'Saks Fifth Avenue', 'Neiman Marcus', 'Bergdorf Goodman', 'Anthropologie', 'Urban Outfitters',
   'Gap', 'Old Navy', 'Banana Republic', 'J.Crew', 'Madewell',
   'Abercrombie & Fitch', 'American Eagle', 'Mango', 'Forever 21', 'Express',
   'Target', 'Walmart', 'Amazon Fashion', 'Revolve', 'Nordstrom Rack',
@@ -40,6 +40,9 @@ function buildDestinations(query, slug) {
     "Bloomingdale's": `https://www.bloomingdales.com/shop/featured/${slug}`,
     'Saks Fifth Avenue': `https://www.saksfifthavenue.com/search?q=${query}`,
     'Neiman Marcus': `https://www.neimanmarcus.com/search.jsp?N=0&Ntt=${query}`,
+    // Bergdorf's own search page can't be read by our tools (it blocks automated visits), so this searches
+    // only bergdorfgoodman.com through Google.
+    'Bergdorf Goodman': `https://www.google.com/search?q=site%3Abergdorfgoodman.com+${query}`,
     Anthropologie: `https://www.anthropologie.com/search?q=${query}`,
     'Urban Outfitters': `https://www.urbanoutfitters.com/search?q=${query}`,
     Gap: `https://www.gap.com/browse/search.do?searchText=${query}`,
@@ -163,7 +166,12 @@ export function webSearchDestinations(rawQuery) {
 
   const results = []
   if (matchedRetailer && destinations[matchedRetailer] && destinations[matchedRetailer] !== '#') {
-    results.push({ label: matchedRetailer, url: destinations[matchedRetailer] })
+    // Searching a store for its own name adds nothing ("Bergdorf Goodman silk dress" -> "silk dress").
+    const nameAt = lowerText.indexOf(matchedRetailer.toLowerCase())
+    const itemText = `${text.slice(0, nameAt)} ${text.slice(nameAt + matchedRetailer.length)}`.replace(/\s+/g, ' ').trim() || text
+    const storeUrl = buildDestinations(encodeURIComponent(itemText), itemText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))[matchedRetailer]
+    const viaGoogle = storeUrl.startsWith('https://www.google.com/')
+    results.push({ label: viaGoogle ? `${matchedRetailer} (searched through Google)` : matchedRetailer, url: storeUrl })
   }
   results.push({ label: 'Google Shopping', url: `https://www.google.com/search?tbm=shop&q=${query}` })
   results.push({ label: 'Amazon', url: `https://www.amazon.com/s?k=${query}` })
