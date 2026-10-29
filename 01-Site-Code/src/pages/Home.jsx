@@ -39,7 +39,7 @@ export default function Home() {
               <Link key={retailer} to={storeSearch(retailer)} className="shrink-0 rounded-full border border-neutral-200 bg-white px-5 py-3 text-xs font-bold text-neutral-700 transition hover:border-gold-400 hover:text-gold-700">{retailer}</Link>
             ))}
           </div>
-          <p className="mt-6 text-xs text-neutral-500">Fits Me Right is an independent discovery experience. Retailer names identify where sample products can be purchased.</p>
+          <p className="mt-6 text-xs text-neutral-500">Fits Me Right is an independent discovery experience. Store names identify where items are sold. Stores we have no real listings for open on their own sites.</p>
         </div>
       </section>
 

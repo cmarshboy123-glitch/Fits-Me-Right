@@ -31,6 +31,10 @@ node work/build-extra-catalog.mjs
 
 Retailers don't publish body-type fit or dress codes, so those two fields are assigned generically (every body type for the gender; dress code guessed from the garment). Items from the feed can't be edited in `/admin`, since they aren't in the database.
 
+## Sample listings are hidden by default
+
+About 7,800 items from the product API have no `productUrl`: an example name and price in a store's typical range, shown with an illustration, that open the store's search. `isSampleListing()` in `src/services/catalogService.js` identifies them (no exact product page). Every page uses real items only (`getRealProducts()`), and the shop opts samples back in with `?samples=1` (the "Sample listings" filter, or the button in the note that appears when a search finds few real items). Luxury houses, the big department stores and the Asian-market stores are almost entirely samples, so those searches show how few real items exist and link to the store's own site. Real products from a store (feed or affiliate) bring it back automatically.
+
 ## Fast delivery (`/fast`)
 
 The "Need it fast" page, the same-day filter in the shop (`?fast=1`), and the note on product cards come from `src/utils/fastDelivery.js`. Fits Me Right doesn't deliver anything: the page points shoppers to stores that sell through DoorDash and to same-day pickup, and says plainly what's realistic for a deadline (a tuxedo rental, for example, needs a week or more). Only retailers with a recent published announcement are listed; update `fastDeliveryRetailers` and `FAST_DELIVERY_CHECKED` when that changes, and keep the sources current.

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { ArrowRight, Recycle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid'
-import { getProducts } from '../services/catalogService'
+import { getRealProducts } from '../services/catalogService'
 import { parseShoppingIntent, productMatchesIntent } from '../utils/searchIntent'
 
 const tabs = ['Women', 'Men']
@@ -15,7 +15,7 @@ export default function ThriftyShopper() {
   const [query, setQuery] = useState('')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const [loaded, setLoaded] = useState(false)
-  useEffect(() => { getProducts().then((items) => { setProducts(items.filter((item) => item.storeTier === 'Resale & Vintage')); setLoaded(true) }) }, [])
+  useEffect(() => { getRealProducts().then((items) => { setProducts(items.filter((item) => item.storeTier === 'Resale & Vintage')); setLoaded(true) }) }, [])
 
   const intent = useMemo(() => parseShoppingIntent(query), [query])
   const hasQuery = query.trim().length > 0

@@ -16,7 +16,7 @@ const faqs = [
   },
   {
     q: 'Where do the listings come from, and do you earn money from them?',
-    a: 'Most are real products from stores’ own public product pages and feeds. Some are sample listings, which are labeled “Shop this look” and “example price.” We don’t earn anything when you click or buy. The full explanation is on our How our listings work page.',
+    a: 'Most are real products from stores’ own public product pages and feeds. A smaller set are sample listings (an example name and price, not a specific item in stock). They are hidden unless you turn them on in the shop’s filters. We don’t earn anything when you click or buy. The full explanation is on our How our listings work page.',
     link: ['/disclosures', 'How our listings work'],
   },
   {

@@ -129,6 +129,16 @@ export function getProducts() {
   return catalogPromise
 }
 
+// A sample listing is an illustration of what a store typically sells (example name and price)
+// with no exact product page. Real listings always carry the store's own product URL.
+export const isSampleListing = (product) => !product.productUrl
+
+// What visitors see by default: real products only. The shop can opt back in to samples.
+export async function getRealProducts() {
+  const catalog = await getProducts()
+  return catalog.filter((product) => !isSampleListing(product))
+}
+
 // Called after an admin create/edit/delete so the next getProducts() call
 // re-fetches instead of serving the stale in-memory copy.
 export function invalidateCatalogCache() {
@@ -136,7 +146,7 @@ export function invalidateCatalogCache() {
 }
 
 export async function getRecommendedProducts(selections) {
-  const catalog = await getProducts()
+  const catalog = await getRealProducts()
   const catalogBodyType = selections.bodyType === 'Balanced' ? 'Regular' : selections.bodyType
 
   const matchesSelectedSize = (product) => {

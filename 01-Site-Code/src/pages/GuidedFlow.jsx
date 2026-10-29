@@ -39,6 +39,7 @@ export default function GuidedFlow() {
   const navigate = useNavigate()
   const { selections, profiles, updateSelection, resetSelections, saveProfile, loadProfile, deleteProfile } = useStyle()
   const [results, setResults] = useState([])
+  const [visibleCount, setVisibleCount] = useState(24)
   const [loading, setLoading] = useState(step === 'results')
   const [profileName, setProfileName] = useState('')
   const [profileSaved, setProfileSaved] = useState(false)
@@ -57,7 +58,7 @@ export default function GuidedFlow() {
   useEffect(() => {
     if (step === 'results') {
       setLoading(true)
-      getRecommendedProducts(selections).then((items) => { setResults(items); setLoading(false) })
+      getRecommendedProducts(selections).then((items) => { setResults(items); setVisibleCount(24); setLoading(false) })
     }
   }, [step, selections])
 
@@ -86,7 +87,7 @@ export default function GuidedFlow() {
           <button onClick={restart} className="flex items-center gap-2 text-sm font-bold"><RotateCcw size={16} /> START AGAIN</button>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-4 py-6"><p className="text-sm font-bold">{loading ? 'CURATING…' : `${results.length} MATCH${results.length === 1 ? '' : 'ES'}`}</p><div className="flex items-center gap-5"><button onClick={() => navigate('/style/save-profile')} className="flex items-center gap-2 text-sm font-bold"><BookmarkPlus size={17} /> SAVE PROFILE</button><button onClick={() => navigate('/style/dress-code')} className="flex items-center gap-2 text-sm font-bold"><SlidersHorizontal size={17} /> EDIT FILTERS</button></div></div>
-        {!loading && results.length > 0 && <><div className="mb-7 border-y border-black py-5"><p className="text-[10px] font-black uppercase tracking-[.24em] text-gold-800">Verified direct matches</p><div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold">{[...new Set(results.map((product) => product.vendor))].map((vendor) => <span key={vendor}>{vendor}</span>)}</div><p className="mt-3 max-w-2xl text-xs leading-5 text-neutral-500">Each button opens that exact retailer product page. Prices and size availability {latestVerifiedLabel ? `were checked ${latestVerifiedLabel}` : 'are a snapshot'} and can change at the store.</p></div><ProductGrid products={results} /></>}
+        {!loading && results.length > 0 && <><div className="mb-7 border-y border-black py-5"><p className="text-[10px] font-black uppercase tracking-[.24em] text-gold-800">Verified direct matches</p><div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold">{[...new Set(results.map((product) => product.vendor))].map((vendor) => <span key={vendor}>{vendor}</span>)}</div><p className="mt-3 max-w-2xl text-xs leading-5 text-neutral-500">Each button opens that exact retailer product page. Prices and size availability {latestVerifiedLabel ? `were checked ${latestVerifiedLabel}` : 'are a snapshot'} and can change at the store.</p></div><ProductGrid products={results.slice(0, visibleCount)} />{visibleCount < results.length && <div className="mt-10 flex flex-col items-center gap-2"><button onClick={() => setVisibleCount((count) => count + 24)} className="flex min-h-12 items-center gap-2 rounded-full border border-neutral-300 bg-white px-8 text-sm font-bold transition hover:border-gold-400">LOAD MORE</button><p className="text-xs text-neutral-500">Showing {Math.min(visibleCount, results.length)} of {results.length}</p></div>}</>}
         {!loading && results.length === 0 && <div className="grid place-items-center rounded-3xl bg-neutral-100 px-6 py-24 text-center"><div><p className="text-xs font-bold uppercase tracking-widest text-gold-700">The edit is still in progress</p><h2 className="mt-3 text-3xl font-black">No exact matches yet.</h2><p className="mx-auto mt-3 max-w-md text-neutral-600">Try adjusting one detail and we’ll widen the rail.</p><button onClick={() => navigate('/style/dress-code')} className="mt-7 rounded-full bg-black px-7 py-4 text-sm font-bold text-white">CHANGE DRESS CODE</button></div></div>}
       </section>
     )

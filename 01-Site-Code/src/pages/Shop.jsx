@@ -2,10 +2,10 @@ import { ArrowRight, ExternalLink, Search, SlidersHorizontal, X, Zap } from 'luc
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid'
-import { getProducts } from '../services/catalogService'
+import { getProducts, isSampleListing } from '../services/catalogService'
 import { searchLiveWeb } from '../services/liveSearchService'
 import { filterWebResults, intentLabels, productColorFamily, productMatchesIntent, searchCatalog, shoppingCategories, shoppingColors } from '../utils/searchIntent'
-import { webSearchDestinations } from '../utils/retailers'
+import { luxuryRetailers, webSearchDestinations } from '../utils/retailers'
 import { doorDashSearchUrl, fastDeliveryFor, mapsSearchUrl, urgencyPattern, withoutUrgency } from '../utils/fastDelivery'
 
 const priceOptions = [['All prices', ''], ['On a Budget', 'budget'], ['Money to Spend', 'treat'], ["Let's Splurge", 'splurge']]
@@ -32,6 +32,8 @@ export default function Shop() {
   const [category, setCategory] = useState(searchParams.get('category') || '')
   const [color, setColor] = useState(searchParams.get('color') || '')
   const [fast, setFast] = useState(searchParams.get('fast') || '')
+  // Sample listings (an example name and price, no exact product page) are hidden unless asked for.
+  const [samples, setSamples] = useState(searchParams.get('samples') || '')
 
   const [loaded, setLoaded] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -50,11 +52,15 @@ export default function Shop() {
     setCategory(searchParams.get('category') || '')
     setColor(searchParams.get('color') || '')
     setFast(searchParams.get('fast') || '')
+    setSamples(searchParams.get('samples') || '')
   }, [searchParams])
 
-  const catalogProducts = products
-  const stores = useMemo(() => [...new Set(catalogProducts.map((product) => product.vendor))].sort(), [catalogProducts])
-  const brands = useMemo(() => [...new Set(catalogProducts.map((product) => product.brand).filter(Boolean))].sort(), [catalogProducts])
+  const realProducts = useMemo(() => products.filter((product) => !isSampleListing(product)), [products])
+  const sampleProducts = useMemo(() => products.filter(isSampleListing), [products])
+  const catalogProducts = samples ? products : realProducts
+  // A store or brand in the URL stays selectable even when none of its items are shown.
+  const stores = useMemo(() => [...new Set([...catalogProducts.map((product) => product.vendor), ...(retailer ? [retailer] : [])])].sort(), [catalogProducts, retailer])
+  const brands = useMemo(() => [...new Set([...catalogProducts.map((product) => product.brand).filter(Boolean), ...(brand ? [brand] : [])])].sort(), [catalogProducts, brand])
   const bodyTypes = gender === 'Women' ? womenBodyTypes : gender === 'Men' ? menBodyTypes : [...new Set([...womenBodyTypes, ...menBodyTypes])]
 
   // Typing stays responsive while the catalog search catches up.
@@ -62,7 +68,7 @@ export default function Shop() {
   const search = useMemo(() => (deferredQuery.trim() ? searchCatalog(catalogProducts, deferredQuery) : null), [catalogProducts, deferredQuery])
   const understood = search ? intentLabels(search.intent) : []
 
-  const filtered = useMemo(() => (search ? search.results : catalogProducts).filter((product) => {
+  const passesFilters = useMemo(() => (product) => {
     const catalogBodyType = bodyType === 'Balanced' ? 'Regular' : bodyType
     return (!retailer || product.vendor === retailer) && (!brand || product.brand === brand) &&
       (!gender || product.gender === gender) && (!bodyType || product.bodyType?.includes(catalogBodyType)) &&
@@ -70,7 +76,16 @@ export default function Shop() {
       (!category || productMatchesIntent(product, { text: '', color: '', category, maxPrice: null, minPrice: null, size: '', gender: '' })) &&
       (!color || productColorFamily(product.color) === color) &&
       (!fast || fastDeliveryFor(product.vendor))
-  }), [catalogProducts, search, retailer, brand, gender, bodyType, priceTier, market, category, color, fast])
+  }, [retailer, brand, gender, bodyType, priceTier, market, category, color, fast])
+  const filtered = useMemo(() => (search ? search.results : catalogProducts).filter(passesFilters), [catalogProducts, search, passesFilters])
+
+  // How many hidden sample listings would match the same search and filters.
+  const hiddenSamples = useMemo(() => {
+    if (samples || !loaded) return 0
+    const pool = deferredQuery.trim() ? searchCatalog(sampleProducts, deferredQuery).results : sampleProducts
+    return pool.filter(passesFilters).length
+  }, [samples, loaded, deferredQuery, sampleProducts, passesFilters])
+  const realShown = samples ? filtered.filter((product) => !isSampleListing(product)).length : filtered.length
 
   const activeCount = [query, retailer, brand, gender, bodyType, priceTier, market, category, color, fast].filter(Boolean).length
   const guidedSearch = Boolean(searchParams.get('bodyType') || searchParams.get('priceTier'))
@@ -113,13 +128,28 @@ export default function Shop() {
   const syncUrl = (event) => {
     event?.preventDefault()
     const params = new URLSearchParams()
-    Object.entries({ q: query, store: retailer, brand, gender, bodyType, priceTier, market, category, color, fast }).forEach(([key, value]) => { if (value) params.set(key, value) })
+    Object.entries({ q: query, store: retailer, brand, gender, bodyType, priceTier, market, category, color, fast, samples }).forEach(([key, value]) => { if (value) params.set(key, value) })
     setSearchParams(params)
   }
 
   const clearAll = () => {
-    setQuery(''); setRetailer(''); setBrand(''); setGender(''); setBodyType(''); setPriceTier(''); setMarket(''); setCategory(''); setColor(''); setFast(''); setSearchParams({})
+    setQuery(''); setRetailer(''); setBrand(''); setGender(''); setBodyType(''); setPriceTier(''); setMarket(''); setCategory(''); setColor(''); setFast(''); setSamples(''); setSearchParams({})
   }
+
+  // Turning samples on or off keeps every other search and filter as it is.
+  const toggleSamples = (value) => {
+    const params = new URLSearchParams(searchParams)
+    if (value) params.set('samples', value); else params.delete('samples')
+    setSearchParams(params)
+  }
+
+  // For a store (or a store named in the search) that has no real listings here, a way to its own site.
+  const storeSite = useMemo(() => {
+    const named = retailer || webSearchDestinations(liveQuery).find((destination) => !/Google Shopping|Amazon/.test(destination.label))?.label.replace(/ \(searched.*$/, '')
+    if (!named) return null
+    const link = webSearchDestinations(retailer || liveQuery).find((destination) => destination.label.startsWith(named))
+    return link ? { name: named, url: link.url } : null
+  }, [retailer, liveQuery])
 
   return (
     <section className="mx-auto min-h-[70vh] max-w-[1440px] px-4 py-14 lg:px-8 lg:py-20">
@@ -150,11 +180,32 @@ export default function Shop() {
         <div className="mt-5"><p className="mb-2 text-[10px] font-black uppercase tracking-[.18em] text-neutral-500">Quick color edit</p><div className="flex flex-wrap gap-2"><button onClick={() => setColor('')} aria-pressed={!color} className={`min-h-10 rounded-full px-4 text-[11px] font-bold ${!color ? 'bg-black text-white' : 'border border-neutral-300 bg-white'}`}>ALL</button>{shoppingColors.map((option) => <button key={option.value} onClick={() => setColor(option.value)} aria-label={`Filter by ${option.label}`} aria-pressed={color === option.value} title={option.label} className={`flex min-h-10 items-center gap-2 rounded-full px-3 text-[11px] font-bold ${color === option.value ? 'bg-black text-white' : 'border border-neutral-300 bg-white'}`}><span className="h-4 w-4 rounded-full border border-black/20" style={{ background: option.swatch }} />{option.label}</button>)}</div></div>
         <FilterButtons label="Price point" value={priceTier} onChange={setPriceTier} options={priceOptions} pill />
         <FilterButtons label="Delivery speed" value={fast} onChange={setFast} options={[['Any speed', ''], ['Same-day delivery options', '1']]} />
+        <FilterButtons label="Sample listings" value={samples} onChange={setSamples} options={[['Hidden', ''], ['Show them too', '1']]} />
         <FilterButtons label="Market" value={market} onChange={setMarket} options={[['All fashion', ''], ['Luxury', 'Luxury'], ['Asian Market', 'Asian Market'], ['Everyday & Designer', 'Everyday & Designer'], ['Resale & Vintage', 'Resale & Vintage']]} />
         <button onClick={syncUrl} className="mt-6 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-black px-6 text-xs font-black text-white transition hover:bg-gold-700 sm:w-auto">APPLY SEARCH FILTERS <Search size={15} /></button>
       </div>
 
-      <div className="flex flex-col gap-2 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-5"><p className="text-sm font-bold">{filtered.length} VERIFIED ITEMS ACROSS {[...new Set(filtered.map((product) => product.vendor))].length} STORES</p><p className="max-w-md text-xs text-neutral-500 sm:text-right">Every shopping button opens the named item on the official retailer site · retailer confirms live price and stock</p></div>
+      <div className="flex flex-col gap-2 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-5"><p className="text-sm font-bold">{samples ? `${filtered.length} ITEMS, ${filtered.length - realShown} OF THEM SAMPLE LISTINGS` : `${filtered.length} REAL ITEMS ACROSS ${[...new Set(filtered.map((product) => product.vendor))].length} STORES`}</p><p className="max-w-md text-xs text-neutral-500 sm:text-right">{samples ? 'Real items open the store’s own page; sample listings open the store’s search · ' : 'Every shopping button opens the item on the store’s own site · '}the store confirms live price and stock</p></div>
+
+      {loaded && !samples && hiddenSamples > 0 && (filtered.length < PAGE_SIZE || retailer || market === 'Luxury') && (
+        <div className="mb-8 rounded-2xl border border-gold-200 bg-gold-50 px-5 py-5" role="status">
+          <p className="text-sm font-bold">{filtered.length === 0 ? 'We don’t have real listings for this yet.' : `Only ${filtered.length} real ${filtered.length === 1 ? 'listing matches' : 'listings match'}.`}</p>
+          <p className="mt-1 text-sm leading-6 text-neutral-700">{hiddenSamples} sample {hiddenSamples === 1 ? 'listing also matches' : 'listings also match'}. Those show an example name and price, not a specific item in stock, and open the store&rsquo;s search.</p>
+          <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-black">
+            {storeSite && <a href={storeSite.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 underline">Shop {storeSite.name} directly <ExternalLink size={12} /></a>}
+            <button type="button" onClick={() => toggleSamples('1')} className="underline">Show the {hiddenSamples} sample {hiddenSamples === 1 ? 'listing' : 'listings'}</button>
+          </div>
+          {market === 'Luxury' && (
+            <div className="mt-4 border-t border-gold-200 pt-4">
+              <p className="text-[10px] font-black uppercase tracking-[.18em] text-gold-800">Go to the houses themselves</p>
+              <div className="mt-2 flex flex-wrap gap-2">{luxuryRetailers.map((house) => { const link = webSearchDestinations(house).find((destination) => destination.label === house); return link ? <a key={house} href={link.url} target="_blank" rel="noreferrer" className="rounded-full border border-gold-300 bg-white px-3 py-1.5 text-[11px] font-bold">{house}</a> : null })}</div>
+            </div>
+          )}
+        </div>
+      )}
+      {samples && (
+        <p className="mb-6 text-sm text-neutral-600">Showing sample listings too. <button type="button" onClick={() => toggleSamples('')} className="font-bold underline">Hide them</button></p>
+      )}
 
       {(fast || urgencyPattern.test(query)) && (
         <div className="mb-8 rounded-2xl border border-gold-200 bg-gold-50 px-5 py-5">
@@ -191,8 +242,8 @@ export default function Shop() {
         <div className="rounded-2xl bg-neutral-100 px-6 py-16 text-center" aria-busy="true"><p className="text-sm font-bold text-neutral-500">Loading the marketplace…</p></div>
       ) : (
         <div className="rounded-2xl bg-neutral-100 px-6 py-16 text-center">
-          <h2 className="text-2xl font-bold">Nothing in our marketplace matched that search.</h2>
-          <p className="mx-auto mt-2 max-w-md text-sm text-neutral-600">Try clearing a filter to widen the selection{canSearchWeb ? ', or look below — we sent your search to the wider web.' : '.'}</p>
+          <h2 className="text-2xl font-bold">{hiddenSamples > 0 ? 'No real listings matched that yet.' : 'Nothing in our marketplace matched that search.'}</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-neutral-600">{hiddenSamples > 0 ? 'See the note above for sample listings and the store’s own site. ' : ''}Try clearing a filter to widen the selection{canSearchWeb ? ', or look below — we sent your search to the wider web.' : '.'}</p>
           <button onClick={clearAll} className="mt-5 text-sm font-bold underline">CLEAR ALL FILTERS</button>
         </div>
       )}

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import ProductGrid from '../components/ProductGrid'
-import { getProducts } from '../services/catalogService'
+import { getRealProducts } from '../services/catalogService'
 import { parseShoppingIntent, productMatchesIntent } from '../utils/searchIntent'
 
 const tabs = ['Women', 'Men', 'Children']
@@ -13,7 +13,7 @@ export default function CobblerCorner() {
   const [query, setQuery] = useState('')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const [loaded, setLoaded] = useState(false)
-  useEffect(() => { getProducts().then((items) => { setProducts(items.filter((item) => item.category === 'Shoes')); setLoaded(true) }) }, [])
+  useEffect(() => { getRealProducts().then((items) => { setProducts(items.filter((item) => item.category === 'Shoes')); setLoaded(true) }) }, [])
 
   // The same intent parser the main search uses, so "black boots under $150",
   // "birkenstock sandals" or "size 8 sneakers" all work here too (shoe-type

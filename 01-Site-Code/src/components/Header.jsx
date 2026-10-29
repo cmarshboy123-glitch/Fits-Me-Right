@@ -3,7 +3,7 @@ import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useStyle } from '../context/StyleContext'
 import { useWishlist } from '../context/WishlistContext'
-import { getProducts } from '../services/catalogService'
+import { getRealProducts } from '../services/catalogService'
 import { searchCatalog } from '../utils/searchIntent'
 import { retailerSearchUrl, webSearchDestinations } from '../utils/retailers'
 import BrandMark from './BrandMark'
@@ -31,7 +31,7 @@ export default function Header() {
   const requestCatalog = () => {
     if (catalogRequested.current) return
     catalogRequested.current = true
-    getProducts().then(setProducts)
+    getRealProducts().then(setProducts)
   }
   useEffect(() => () => clearTimeout(blurTimeout.current), [])
 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import ProductGrid from '../components/ProductGrid'
-import { getProducts } from '../services/catalogService'
+import { getRealProducts } from '../services/catalogService'
 import { parseShoppingIntent, productMatchesIntent } from '../utils/searchIntent'
 
 const tabs = ['Women', 'Men']
@@ -35,7 +35,7 @@ export default function JustJewels() {
   const [products, setProducts] = useState([])
   const [query, setQuery] = useState('')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
-  useEffect(() => { getProducts().then((items) => setProducts(items.filter((item) => ['Jewelry', 'Accessories'].includes(item.category)))) }, [])
+  useEffect(() => { getRealProducts().then((items) => setProducts(items.filter((item) => ['Jewelry', 'Accessories'].includes(item.category)))) }, [])
 
   const intent = useMemo(() => parseShoppingIntent(query), [query])
   const hasQuery = query.trim().length > 0
