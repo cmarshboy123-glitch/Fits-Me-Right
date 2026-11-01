@@ -2,7 +2,9 @@
 // (no accounts, no analytics, no cookies of our own, live web search through SerpApi); if the
 // code changes in any of those ways, update this file in the same change.
 
-export const LEGAL_UPDATED = 'October 28, 2026'
+import { AFFILIATES_ACTIVE } from '../utils/affiliate'
+
+export const LEGAL_UPDATED ='October 28, 2026'
 export const CONTACT_EMAIL = 'hello@fitsmeright.com'
 // Who runs the site (a person's name or a registered business name, plus a city/state). Left empty
 // until the owner decides; the terms show a "Who runs Fits Me Right" section as soon as it is set.
@@ -44,6 +46,10 @@ export const legalPages = {
           'When you click through to a store, Google Shopping, DoorDash, Google Maps or any other site, you leave Fits Me Right and that site’s own privacy policy applies. We don’t handle payments and never see your card details.',
         ],
       },
+      ...(AFFILIATES_ACTIVE ? [{
+        h: 'Affiliate links',
+        p: ['Some store links are affiliate links and go through an affiliate network on the way to the store. The network and the store may set their own cookies on your browser to record that you came from Fits Me Right, so they can credit us if you buy. We don’t receive your name, your card details or what else you bought, only that a sale happened and its amount. Their privacy policies apply once you click.'],
+      }] : []),
       {
         h: 'Children',
         p: ['Fits Me Right isn’t aimed at children under 13, and we don’t knowingly collect personal information from them. The site lists children’s clothing for parents and guardians to shop.'],
@@ -116,7 +122,11 @@ export const legalPages = {
     title: 'What you’re looking at.',
     intro: 'A few plain facts about where the products come from, how current they are, and what we do and don’t earn. We’d rather you know.',
     sections: [
-      {
+      AFFILIATES_ACTIVE ? {
+        h: 'How we earn money',
+        p: ['Some links to stores are affiliate links. If you click one and then buy, the store may pay Fits Me Right a commission. It costs you nothing extra and doesn’t change the price you pay. Affiliate links are marked “Affiliate link: we may earn a commission” on the card, and carry a “sponsored” tag that search engines can read.',
+          'Stores don’t pay to be listed or to rank higher, and a commission never changes which items we show or in what order. Stores that don’t have an affiliate program with us are listed exactly the same way.'],
+      } : {
         h: 'We don’t earn money from your clicks or purchases',
         p: ['Today Fits Me Right earns nothing when you click a link or buy something, and no store pays to be listed or ranked higher. If that ever changes, for example by adding affiliate links, we will mark those links clearly and update this page before it does.'],
       },

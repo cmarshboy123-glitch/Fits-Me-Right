@@ -6,6 +6,7 @@ import { useWishlist } from '../context/WishlistContext'
 import { getRealProducts } from '../services/catalogService'
 import { searchCatalog } from '../utils/searchIntent'
 import { retailerSearchUrl, webSearchDestinations } from '../utils/retailers'
+import { affiliateUrl, outboundRel } from '../utils/affiliate'
 import BrandMark from './BrandMark'
 
 const nav = [
@@ -122,7 +123,7 @@ export default function Header() {
                   <p className="text-xs text-neutral-500">Not in our marketplace yet — search the web directly:</p>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {webResults.map(({ label, url }) => (
-                      <a key={label} href={url} target="_blank" rel="noreferrer" onMouseDown={(event) => event.preventDefault()} className="rounded-full border border-neutral-300 px-3 py-1.5 text-[11px] font-bold hover:border-black">{label}</a>
+                      <a key={label} href={affiliateUrl(url)} target="_blank" rel={outboundRel(url)} onMouseDown={(event) => event.preventDefault()} className="rounded-full border border-neutral-300 px-3 py-1.5 text-[11px] font-bold hover:border-black">{label}</a>
                     ))}
                   </div>
                 </div>

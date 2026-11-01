@@ -1,11 +1,14 @@
 import { ArrowRight, Mail } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { CONTACT_EMAIL } from '../data/legalPages'
+import { AFFILIATES_ACTIVE } from '../utils/affiliate'
 
 const faqs = [
   {
     q: 'Does Fits Me Right sell anything directly?',
-    a: 'No. Every product links out to the retailer that actually sells it. We don’t process payments, hold your card details, or take a cut of the sale.',
+    a: AFFILIATES_ACTIVE
+      ? 'No. Every product links out to the retailer that actually sells it. We don’t process payments or hold your card details. Some links are affiliate links, marked on the card, which means the store may pay us a commission if you buy.'
+      : 'No. Every product links out to the retailer that actually sells it. We don’t process payments, hold your card details, or take a cut of the sale.',
   },
   {
     q: 'Why do some items say “Verified retailer item” and others say “Shop this look”?',
@@ -17,7 +20,7 @@ const faqs = [
   },
   {
     q: 'Where do the listings come from, and do you earn money from them?',
-    a: 'Most are real products from stores’ own public product pages and feeds. A smaller set are sample listings (an example name and price, not a specific item in stock). They are hidden unless you turn them on in the shop’s filters. We don’t earn anything when you click or buy. The full explanation is on our How our listings work page.',
+    a: `Most are real products from stores’ own public product pages and feeds. A smaller set are sample listings (an example name and price, not a specific item in stock). They are hidden unless you turn them on in the shop’s filters. ${AFFILIATES_ACTIVE ? 'Some links are affiliate links and may earn us a commission, and they are marked.' : 'We don’t earn anything when you click or buy.'} The full explanation is on our How our listings work page.`,
     link: ['/disclosures', 'How our listings work'],
   },
   {

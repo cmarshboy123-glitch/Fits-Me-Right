@@ -5,6 +5,7 @@ import ShoeArt from './ShoeArt'
 import GarmentArt from './GarmentArt'
 import { useWishlist } from '../context/WishlistContext'
 import { retailerSearchUrl } from '../utils/retailers'
+import { affiliateUrl, isAffiliateLink, outboundRel } from '../utils/affiliate'
 
 export default function ProductCard({ product }) {
   const { isSaved, toggle } = useWishlist()
@@ -88,13 +89,13 @@ export default function ProductCard({ product }) {
         <p className="mt-2 text-sm font-bold">${product.price.toFixed(2)} <span className="text-[9px] font-medium uppercase tracking-wide text-neutral-400">{shortDate ? `price as of ${shortDate}` : "example price"}</span></p>
         {fastOption && <p className="mt-2 flex items-center gap-1 text-[10px] font-bold text-gold-800"><Zap size={11} aria-hidden="true" /> Same-day delivery may be available via {fastOption.provider}</p>}
         {hasLink ? (
-          <a href={linkUrl} target="_blank" rel="noreferrer" className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-neutral-950 px-3 py-3 text-[10px] font-bold text-white transition hover:bg-gold-600">
+          <a href={affiliateUrl(linkUrl)} target="_blank" rel={outboundRel(linkUrl)} className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-neutral-950 px-3 py-3 text-[10px] font-bold text-white transition hover:bg-gold-600">
             {isExact ? <>OPEN EXACT ITEM AT {product.vendor.toUpperCase()} <ExternalLink size={13} /></> : <>SEARCH THIS AT {product.vendor.toUpperCase()} <Search size={13} /></>}
           </a>
         ) : (
           <span className="mt-4 flex w-full items-center justify-center rounded-full border border-neutral-300 px-3 py-3 text-[10px] font-bold text-neutral-400">RETAILER LINK COMING SOON</span>
         )}
-        {hasLink && <p className="mt-2 text-center text-[9px] leading-4 text-neutral-400">{isExact ? `${verifiedDate ? `Destination verified ${verifiedDate}. ` : ''}Retailer confirms live price, size, and stock.` : `Opens ${product.vendor}’s search for this item — confirm price, size, and stock there.`}</p>}
+        {hasLink && <p className="mt-2 text-center text-[9px] leading-4 text-neutral-400">{isExact ? `${verifiedDate ? `Destination verified ${verifiedDate}. ` : ''}Retailer confirms live price, size, and stock.` : `Opens ${product.vendor}’s search for this item — confirm price, size, and stock there.`}{isAffiliateLink(linkUrl) && ' Affiliate link: we may earn a commission.'}</p>}
       </div>
     </article>
   )

@@ -6,6 +6,7 @@ import { getProducts, isSampleListing } from '../services/catalogService'
 import { searchLiveWeb } from '../services/liveSearchService'
 import { filterWebResults, intentLabels, productColorFamily, productMatchesIntent, searchCatalog, shoppingCategories, shoppingColors } from '../utils/searchIntent'
 import { luxuryRetailers, webSearchDestinations } from '../utils/retailers'
+import { affiliateUrl, outboundRel } from '../utils/affiliate'
 import { doorDashSearchUrl, fastDeliveryFor, mapsSearchUrl, urgencyPattern, withoutUrgency } from '../utils/fastDelivery'
 
 const priceOptions = [['All prices', ''], ['On a Budget', 'budget'], ['Money to Spend', 'treat'], ["Let's Splurge", 'splurge']]
@@ -192,7 +193,7 @@ export default function Shop() {
           <p className="text-sm font-bold">{filtered.length === 0 ? 'We don’t have real listings for this yet.' : `Only ${filtered.length} real ${filtered.length === 1 ? 'listing matches' : 'listings match'}.`}</p>
           <p className="mt-1 text-sm leading-6 text-neutral-700">{hiddenSamples} sample {hiddenSamples === 1 ? 'listing also matches' : 'listings also match'}. Those show an example name and price, not a specific item in stock, and open the store&rsquo;s search.</p>
           <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-black">
-            {storeSite && <a href={storeSite.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 underline">Shop {storeSite.name} directly <ExternalLink size={12} /></a>}
+            {storeSite && <a href={affiliateUrl(storeSite.url)} target="_blank" rel={outboundRel(storeSite.url)} className="inline-flex items-center gap-1.5 underline">Shop {storeSite.name} directly <ExternalLink size={12} /></a>}
             <button type="button" onClick={() => toggleSamples('1')} className="underline">Show the {hiddenSamples} sample {hiddenSamples === 1 ? 'listing' : 'listings'}</button>
           </div>
           {market === 'Luxury' && (
@@ -288,7 +289,7 @@ export default function Shop() {
               <p className="text-[10px] font-black uppercase tracking-[.2em] text-neutral-500">Or search the stores directly</p>
               <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
                 {webResults.map(({ label, url }) => (
-                  <a key={label} href={url} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full bg-black px-5 py-3 text-xs font-bold text-white transition hover:bg-gold-600">
+                  <a key={label} href={affiliateUrl(url)} target="_blank" rel={outboundRel(url)} className="flex items-center gap-2 rounded-full bg-black px-5 py-3 text-xs font-bold text-white transition hover:bg-gold-600">
                     SEARCH “{liveQuery}” ON {label.toUpperCase()} <ExternalLink size={13} />
                   </a>
                 ))}
