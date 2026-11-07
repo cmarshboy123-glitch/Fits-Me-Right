@@ -34,6 +34,8 @@ The Heroku app reads a comma-separated `CORS_ORIGINS` config var. Any new addres
 3. Remove the old "Squarespace Defaults" A, HTTPS and `www` records, which conflict. Leave the email-security records alone.
 4. Wait for the records to spread; HTTPS is issued automatically once the domain verifies.
 
+**Done (November 2026).** The domain's Squarespace account is the owner's, and every change there asks for an emailed code. Sevalla gave two TXT records per name (`_cf-custom-hostname` and `_acme-challenge`, for the root and for `www`) and then one A record each: `@` to `162.159.153.245` and `www` to `162.159.152.19` (Sevalla can show different addresses later, so check "Show DNS records" before copying these). The Squarespace Defaults group was deleted. Mail uses Google Workspace: MX records, the Google verification TXT, SPF (`v=spf1 include:_spf.google.com ~all`), DMARC (`p=none`) and a DKIM key at `google._domainkey`. The Workspace admin user is `info@fitsmeright.com`; `hello@fitsmeright.com` is an alias on it. Squarespace's Google verification preset held a mistyped code, so Google's exact code was added as a second TXT record at `@`.
+
 ## Other hosts
 
 `netlify.toml`, `vercel.json` and `wrangler.jsonc` all keep React Router pages working when someone opens a deep URL such as `/style/body-type` directly. Each host reads its own file, so no shared `_redirects` file is needed.
