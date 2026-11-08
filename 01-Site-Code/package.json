@@ -5,9 +5,8 @@
   "type": "module",
   "scripts": {
     "postinstall": "node scripts/copy-assets.mjs",
-    "prebuild": "node scripts/copy-assets.mjs",
     "dev": "vite",
-    "build": "vite build",
+    "build": "node scripts/offline-build.mjs",
     "audit:catalog": "node work/validate-catalog.js",
     "audit:links": "node work/audit-retailer-links.js",
     "audit:images": "node work/audit-unique-image-slots.mjs",
