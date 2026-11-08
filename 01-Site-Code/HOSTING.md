@@ -47,3 +47,11 @@ The Heroku app reads a comma-separated `CORS_ORIGINS` config var. Any new addres
 ## Squarespace
 
 Squarespace does not accept a Vite/React repository as a template, and rebuilding the filters and guided flow with its blocks would need an external service for the product logic. Squarespace is used only as the domain registrar.
+
+## Taking the site offline, and going live again
+
+The site was taken offline on Nov 8, 2026 without touching the domains. Sevalla has no password option for static sites, and the custom domains can only be deleted (re-adding them means new ownership records and emailed Squarespace codes), so the live site was replaced instead:
+
+- The `offline` branch builds only a "coming soon" page (`scripts/offline-build.mjs`, with `noindex` and a robots.txt that blocks crawlers). It was deployed from Deployments, Deploy now, branch `offline`, and the CDN cache was purged (Networking, Purge cache).
+- The old `fits-me-right-n7dpm.kinsta.page` address was switched off (Domains, the three dots, Disable). Turn it back on the same way if wanted.
+- **To go live again:** Deploy now with branch `main`, then Networking, **Purge cache**. Check the front page and a deep link such as `/shop` afterwards. The `main` branch was not changed.
