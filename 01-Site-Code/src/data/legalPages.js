@@ -4,7 +4,7 @@
 
 import { AFFILIATES_ACTIVE } from '../utils/affiliate'
 
-export const LEGAL_UPDATED ='October 28, 2026'
+export const LEGAL_UPDATED = 'November 8, 2026'
 export const CONTACT_EMAIL = 'hello@fitsmeright.com'
 // Who runs the site (a person's name or a registered business name, plus a city/state). Left empty
 // until the owner decides; the terms show a "Who runs Fits Me Right" section as soon as it is set.
@@ -93,6 +93,11 @@ export const legalPages = {
       {
         h: 'Delivery information',
         p: ['The “Need it fast” page points to same-day and pickup options offered by other companies. We don’t deliver anything ourselves, and what is available depends on your address and the store.'],
+      },
+      {
+        h: 'Copyright',
+        p: [`© ${new Date().getFullYear()} ${OPERATOR_NAME || 'Fits Me Right'}. All rights reserved. The site’s own text, design, code, and the way its catalog is organized and presented belong to Fits Me Right. You’re welcome to link to any page, and to quote a short excerpt with a link back, but please don’t copy or republish the site’s content in bulk without asking.`,
+          'Product names, photos, prices and brand logos belong to the stores and brands that own them, and appear here only to show where an item is sold. The sources named in the Fit Guide belong to their authors. If you believe something on this site infringes your copyright, write to us at the address below and we will look into it promptly.'],
       },
       {
         h: 'Using the site fairly',
