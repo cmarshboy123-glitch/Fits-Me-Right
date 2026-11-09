@@ -12,6 +12,13 @@ const categories = [
   ['Accessories', '/assets/unique/home-accessories-occasion-v1.webp'],
 ]
 
+const tuxedoLooks = [
+  ['Tuxedo jackets', 'tuxedo jacket'],
+  ['Suit jackets', 'suit jacket'],
+  ['Dress pants', 'dress pants'],
+  ['Oxford shoes', 'oxford shoes'],
+]
+
 const storeSearch = (retailer) => `/shop?q=${encodeURIComponent(retailer)}`
 
 export default function Home() {
@@ -76,13 +83,30 @@ export default function Home() {
             </Link>
           ))}
         </div>
+
+        <div className="mt-12 grid overflow-hidden rounded-[2rem] bg-neutral-950 text-white md:grid-cols-[1.1fr_.9fr]">
+          <div className="px-7 py-12 md:px-12 lg:px-16 lg:py-14">
+            <p className="text-[11px] font-bold uppercase tracking-[.25em] text-gold-300">Black tie and beyond</p>
+            <h3 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">Tuxedos</h3>
+            <p className="mt-5 max-w-lg leading-7 text-white/75">Weddings, galas, prom and every formal night out. Shop the tuxedo pieces from the stores we track, then finish the look with suit jackets, dress pants and oxford shoes.</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link to="/shop?q=tuxedo" className="flex items-center gap-3 rounded-full bg-gold-400 px-6 py-4 text-xs font-black text-black transition hover:bg-gold-300">SHOP TUXEDOS <ArrowRight size={16} /></Link>
+              <Link to="/fast" className="rounded-full border border-white/40 px-6 py-4 text-xs font-black transition hover:bg-white/10">NEED ONE FAST?</Link>
+            </div>
+          </div>
+          <div className="flex flex-col justify-center gap-3 border-t border-white/15 px-7 py-10 md:border-l md:border-t-0 md:px-10">
+            {tuxedoLooks.map(([label, search]) => (
+              <Link key={label} to={`/shop?q=${encodeURIComponent(search)}`} className="flex items-center justify-between rounded-full border border-white/20 bg-white/[.06] px-6 py-3.5 text-sm font-bold transition hover:border-gold-300 hover:bg-white/10">{label} <ArrowRight size={15} className="text-gold-300" /></Link>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="px-4 py-8 lg:px-8">
         <div className="mx-auto grid max-w-[1440px] overflow-hidden rounded-[2rem] bg-neutral-50 shadow-soft md:grid-cols-2">
           <div className="flex flex-col justify-center px-7 py-16 md:px-12 lg:px-20">
             <p className="text-xs font-bold uppercase tracking-widest text-gold-700">Your concierge is ready</p>
-            <h2 className="mt-4 text-4xl font-black leading-tight tracking-tight lg:text-5xl">Great style begins with self acceptance.</h2>
+            <h2 className="mt-4 text-4xl font-black leading-tight tracking-tight lg:text-5xl">Great style begins with self love.</h2>
             <p className="mt-5 max-w-lg leading-7 text-neutral-600">Our guided edit considers your body, budget, and destination—then searches across the marketplace for you.</p>
             <Link to="/style/gender" className="mt-8 flex w-fit items-center gap-3 rounded-full bg-black px-7 py-4 text-sm font-bold text-white transition hover:bg-gold-700">START YOUR STYLE EDIT <ArrowRight size={17} /></Link>
           </div>
@@ -111,6 +135,14 @@ export default function Home() {
             </div>
           </Link>
         </div>
+        <Link to="/thrift-corner" className="group mt-5 flex flex-col gap-4 rounded-[2rem] bg-[#F5F0E7] p-8 shadow-soft transition hover:shadow-lift md:flex-row md:items-center md:justify-between lg:p-10">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-gold-800">Sell your stuff</p>
+            <h2 className="mt-2 text-3xl font-black">Thrift Corner</h2>
+            <p className="mt-3 max-w-xl leading-7 text-neutral-700">Clear out your closet, give your clothes a second life, and turn what you no longer wear into cash.</p>
+          </div>
+          <p className="flex shrink-0 items-center gap-2 font-bold">START SELLING <ArrowRight size={16} className="transition group-hover:translate-x-1" /></p>
+        </Link>
       </section>
     </>
   )

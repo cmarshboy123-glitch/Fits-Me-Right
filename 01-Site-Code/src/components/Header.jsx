@@ -14,6 +14,7 @@ const nav = [
   ['Cobbler Corner', '/cobbler-corner'],
   ['Just Jewels', '/just-jewels'],
   ['Thrifty Shopper', '/thrifty-shopper'],
+  ['Thrift Corner', '/thrift-corner'],
   ['Creative Corner', '/creative-corner'],
 ]
 

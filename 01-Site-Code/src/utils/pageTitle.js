@@ -21,6 +21,7 @@ const routes = [
   [/^\/cobbler-corner\b/, 'Cobbler Corner — Shoes', 'Compare sneakers, boots, sandals, heels and more across leading retailers, then step directly into the store.'],
   [/^\/just-jewels\b/, 'Just Jewels — Jewelry & Accessories', 'Necklaces, earrings, rings, bracelets, bags, belts and the small details that make an outfit yours, from stores across the market.'],
   [/^\/thrifty-shopper\b/, 'Thrifty Shopper', 'One-of-one vintage and resale pieces from real independent sellers, with real prices and photos.'],
+  [/^\/thrift-corner\b/, 'Thrift Corner — Sell Your Stuff', 'Clear your closet and give your clothes a second life: where to sell clothing online, and five simple steps from closet to sold.'],
   [/^\/creative-corner\b/, 'Creative Corner', 'A directory and editorial spotlight for independent fashion designers and the ideas shaping what we wear next.'],
   [/^\/wishlist\b/, 'Your Wishlist', DEFAULT_DESCRIPTION, true],
   [/^\/profiles\b/, 'Style Profiles', DEFAULT_DESCRIPTION, true],

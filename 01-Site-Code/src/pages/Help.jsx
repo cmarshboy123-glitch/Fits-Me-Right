@@ -24,6 +24,11 @@ const faqs = [
     link: ['/disclosures', 'How our listings work'],
   },
   {
+    q: 'Can I sell my own clothes on Fits Me Right?',
+    a: 'Not directly. We don’t take listings, hold items or handle payments. Thrift Corner points you to resale marketplaces that do, with a few simple steps for getting your clothes ready to sell.',
+    link: ['/thrift-corner', 'Visit Thrift Corner'],
+  },
+  {
     q: 'Do I need an account?',
     a: 'No. Wishlist items and saved style profiles are stored in your browser on this device — there’s no sign-up, login, or password.',
   },
