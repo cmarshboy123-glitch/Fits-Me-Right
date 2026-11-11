@@ -111,11 +111,14 @@ async function fetchBaseCatalog() {
 }
 
 async function fetchCatalog() {
-  const [base, extra] = await Promise.all([fetchBaseCatalog(), loadExtraCatalog()])
+  const [base, extra, { default: curated }] = await Promise.all([fetchBaseCatalog(), loadExtraCatalog(), import('../data/curatedProducts')])
   // A store's product may already be in the catalog (same page), so skip repeats.
   const knownIds = new Set(base.map((product) => product.id))
   const knownPages = new Set(base.map((product) => product.productUrl).filter(Boolean))
-  const merged = [...base, ...extra.filter((product) => !knownIds.has(product.id) && !knownPages.has(product.productUrl))]
+  // Hand-checked listings (tuxedos) are always included, even when the product API is down.
+  const curatedNew = curated.filter((product) => !knownIds.has(product.id) && !knownPages.has(product.productUrl))
+  curatedNew.forEach((product) => { knownIds.add(product.id); knownPages.add(product.productUrl) })
+  const merged = [...base, ...curatedNew, ...extra.filter((product) => !knownIds.has(product.id) && !knownPages.has(product.productUrl))]
   // Items with a real store photo come first (mixed across stores); the rest use an illustration placeholder.
   const hasPhoto = (product) => /^https?:\/\//.test(product.imageUrl || '')
   return [...mixStores(merged.filter(hasPhoto)), ...merged.filter((product) => !hasPhoto(product))]

@@ -68,7 +68,8 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-neutral-200/80 bg-white/90 backdrop-blur-xl">
       <div className="mx-auto flex h-[72px] max-w-[1440px] items-center gap-6 px-4 lg:px-8">
         <Link to="/" className="shrink-0" aria-label="Fits Me Right home"><BrandMark /></Link>
-        <div className="hidden h-full items-center gap-6 md:flex">
+        <div className="hidden h-full items-center gap-5 xl:flex">
+          <NavLink to="/shop" end className={({ isActive }) => `text-sm font-semibold transition ${isActive ? 'text-black' : 'text-neutral-700 hover:text-black'}`}>Shop all</NavLink>
           <button onClick={() => startFor('Women')} className="text-sm font-semibold text-neutral-700 transition hover:text-black">Women</button>
           <button onClick={() => startFor('Men')} className="text-sm font-semibold text-neutral-700 transition hover:text-black">Men</button>
           {nav.map(([label, path]) => (
@@ -149,12 +150,13 @@ export default function Header() {
             </span>
           </Link>
           <Link to="/profiles" aria-label="Your style profiles" className="-m-2 hidden p-2 sm:block"><UserRound size={21} /></Link>
-          <button onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="mobile-menu" className="-m-2 p-2 md:hidden">{open ? <X size={23} /> : <Menu size={23} />}</button>
+          <button onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="mobile-menu" className="-m-2 p-2 xl:hidden">{open ? <X size={23} /> : <Menu size={23} />}</button>
         </div>
       </div>
       {open && (
-        <div id="mobile-menu" className="border-t border-neutral-200 bg-white px-4 py-6 md:hidden">
+        <div id="mobile-menu" className="max-h-[calc(100vh-72px)] overflow-y-auto border-t border-neutral-200 bg-white px-4 py-6 xl:hidden">
           <div className="flex flex-col text-sm font-bold">
+            <Link className="py-3" to="/shop" onClick={() => setOpen(false)}>Shop all</Link>
             <button className="py-3 text-left" onClick={() => startFor('Women')}>Women</button>
             <button className="py-3 text-left" onClick={() => startFor('Men')}>Men</button>
             {nav.map(([label, path]) => <Link key={path} className="py-3" to={path} onClick={() => setOpen(false)}>{label}</Link>)}

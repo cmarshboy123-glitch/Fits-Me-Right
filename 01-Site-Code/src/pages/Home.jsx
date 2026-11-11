@@ -8,8 +8,8 @@ const categories = [
   ['Everyday Ease', '/assets/unique/home-everyday-ease-v1.webp', '/style/gender'],
   ['Business Casual', '/assets/unique/home-business-casual-men-v1.webp', '/style/gender'],
   ['Formal Wear', '/assets/unique/home-after-five-v1.webp', '/style/gender'],
-  // Strictly the tuxedo itself: men's tuxedo jackets (no trousers, shirts or women's pieces).
-  ['Tuxedos', null, '/shop?q=tuxedo&gender=Men&category=Outerwear'],
+  // Strictly tuxedos: hand-checked men's tuxedos and tuxedo jackets (no loose trousers, shirts or women's pieces).
+  ['Tuxedos', null, '/shop?collection=tuxedos'],
   ['Made to Move', '/assets/unique/home-made-to-move-men-v1.webp', '/style/gender'],
   ['Shoes', '/assets/unique/home-shoes-occasion-men-v1.webp', '/style/gender'],
   ['Accessories', '/assets/unique/home-accessories-occasion-v1.webp', '/style/gender'],
