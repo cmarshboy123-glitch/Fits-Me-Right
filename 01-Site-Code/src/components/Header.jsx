@@ -115,7 +115,7 @@ export default function Header() {
                           <span className="block truncate text-xs font-bold">{product.name}</span>
                           <span className="block truncate text-[10px] font-semibold uppercase tracking-wide text-neutral-400">{product.vendor} · {product.category}</span>
                         </span>
-                        <span className="shrink-0 text-xs font-bold">${product.price.toFixed(0)}</span>
+                        <span className="shrink-0 text-xs font-bold">{product.currency === "GBP" ? "£" : "$"}{product.price.toFixed(0)}</span>
                       </button>
                     </li>
                   ))}

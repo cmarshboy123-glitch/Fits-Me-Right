@@ -11,7 +11,7 @@ const verifiedAt = '2026-11-10'
 const menBodyTypes = ['Slim', 'Athletic', 'Regular', 'Broad', 'Big & Tall', 'Short']
 const priceTierFor = (price) => (price < 60 ? 'budget' : price < 180 ? 'treat' : 'splurge')
 
-// [vendor, name, category, price, color, fit note, photo, product page, market]
+// [vendor, name, category, price, color, fit note, photo, product page, market, currency (optional, USD unless stated)]
 const rows = [
   ['Brunello Cucinelli', 'Lightweight Twill Tuxedo', 'Suits', 6750, 'Navy',
     'Suit with jacket and trousers',
@@ -53,6 +53,10 @@ const rows = [
     'O’Connor cut · luxury twill',
     'https://cdn.media.amplience.net/i/tom_ford/2EYHT1-WOS09_LB999_APPENDGRID?w=700&fmt=jpeg&qlt=85',
     'https://www.tomfordfashion.com/en-us/luxury-twill-oconnor-tuxedo/2EYHT1-WOS09X5N.html', 'Luxury'],
+  ['Paul Smith', 'The Soho - Black Wool-Mohair Evening Suit', 'Suits', 1350, 'Black',
+    'Tailored fit · wool-mohair · UK store price in pounds (no US price found)',
+    'https://assets.paulsmith.com/paul-smith-products/f_auto,q_auto,w_700,h_900,c_pad,b_white/v1710255328/STILL/M1R/M1R-1841-M00002-79/M1R-1841-M00002-79_10.jpg',
+    'https://www.paulsmith.com/uk/the-soho-men-s-tailored-fit-black-wool-mohair-one-button-evening-suit', 'Everyday & Designer', 'GBP'],
   ['Brioni', 'Essential Black Super 160’s Wool Policleto Tuxedo', 'Suits', 7500, 'Black',
     'Policleto cut · Super 160’s wool',
     'https://images.ctfassets.net/w2dr5qwt1rrm/5uaKig9diINTxCCGYukdav/1210adb4e1b7a028fbc5e4d395f3affc/RT030LP6A0M0000F.jpg?w=700&fm=jpg&q=80',
@@ -83,13 +87,15 @@ const rows = [
     'https://www.josbank.com/p/jos-a-bank-slim-fit-wool-blend-tuxedo-suit', 'Everyday & Designer'],
 ]
 
-const curatedProducts = rows.map(([vendor, name, category, price, color, fitNote, imageUrl, productUrl, storeTier], index) => ({
+const curatedProducts = rows.map(([vendor, name, category, price, color, fitNote, imageUrl, productUrl, storeTier, currency], index) => ({
   id: 200001 + index,
   name,
   gender: 'Men',
   category,
   price,
+  // The tier is judged on the number as listed; a pound price of this size is a splurge either way.
   priceTier: priceTierFor(price),
+  ...(currency ? { currency } : {}),
   imageUrl,
   vendor,
   brand: vendor,
