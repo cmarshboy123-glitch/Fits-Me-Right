@@ -10,7 +10,16 @@ import { affiliateUrl, outboundRel } from '../utils/affiliate'
 import { doorDashSearchUrl, fastDeliveryFor, mapsSearchUrl, urgencyPattern, withoutUrgency } from '../utils/fastDelivery'
 
 const priceOptions = [['All prices', ''], ['On a Budget', 'budget'], ['Money to Spend', 'treat'], ["Let's Splurge", 'splurge']]
-const womenBodyTypes = ['Straight', 'Curvy', 'Athletic', 'Petite', 'Tall', 'Plus']
+// One-tap starting points for someone who is not sure what to type. Each is checked against the real catalog.
+const popularSearches = [
+  ['Tuxedos', '/shop?collection=tuxedos'],
+  ['Black dress', '/shop?q=black+dress'],
+  ['Leather jacket', '/shop?q=leather+jacket'],
+  ['White sneakers', '/shop?q=white+sneakers'],
+  ['Linen shirt', '/shop?q=linen+shirt'],
+  ['On a budget', '/shop?priceTier=budget'],
+]
+const womenBodyTypes =['Straight', 'Curvy', 'Athletic', 'Petite', 'Tall', 'Plus']
 const menBodyTypes = ['Slim', 'Balanced', 'Athletic', 'Broad', 'Big & Tall', 'Short']
 // Catalog is thousands of items deep now — render a page at a time instead
 // of the whole filtered result set, so a broad or empty filter doesn't
@@ -35,6 +44,8 @@ export default function Shop() {
   const [fast, setFast] = useState(searchParams.get('fast') || '')
   // Sample listings (an example name and price, no exact product page) are hidden unless asked for.
   const [samples, setSamples] = useState(searchParams.get('samples') || '')
+  // A hand-picked group of items, such as ?collection=tuxedos (men's tuxedos from the brands we checked).
+  const [collection, setCollection] = useState(searchParams.get('collection') || '')
 
   const [loaded, setLoaded] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -54,6 +65,7 @@ export default function Shop() {
     setColor(searchParams.get('color') || '')
     setFast(searchParams.get('fast') || '')
     setSamples(searchParams.get('samples') || '')
+    setCollection(searchParams.get('collection') || '')
   }, [searchParams])
 
   const realProducts = useMemo(() => products.filter((product) => !isSampleListing(product)), [products])
@@ -76,8 +88,9 @@ export default function Shop() {
       (!priceTier || product.priceTier === priceTier) && (!market || product.storeTier === market) &&
       (!category || productMatchesIntent(product, { text: '', color: '', category, maxPrice: null, minPrice: null, size: '', gender: '' })) &&
       (!color || productColorFamily(product.color) === color) &&
-      (!fast || fastDeliveryFor(product.vendor))
-  }, [retailer, brand, gender, bodyType, priceTier, market, category, color, fast])
+      (!fast || fastDeliveryFor(product.vendor)) &&
+      (collection !== 'tuxedos' || product.tuxedo === true)
+  }, [retailer, brand, gender, bodyType, priceTier, market, category, color, fast, collection])
   const filtered = useMemo(() => (search ? search.results : catalogProducts).filter(passesFilters), [catalogProducts, search, passesFilters])
 
   // How many hidden sample listings would match the same search and filters.
@@ -88,7 +101,7 @@ export default function Shop() {
   }, [samples, loaded, deferredQuery, sampleProducts, passesFilters])
   const realShown = samples ? filtered.filter((product) => !isSampleListing(product)).length : filtered.length
 
-  const activeCount = [query, retailer, brand, gender, bodyType, priceTier, market, category, color, fast].filter(Boolean).length
+  const activeCount = [query, retailer, brand, gender, bodyType, priceTier, market, category, color, fast, collection].filter(Boolean).length
   const guidedSearch = Boolean(searchParams.get('bodyType') || searchParams.get('priceTier'))
 
   // Reset back to the first page whenever the result set itself changes —
@@ -129,12 +142,12 @@ export default function Shop() {
   const syncUrl = (event) => {
     event?.preventDefault()
     const params = new URLSearchParams()
-    Object.entries({ q: query, store: retailer, brand, gender, bodyType, priceTier, market, category, color, fast, samples }).forEach(([key, value]) => { if (value) params.set(key, value) })
+    Object.entries({ q: query, store: retailer, brand, gender, bodyType, priceTier, market, category, color, fast, samples, collection }).forEach(([key, value]) => { if (value) params.set(key, value) })
     setSearchParams(params)
   }
 
   const clearAll = () => {
-    setQuery(''); setRetailer(''); setBrand(''); setGender(''); setBodyType(''); setPriceTier(''); setMarket(''); setCategory(''); setColor(''); setFast(''); setSamples(''); setSearchParams({})
+    setQuery(''); setRetailer(''); setBrand(''); setGender(''); setBodyType(''); setPriceTier(''); setMarket(''); setCategory(''); setColor(''); setFast(''); setSamples(''); setCollection(''); setSearchParams({})
   }
 
   // Turning samples on or off keeps every other search and filter as it is.
@@ -158,9 +171,25 @@ export default function Shop() {
       <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">Search the whole closet.</h1>
       <p className="mt-4 max-w-2xl leading-7 text-neutral-600">Search broadly or get precise. Combine clothing type, color, body type, size, price point, store, and brand in one edit.</p>
 
+      {collection === 'tuxedos' && (
+        <div className="mt-8 flex flex-col justify-between gap-3 rounded-2xl bg-neutral-950 px-5 py-5 text-white sm:flex-row sm:items-center">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[.2em] text-gold-300">Black tie</p>
+            <p className="mt-2 text-sm font-bold">Men&rsquo;s tuxedos and tuxedo jackets from the brands&rsquo; own sites, with the price each one listed on {'Nov 10, 2026'}.</p>
+          </div>
+          <button type="button" onClick={() => { const params = new URLSearchParams(searchParams); params.delete('collection'); setSearchParams(params) }} className="flex shrink-0 items-center gap-1.5 text-xs font-black text-gold-300 underline">SHOW EVERYTHING INSTEAD</button>
+        </div>
+      )}
+
       {guidedSearch && <div className="mt-8 flex flex-col justify-between gap-5 rounded-2xl border border-gold-200 bg-gold-50 px-5 py-5 sm:flex-row sm:items-center"><div><p className="text-[10px] font-black uppercase tracking-[.2em] text-gold-800">Your concierge search is active</p><p className="mt-2 text-sm font-bold">{gender || 'All collections'} · {bodyType || 'All body types'} · {priceOptions.find(([, value]) => value === priceTier)?.[0] || 'All prices'}</p></div><Link to="/style/shirt-size" className="flex shrink-0 items-center gap-2 text-xs font-black">ADD SIZE + OCCASION <ArrowRight size={16} /></Link></div>}
 
       <form onSubmit={syncUrl} className="mt-8 flex max-w-4xl rounded-full border border-neutral-300 bg-white p-1.5 shadow-soft transition focus-within:border-gold-400"><input value={query} onChange={(event) => setQuery(event.target.value)} className="min-w-0 flex-1 bg-transparent px-5 py-3 outline-none" placeholder="Try “purple barrel pants” or “black leather jacket under $200”" aria-label="Search all products" /><button className="flex items-center gap-2 rounded-full bg-black px-6 text-sm font-bold text-white transition hover:bg-gold-700"><Search size={18} /><span className="hidden sm:inline">SEARCH</span></button></form>
+      {activeCount === 0 && (
+        <div className="mt-4 flex max-w-4xl flex-wrap items-center gap-2">
+          <span className="mr-1 text-[10px] font-black uppercase tracking-[.18em] text-neutral-500">Popular</span>
+          {popularSearches.map(([label, to]) => <Link key={label} to={to} className="min-h-10 rounded-full border border-neutral-300 bg-white px-4 py-2.5 text-xs font-bold transition hover:border-gold-400">{label}</Link>)}
+        </div>
+      )}
       {search?.correctedQuery && <p className="mt-3 max-w-4xl text-sm text-neutral-600">Showing results for <span className="font-bold text-black">“{search.correctedQuery}”</span></p>}
       {query && understood.length > 0 && <div className="mt-3 flex max-w-4xl flex-wrap items-center gap-2"><span className="mr-1 text-[10px] font-black uppercase tracking-[.18em] text-neutral-500">We understood</span>{understood.map((label) => <span key={label} className="rounded-full border border-neutral-300 bg-white px-3 py-1.5 text-[11px] font-bold">{label}</span>)}</div>}
 
