@@ -3,21 +3,29 @@ import { Link } from 'react-router-dom'
 import InteractiveWardrobe from '../components/InteractiveWardrobe'
 import { luxuryRetailers, retailerNames } from '../utils/retailers'
 
+// [label, image, where it goes]. A tile without an image draws the black-tie bow tie instead.
 const categories = [
-  ['Everyday Ease', '/assets/unique/home-everyday-ease-v1.webp'],
-  ['Business Casual', '/assets/unique/home-business-casual-men-v1.webp'],
-  ['Formal Wear', '/assets/unique/home-after-five-v1.webp'],
-  ['Made to Move', '/assets/unique/home-made-to-move-men-v1.webp'],
-  ['Shoes', '/assets/unique/home-shoes-occasion-men-v1.webp'],
-  ['Accessories', '/assets/unique/home-accessories-occasion-v1.webp'],
+  ['Everyday Ease', '/assets/unique/home-everyday-ease-v1.webp', '/style/gender'],
+  ['Business Casual', '/assets/unique/home-business-casual-men-v1.webp', '/style/gender'],
+  ['Formal Wear', '/assets/unique/home-after-five-v1.webp', '/style/gender'],
+  ['Tuxedos', null, '/shop?q=tuxedo'],
+  ['Made to Move', '/assets/unique/home-made-to-move-men-v1.webp', '/style/gender'],
+  ['Shoes', '/assets/unique/home-shoes-occasion-men-v1.webp', '/style/gender'],
+  ['Accessories', '/assets/unique/home-accessories-occasion-v1.webp', '/style/gender'],
 ]
 
-const tuxedoLooks = [
-  ['Tuxedo jackets', 'tuxedo jacket'],
-  ['Suit jackets', 'suit jacket'],
-  ['Dress pants', 'dress pants'],
-  ['Oxford shoes', 'oxford shoes'],
-]
+function BowTieTile() {
+  return (
+    <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-950 text-gold-300 transition duration-500 group-hover:scale-105">
+      <svg viewBox="0 0 120 60" className="w-3/5" fill="currentColor" aria-hidden="true">
+        <path d="M60 30 8 6v48z" />
+        <path d="M60 30 112 6v48z" />
+        <rect x="50" y="18" width="20" height="24" rx="5" />
+      </svg>
+      <p className="mt-5 text-[10px] font-bold uppercase tracking-[.28em] text-white/70">Black tie</p>
+    </div>
+  )
+}
 
 const storeSearch = (retailer) => `/shop?q=${encodeURIComponent(retailer)}`
 
@@ -73,32 +81,17 @@ export default function Home() {
           </div>
           <Link to="/style/gender" className="hidden items-center gap-2 text-sm font-bold text-neutral-700 transition hover:text-black sm:flex">START THE EDIT <ArrowRight size={16} /></Link>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-6">
-          {categories.map(([label, image], index) => (
-            <Link key={label} to="/style/gender" className="group text-left">
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-4 lg:grid-cols-7">
+          {categories.map(([label, image, to], index) => (
+            <Link key={label} to={to} className="group text-left">
               <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-neutral-100 shadow-soft transition duration-300 group-hover:shadow-lift">
-                <img src={image} style={{ objectPosition: `${18 + index * 13}% center` }} alt="" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+                {image
+                  ? <img src={image} style={{ objectPosition: `${18 + index * 13}% center` }} alt="" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+                  : <BowTieTile />}
               </div>
               <p className="mt-3 text-sm font-bold">{label}</p>
             </Link>
           ))}
-        </div>
-
-        <div className="mt-12 grid overflow-hidden rounded-[2rem] bg-neutral-950 text-white md:grid-cols-[1.1fr_.9fr]">
-          <div className="px-7 py-12 md:px-12 lg:px-16 lg:py-14">
-            <p className="text-[11px] font-bold uppercase tracking-[.25em] text-gold-300">Black tie and beyond</p>
-            <h3 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">Tuxedos</h3>
-            <p className="mt-5 max-w-lg leading-7 text-white/75">Weddings, galas, prom and every formal night out. Shop the tuxedo pieces from the stores we track, then finish the look with suit jackets, dress pants and oxford shoes.</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/shop?q=tuxedo" className="flex items-center gap-3 rounded-full bg-gold-400 px-6 py-4 text-xs font-black text-black transition hover:bg-gold-300">SHOP TUXEDOS <ArrowRight size={16} /></Link>
-              <Link to="/fast" className="rounded-full border border-white/40 px-6 py-4 text-xs font-black transition hover:bg-white/10">NEED ONE FAST?</Link>
-            </div>
-          </div>
-          <div className="flex flex-col justify-center gap-3 border-t border-white/15 px-7 py-10 md:border-l md:border-t-0 md:px-10">
-            {tuxedoLooks.map(([label, search]) => (
-              <Link key={label} to={`/shop?q=${encodeURIComponent(search)}`} className="flex items-center justify-between rounded-full border border-white/20 bg-white/[.06] px-6 py-3.5 text-sm font-bold transition hover:border-gold-300 hover:bg-white/10">{label} <ArrowRight size={15} className="text-gold-300" /></Link>
-            ))}
-          </div>
         </div>
       </section>
 
