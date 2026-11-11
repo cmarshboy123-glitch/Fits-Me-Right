@@ -48,7 +48,7 @@ export default function Home() {
               <p className="text-[11px] font-bold uppercase tracking-[.25em] text-gold-700">The store directory</p>
               <h2 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">{retailerNames.length} stores. One fitting room.</h2>
             </div>
-            <Link to="/shop" className="flex items-center gap-2 text-sm font-bold text-gold-700 transition hover:text-gold-800">SHOP THEM ALL <ArrowRight size={16} /></Link>
+            <Link to="/shop" className="-my-2 flex items-center gap-2 py-3 text-sm font-bold text-gold-700 transition hover:text-gold-800">SHOP THEM ALL <ArrowRight size={16} /></Link>
           </div>
           <div className="clean-scroll mt-8 flex gap-2.5 overflow-x-auto pb-3">
             {retailerNames.filter((retailer) => !luxuryRetailers.includes(retailer)).map((retailer) => (
@@ -64,7 +64,7 @@ export default function Home() {
           <p className="text-[11px] font-bold uppercase tracking-[.25em] text-gold-300">The luxury room</p>
           <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <h2 className="text-3xl font-black tracking-tight sm:text-4xl">Twenty iconic houses, together.</h2>
-            <Link to="/shop?market=Luxury" className="flex items-center gap-2 text-sm font-bold text-gold-300 transition hover:text-gold-200">EXPLORE LUXURY <ArrowRight size={16} /></Link>
+            <Link to="/shop?market=Luxury" className="-my-2 flex items-center gap-2 py-3 text-sm font-bold text-gold-300 transition hover:text-gold-200">EXPLORE LUXURY <ArrowRight size={16} /></Link>
           </div>
           <div className="clean-scroll mt-9 flex gap-2.5 overflow-x-auto pb-3">
             {luxuryRetailers.map((retailer) => (
