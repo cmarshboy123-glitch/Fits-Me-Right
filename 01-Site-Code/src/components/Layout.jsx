@@ -29,7 +29,9 @@ export default function Layout() {
     const { title, description, noindex } = getPageMeta(location.pathname)
     document.title = title
     setMeta('description', description)
-    setMeta('robots', noindex ? 'noindex, follow' : 'index, follow')
+    // Private preview build: never let search engines index any page, whatever the route says.
+    void noindex
+    setMeta('robots', 'noindex, nofollow, noarchive')
   }, [location.pathname])
 
   useLayoutEffect(() => {
@@ -47,6 +49,7 @@ export default function Layout() {
     <>
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[110] focus:rounded-full focus:bg-black focus:px-5 focus:py-3 focus:text-sm focus:font-bold focus:text-white">Skip to main content</a>
       <RouteLoader active={isRouteLoading} />
+      <div className="bg-gold-400 px-4 py-1.5 text-center text-[11px] font-bold text-black">Private preview. This is not the public website yet. Please don’t share this link.</div>
       <Header />
       <main id="main-content" tabIndex={-1} className="outline-none">
         <ErrorBoundary key={location.pathname}>
