@@ -40,7 +40,8 @@ const rawCategoryAliases = {
   Shorts: ['shorts', 'short'],
   Outerwear: ['coat', 'coats', 'jacket', 'jackets', 'blazer', 'blazers', 'parka', 'parkas', 'trench', 'trenchcoat'],
   Knitwear: ['sweater', 'sweaters', 'jumper', 'jumpers', 'cardigan', 'cardigans', 'knitwear', 'hoodie', 'hoodies', 'sweatshirt', 'sweatshirts', 'crewneck', 'crewnecks'],
-  Suits: ['suit', 'suits', 'tuxedo', 'tuxedos'],
+  // "tuxedo" is deliberately not a Suits word: it should find items that actually say tuxedo, not every suit.
+  Suits: ['suit', 'suits'],
   Swimwear: ['swimwear', 'swimsuit', 'swimsuits', 'bikini', 'bikinis', 'trunks'],
   Intimates: ['underwear', 'lingerie', 'bra', 'bras', 'briefs', 'boxers'],
   Shoes: [
