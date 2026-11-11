@@ -49,6 +49,9 @@ export default function Shop() {
 
   const [loaded, setLoaded] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
+  // The long hint is cut off on a phone, so a phone gets a short one.
+  const [searchHint, setSearchHint] = useState('Try “black leather jacket under $200”')
+  useEffect(() => { setSearchHint(window.matchMedia('(max-width: 639px)').matches ? 'Try “black dress”' : 'Try “purple barrel pants” or “black leather jacket under $200”') }, [])
   useEffect(() => { getProducts().then((items) => { setProducts(items); setLoaded(true) }) }, [])
 
   // The header search (and links like "Women" on the home page) change the URL while
@@ -177,13 +180,13 @@ export default function Shop() {
             <p className="text-[10px] font-black uppercase tracking-[.2em] text-gold-300">Black tie</p>
             <p className="mt-2 text-sm font-bold">Men&rsquo;s tuxedos and tuxedo jackets from the brands&rsquo; own sites, with the price each one listed on {'Nov 10, 2026'}.</p>
           </div>
-          <button type="button" onClick={() => { const params = new URLSearchParams(searchParams); params.delete('collection'); setSearchParams(params) }} className="flex shrink-0 items-center gap-1.5 text-xs font-black text-gold-300 underline">SHOW EVERYTHING INSTEAD</button>
+          <button type="button" onClick={() => { const params = new URLSearchParams(searchParams); params.delete('collection'); setSearchParams(params) }} className="flex min-h-10 shrink-0 items-center gap-1.5 text-xs font-black text-gold-300 underline">SHOW EVERYTHING INSTEAD</button>
         </div>
       )}
 
       {guidedSearch && <div className="mt-8 flex flex-col justify-between gap-5 rounded-2xl border border-gold-200 bg-gold-50 px-5 py-5 sm:flex-row sm:items-center"><div><p className="text-[10px] font-black uppercase tracking-[.2em] text-gold-800">Your concierge search is active</p><p className="mt-2 text-sm font-bold">{gender || 'All collections'} · {bodyType || 'All body types'} · {priceOptions.find(([, value]) => value === priceTier)?.[0] || 'All prices'}</p></div><Link to="/style/shirt-size" className="flex shrink-0 items-center gap-2 text-xs font-black">ADD SIZE + OCCASION <ArrowRight size={16} /></Link></div>}
 
-      <form onSubmit={syncUrl} className="mt-8 flex max-w-4xl rounded-full border border-neutral-300 bg-white p-1.5 shadow-soft transition focus-within:border-gold-400"><input value={query} onChange={(event) => setQuery(event.target.value)} className="min-w-0 flex-1 bg-transparent px-5 py-3 outline-none" placeholder="Try “purple barrel pants” or “black leather jacket under $200”" aria-label="Search all products" /><button className="flex items-center gap-2 rounded-full bg-black px-6 text-sm font-bold text-white transition hover:bg-gold-700"><Search size={18} /><span className="hidden sm:inline">SEARCH</span></button></form>
+      <form onSubmit={syncUrl} className="mt-8 flex max-w-4xl rounded-full border border-neutral-300 bg-white p-1.5 shadow-soft transition focus-within:border-gold-400"><input value={query} onChange={(event) => setQuery(event.target.value)} className="min-w-0 flex-1 bg-transparent px-4 py-3 outline-none sm:px-5" enterKeyHint="search" type="search" placeholder={searchHint} aria-label="Search all products" /><button className="flex items-center gap-2 rounded-full bg-black px-6 text-sm font-bold text-white transition hover:bg-gold-700"><Search size={18} /><span className="hidden sm:inline">SEARCH</span></button></form>
       {activeCount === 0 && (
         <div className="mt-4 flex max-w-4xl flex-wrap items-center gap-2">
           <span className="mr-1 text-[10px] font-black uppercase tracking-[.18em] text-neutral-500">Popular</span>
@@ -212,7 +215,7 @@ export default function Shop() {
         <FilterButtons label="Delivery speed" value={fast} onChange={setFast} options={[['Any speed', ''], ['Same-day delivery options', '1']]} />
         <FilterButtons label="Sample listings" value={samples} onChange={setSamples} options={[['Hidden', ''], ['Show them too', '1']]} />
         <FilterButtons label="Market" value={market} onChange={setMarket} options={[['All fashion', ''], ['Luxury', 'Luxury'], ['Asian Market', 'Asian Market'], ['Everyday & Designer', 'Everyday & Designer'], ['Resale & Vintage', 'Resale & Vintage']]} />
-        <button onClick={syncUrl} className="mt-6 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-black px-6 text-xs font-black text-white transition hover:bg-gold-700 sm:w-auto">APPLY SEARCH FILTERS <Search size={15} /></button>
+        <button onClick={(event) => { syncUrl(event); setFiltersOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className="sticky bottom-3 mt-6 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-black px-6 text-xs font-black text-white shadow-lift transition hover:bg-gold-700 sm:w-auto lg:static lg:shadow-none">{loaded ? `SHOW ${filtered.length.toLocaleString()} ITEMS` : 'APPLY SEARCH FILTERS'} <Search size={15} /></button>
       </div>
 
       <div className="flex flex-col gap-2 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-5"><p className="text-sm font-bold">{samples ? `${filtered.length} ITEMS, ${filtered.length - realShown} OF THEM SAMPLE LISTINGS` : `${filtered.length} REAL ITEMS ACROSS ${[...new Set(filtered.map((product) => product.vendor))].length} STORES`}</p><p className="max-w-md text-xs text-neutral-500 sm:text-right">{samples ? 'Real items open the store’s own page; sample listings open the store’s search · ' : 'Every shopping button opens the item on the store’s own site · '}the store confirms live price and stock</p></div>
@@ -222,8 +225,8 @@ export default function Shop() {
           <p className="text-sm font-bold">{filtered.length === 0 ? 'We don’t have real listings for this yet.' : `Only ${filtered.length} real ${filtered.length === 1 ? 'listing matches' : 'listings match'}.`}</p>
           <p className="mt-1 text-sm leading-6 text-neutral-700">{hiddenSamples} sample {hiddenSamples === 1 ? 'listing also matches' : 'listings also match'}. Those show an example name and price, not a specific item in stock, and open the store&rsquo;s search.</p>
           <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-black">
-            {storeSite && <a href={affiliateUrl(storeSite.url)} target="_blank" rel={outboundRel(storeSite.url)} className="inline-flex items-center gap-1.5 underline">Shop {storeSite.name} directly <ExternalLink size={12} /></a>}
-            <button type="button" onClick={() => toggleSamples('1')} className="underline">Show the {hiddenSamples} sample {hiddenSamples === 1 ? 'listing' : 'listings'}</button>
+            {storeSite && <a href={affiliateUrl(storeSite.url)} target="_blank" rel={outboundRel(storeSite.url)} className="inline-flex min-h-10 items-center gap-1.5 underline">Shop {storeSite.name} directly <ExternalLink size={12} /></a>}
+            <button type="button" onClick={() => toggleSamples("1")} className="min-h-10 underline">Show the {hiddenSamples} sample {hiddenSamples === 1 ? 'listing' : 'listings'}</button>
           </div>
           {market === 'Luxury' && (
             <div className="mt-4 border-t border-gold-200 pt-4">
@@ -242,9 +245,9 @@ export default function Shop() {
           <p className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[.2em] text-gold-800"><Zap size={13} aria-hidden="true" /> Need it fast?</p>
           <p className="mt-2 text-sm font-bold">{fast ? 'Showing only stores that offer same-day delivery. Availability depends on your address.' : 'In a hurry? Some stores deliver the same day, and many have store pickup.'}</p>
           <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-black">
-            <a href={doorDashSearchUrl(withoutUrgency(liveQuery) || 'clothing')} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 underline">Search DoorDash for “{withoutUrgency(liveQuery) || 'clothing'}” <ExternalLink size={12} /></a>
-            <a href={mapsSearchUrl(withoutUrgency(liveQuery))} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 underline">Find it in stores near me <ExternalLink size={12} /></a>
-            <Link to="/fast" className="inline-flex items-center gap-1.5 underline">All fast options <ArrowRight size={12} /></Link>
+            <a href={doorDashSearchUrl(withoutUrgency(liveQuery) || 'clothing')} target="_blank" rel="noreferrer" className="inline-flex min-h-10 items-center gap-1.5 underline">Search DoorDash for “{withoutUrgency(liveQuery) || 'clothing'}” <ExternalLink size={12} /></a>
+            <a href={mapsSearchUrl(withoutUrgency(liveQuery))} target="_blank" rel="noreferrer" className="inline-flex min-h-10 items-center gap-1.5 underline">Find it in stores near me <ExternalLink size={12} /></a>
+            <Link to="/fast" className="inline-flex min-h-10 items-center gap-1.5 underline">All fast options <ArrowRight size={12} /></Link>
             {!fast && <button type="button" onClick={() => setFast('1')} className="underline">Show only same-day stores</button>}
           </div>
         </div>

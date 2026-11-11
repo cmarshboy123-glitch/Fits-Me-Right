@@ -96,8 +96,8 @@ export default function FastDelivery() {
               <article key={step.title} className="flex flex-col rounded-2xl border border-neutral-200 bg-white p-6">
                 <h3 className="text-lg font-black">{step.title}</h3>
                 <p className="mt-3 flex-1 text-sm leading-6 text-neutral-600">{step.body}</p>
-                {action && <a href={action.url} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-2 text-xs font-black text-black underline">{action.label} {step.action === 'maps' ? <MapPin size={13} /> : <ExternalLink size={13} />}</a>}
-                {step.link && <a href={step.link[1]} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-2 text-xs font-black text-black underline">{step.link[0]} <ExternalLink size={13} /></a>}
+                {action && <a href={action.url} target="_blank" rel="noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-2 text-xs font-black text-black underline">{action.label} {step.action === 'maps' ? <MapPin size={13} /> : <ExternalLink size={13} />}</a>}
+                {step.link && <a href={step.link[1]} target="_blank" rel="noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-2 text-xs font-black text-black underline">{step.link[0]} <ExternalLink size={13} /></a>}
               </article>
             )
           })}
