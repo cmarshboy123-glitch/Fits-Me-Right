@@ -33,7 +33,7 @@ Retailers don't publish body-type fit or dress codes, so those two fields are as
 
 ## Hand-checked tuxedos
 
-`src/data/curatedProducts.js` lists 17 men's tuxedos and tuxedo jackets (Brunello Cucinelli, Prada, Louis Vuitton, Dior, Giorgio Armani, Canali, Corneliani, Tom Ford, Brioni, Ralph Lauren, Suitsupply, Proper Cloth, Todd Snyder, Jos. A. Bank). Each name, US price, photo and product page was read from the brand's own site on 2026-11-10; nothing is estimated. They are merged into the catalog even when the API is down and are shown by `/shop?collection=tuxedos`. Refresh the prices by re-reading each page and updating `verifiedAt`.
+`src/data/curatedProducts.js` lists 18 men's tuxedos and tuxedo jackets (Brunello Cucinelli, Prada, Louis Vuitton, Dior, Giorgio Armani, Canali, Corneliani, Tom Ford, Brioni, Ralph Lauren, Suitsupply, Proper Cloth, Todd Snyder, Paul Smith, Jos. A. Bank; Paul Smith is priced in pounds from its UK store because no US price was found, and the card shows £). Each name, US price, photo and product page was read from the brand's own site on 2026-11-10; nothing is estimated. They are merged into the catalog even when the API is down and are shown by `/shop?collection=tuxedos`. Refresh the prices by re-reading each page and updating `verifiedAt`.
 
 ## Sample listings are hidden by default
 
