@@ -1,19 +1,28 @@
+import { useState } from 'react'
 import { ArrowRight, Zap } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import InteractiveWardrobe from '../components/InteractiveWardrobe'
 import { luxuryRetailers, retailerNames } from '../utils/retailers'
 
-// [label, image, where it goes]. A tile without an image draws the black-tie bow tie instead.
+// [label, image, where it goes]. The Tuxedos tile uses a real photo (a men's tuxedo from the Ralph Lauren listing in the catalog); if that photo ever fails to load, the tile draws a black-tie bow tie instead.
 const categories = [
   ['Everyday Ease', '/assets/unique/home-everyday-ease-v1.webp', '/style/gender'],
   ['Business Casual', '/assets/unique/home-business-casual-men-v1.webp', '/style/gender'],
   ['Formal Wear', '/assets/unique/home-after-five-v1.webp', '/style/gender'],
   // Strictly tuxedos: hand-checked men's tuxedos and tuxedo jackets (no loose trousers, shirts or women's pieces).
-  ['Tuxedos', null, '/shop?collection=tuxedos'],
+  ['Tuxedos', 'https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1339421_alternate10?wid=700&fmt=jpeg', '/shop?collection=tuxedos'],
   ['Made to Move', '/assets/unique/home-made-to-move-men-v1.webp', '/style/gender'],
   ['Shoes', '/assets/unique/home-shoes-occasion-men-v1.webp', '/style/gender'],
   ['Accessories', '/assets/unique/home-accessories-occasion-v1.webp', '/style/gender'],
 ]
+
+// A tile photo; the Tuxedos one comes from the store's own site, so it falls back to the bow tie if it cannot load.
+function TileImage({ image, label, index }) {
+  const [failed, setFailed] = useState(false)
+  if (failed) return <BowTieTile />
+  const remote = image.startsWith('http')
+  return <img src={image} style={{ objectPosition: remote ? 'center top' : `${18 + index * 13}% center` }} alt={remote ? `${label}: a man in a black tuxedo` : ''} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" referrerPolicy={remote ? 'no-referrer' : undefined} onError={() => setFailed(true)} />
+}
 
 function BowTieTile() {
   return (
@@ -86,9 +95,7 @@ export default function Home() {
           {categories.map(([label, image, to], index) => (
             <Link key={label} to={to} className="group text-left">
               <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-neutral-100 shadow-soft transition duration-300 group-hover:shadow-lift">
-                {image
-                  ? <img src={image} style={{ objectPosition: `${18 + index * 13}% center` }} alt="" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
-                  : <BowTieTile />}
+                {image ? <TileImage image={image} label={label} index={index} /> : <BowTieTile />}
               </div>
               <p className="mt-3 text-sm font-bold">{label}</p>
             </Link>
