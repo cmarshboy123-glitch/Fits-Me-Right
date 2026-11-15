@@ -28,12 +28,11 @@
 .literal-wardrobe {
   position: relative;
   min-height: 640px;
-  max-width: 1440px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
   overflow: hidden;
-  border-radius: 1.5rem;
+  border-radius: 0;
   background: #241811;
-  box-shadow: 0 28px 70px rgba(44, 29, 19, .16);
   isolation: isolate;
 }
 
