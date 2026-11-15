@@ -14,7 +14,7 @@ A fashion discovery site: shoppers search real products from many stores by body
 
 ## Design direction (set by the owner, Nov 2026)
 
-The look should follow a quiet luxury-boutique storefront (the owner pointed at Victoria Beckham's official store as the reference): thin nav in small caps with a centered logo, full-width hero, square corners, black and white with a serif for headlines (system serif stack, no web font), portrait product photos on a light grey stage with small type underneath, a collapsed filter bar, and text links instead of heavy buttons. Copy the layout principles only, never another brand's name, photos, text or code. The site sells nothing, so "buy" always means opening the store's own page.
+The look should follow a quiet luxury-boutique storefront (the owner pointed at Victoria Beckham's official store as the reference): thin nav in small caps with a centered logo, full-width hero, square corners, black and white with a serif for headlines (system serif stack, no web font), portrait product photos on a light grey stage with small type underneath, a collapsed filter bar, and text links instead of heavy buttons. Copy the layout principles only, never another brand's name, photos, text or code. The site sells nothing, so "buy" always means opening the store's own page. Site-wide corner, shadow and title rules live in one block at the end of `01-Site-Code/src/index.css` ("Editorial storefront look"); product cards are in `src/components/ProductCard.jsx`. CSS files here use Windows line endings, so multi-line find-and-replace from a shell can silently fail: use the editor tool and check the result.
 
 ## Catalog and honesty rules (these matter)
 
