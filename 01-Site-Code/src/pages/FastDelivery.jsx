@@ -67,7 +67,7 @@ export default function FastDelivery() {
             className="mt-9 max-w-2xl"
           >
             <label htmlFor="fast-need" className="text-[11px] font-black uppercase tracking-[.2em] text-white/60">What do you need?</label>
-            <div className="mt-2 flex items-center gap-2 rounded-full bg-white px-5 text-black">
+            <div className="mt-2 flex items-center gap-2 bg-white px-5 text-black">
               <Search size={18} aria-hidden="true" />
               <input id="fast-need" value={need} onChange={(event) => setNeed(event.target.value)} placeholder="tuxedo, black dress, dress shoes…" className="min-h-[54px] w-full bg-transparent text-base outline-none" />
             </div>

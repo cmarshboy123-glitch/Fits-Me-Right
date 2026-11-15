@@ -44,7 +44,7 @@ export default function Legal({ page }) {
         <a href={`mailto:${CONTACT_EMAIL}`} className="mt-5 inline-flex items-center gap-3 rounded-full bg-black px-6 py-3.5 text-sm font-black text-white"><Mail size={16} /> {CONTACT_EMAIL.toUpperCase()}</a>
       </div>
 
-      <Link to="/help" className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-neutral-700 hover:text-black">HELP &amp; CONTACT <ArrowRight size={15} /></Link>
+      <Link to="/help" className="mt-6 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-neutral-700 hover:text-black">HELP &amp; CONTACT <ArrowRight size={15} /></Link>
     </section>
   )
 }

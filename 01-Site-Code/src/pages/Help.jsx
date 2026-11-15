@@ -11,8 +11,8 @@ const faqs = [
       : 'No. Every product links out to the retailer that actually sells it. We don’t process payments, hold your card details, or take a cut of the sale.',
   },
   {
-    q: 'Why do some items say “Verified retailer item” and others say “Shop this look”?',
-    a: 'A verified item links straight to the exact page we confirmed at that store. When we haven’t confirmed an exact link yet, we open a live search at that retailer for the same item instead of a dead end.',
+    q: 'Why do some items say “View at” a store and others say “Search at” a store?',
+    a: '“View at” links straight to the exact page we confirmed at that store, and the card says the date we checked it. When we haven’t confirmed an exact link yet, “Search at” opens a live search at that retailer for the same item instead of a dead end.',
   },
   {
     q: 'How current are the prices and sizes shown?',
@@ -68,8 +68,8 @@ export default function Help() {
       </div>
 
       <div className="mt-10 flex flex-wrap gap-4 text-sm font-bold">
-        <Link to="/about" className="flex items-center gap-2 text-neutral-700 hover:text-black">READ OUR FIT PROMISE <ArrowRight size={15} /></Link>
-        <Link to="/shop" className="flex items-center gap-2 text-neutral-700 hover:text-black">BACK TO SHOPPING <ArrowRight size={15} /></Link>
+        <Link to="/about" className="flex min-h-11 items-center gap-2 text-neutral-700 hover:text-black">READ OUR FIT PROMISE <ArrowRight size={15} /></Link>
+        <Link to="/shop" className="flex min-h-11 items-center gap-2 text-neutral-700 hover:text-black">BACK TO SHOPPING <ArrowRight size={15} /></Link>
       </div>
     </section>
   )

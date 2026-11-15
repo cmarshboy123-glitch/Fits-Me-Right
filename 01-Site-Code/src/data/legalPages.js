@@ -4,7 +4,7 @@
 
 import { AFFILIATES_ACTIVE } from '../utils/affiliate'
 
-export const LEGAL_UPDATED = 'November 8, 2026'
+export const LEGAL_UPDATED = 'November 14, 2026'
 export const CONTACT_EMAIL = 'hello@fitsmeright.com'
 // Who runs the site (a person's name or a registered business name, plus a city/state). Left empty
 // until the owner decides; the terms show a "Who runs Fits Me Right" section as soon as it is set.
@@ -138,15 +138,15 @@ export const legalPages = {
       {
         h: 'Where the products come from',
         p: ['About three in four listings are real products collected from stores’ own public product pages and product feeds: the item name, price, color, photo and the link to the exact product page. A smaller number were checked by hand against the store’s site.',
-          'The rest, roughly one in four, are sample listings. They show a drawn illustration instead of a photo, the name and price are examples of what that store typically sells, and the card says “Shop this look.” They are not a specific item we know is in stock, and they open the store’s search so you can find the real thing. Sample listings are hidden by default; the shop offers them when a search finds few real items, and you can turn them on in its filters. Stores such as Bergdorf Goodman that don’t allow automated reading of their site are listed as a place to search, without products from them.'],
+          'The rest, roughly one in four, are sample listings. They show a drawn illustration instead of a photo, the name and price are examples of what that store typically sells, and the card button says “Search at” the store. They are not a specific item we know is in stock, and they open the store’s search so you can find the real thing. Sample listings are hidden by default; the shop offers them when a search finds few real items, and you can turn them on in its filters. Stores such as Bergdorf Goodman that don’t allow automated reading of their site are listed as a place to search, without products from them.'],
       },
       {
         h: 'Dates and prices',
         p: ['On a real listing, the price is a snapshot taken on the date shown on the card (“price as of” a date), not a live price. On a sample listing (when you choose to show them) the price is labeled “example price,” because it is a typical price rather than one we read from the store. Stores change prices and sell out of sizes without telling us, so the store’s page decides the final price and what’s in stock. We refresh the catalog from time to time, but not minute by minute.'],
       },
       {
-        h: 'What “Verified retailer item” means',
-        p: ['It means the link goes to that item’s own page at the store, and that we read the price and photo from the store on the date shown. “Shop this look” means we haven’t confirmed an exact page yet, so the link opens that store’s search for the item instead.'],
+        h: 'What “View at” and “Search at” mean',
+        p: ['“View at” means the link goes to that item’s own page at the store, and that we read the price and photo from the store on the date shown (each card says when the item page was checked). “Search at” means we haven’t confirmed an exact page yet, so the link opens that store’s search for the item instead.'],
       },
       {
         h: 'Photos',
