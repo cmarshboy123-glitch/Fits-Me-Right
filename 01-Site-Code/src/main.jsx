@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { StyleProvider } from './context/StyleContext'
 import { WishlistProvider } from './context/WishlistContext'
+import { LookBookProvider } from './context/LookBookContext'
 import '@fontsource-variable/inter'
 import './index.css'
 
@@ -21,7 +22,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <StyleProvider>
         <WishlistProvider>
-          <App />
+          <LookBookProvider>
+            <App />
+          </LookBookProvider>
         </WishlistProvider>
       </StyleProvider>
     </BrowserRouter>
