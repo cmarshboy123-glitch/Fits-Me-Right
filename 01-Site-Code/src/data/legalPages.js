@@ -27,7 +27,7 @@ export const legalPages = {
       },
       {
         h: 'What stays on your own device',
-        p: ['Your wishlist and any saved style profiles (the name you give a profile, plus the choices in it) are kept in your browser’s storage on this device. They are never sent to us, so we can’t see them and can’t recover them. Clearing your browser data, or using another device, clears them.',
+        p: ['Your wishlist, your Look Book (the looks you create, with the notes, sizes and ratings you type into them) and any saved style profiles (the name you give a profile, plus the choices in it) are kept in your browser’s storage on this device. They are never sent to us, so we can’t see them and can’t recover them. Clearing your browser data, or using another device, clears them.',
           'The site also keeps a one-time note in your browser for the current visit, so it can refresh itself once after we publish an update.'],
       },
       {
@@ -56,7 +56,7 @@ export const legalPages = {
       },
       {
         h: 'Your choices',
-        p: ['You can clear your wishlist and profiles at any time from the site, or by clearing your browser’s site data. To ask a question about this page, write to us at the address below.'],
+        p: ['You can clear your wishlist, Look Book and profiles at any time from the site, or by clearing your browser’s site data. To ask a question about this page, write to us at the address below.'],
       },
       {
         h: 'If this changes',

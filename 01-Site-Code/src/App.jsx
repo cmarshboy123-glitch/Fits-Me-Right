@@ -14,6 +14,7 @@ const ThriftyShopper = lazy(() => import('./pages/ThriftyShopper'))
 const ThriftCorner = lazy(() => import('./pages/ThriftCorner'))
 const Wishlist = lazy(() => import('./pages/Wishlist'))
 const Profiles = lazy(() => import('./pages/Profiles'))
+const LookBook = lazy(() => import('./pages/LookBook'))
 const About = lazy(() => import('./pages/About'))
 const Help = lazy(() => import('./pages/Help'))
 const Legal = lazy(() => import('./pages/Legal'))
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="fit-guide" element={<FitGuide />} />
         <Route path="wishlist" element={<Wishlist />} />
         <Route path="profiles" element={<Profiles />} />
+        <Route path="look-book" element={<LookBook />} />
         <Route path="about" element={<About />} />
         <Route path="help" element={<Help />} />
         <Route path="privacy" element={<Legal page="privacy" />} />

@@ -37,6 +37,10 @@ const faqs = [
     a: 'Not yet — it’s saved locally in this browser only. Clearing your browser data or switching devices will clear it too.',
   },
   {
+    q: 'What is the Look Book?',
+    a: 'A place to pull items you’ve saved into named looks, like “cousin’s wedding”, and keep your own notes on each piece: the size you chose, how it fits, and how it looks on you. Like the wishlist, it is saved only in this browser. We never see it, and clearing your browser data or switching devices clears it.',
+  },
+  {
     q: 'I found a broken link or wrong price. What do I do?',
     a: 'Tell us — see the contact details below. We rely on reports like this to keep the marketplace accurate.',
   },

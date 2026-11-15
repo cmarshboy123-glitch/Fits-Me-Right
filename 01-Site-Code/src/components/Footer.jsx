@@ -6,7 +6,7 @@ import { OPERATOR_NAME } from '../data/legalPages'
 const columns = [
   ['Shop', [['All stores', '/shop'], ['Your style edit', '/style/gender'], ['Tuxedos', '/shop?collection=tuxedos'], ['Need it fast', '/fast'], ['Fit guide', '/fit-guide']]],
   ['Discover', [['Cobbler Corner', '/cobbler-corner'], ['Just Jewels', '/just-jewels'], ['Thrifty Shopper', '/thrifty-shopper'], ['Thrift Corner: sell your stuff', '/thrift-corner'], ['Creative Corner', '/creative-corner']]],
-  ['Help', [['Help & contact', '/help'], ['Our fit promise', '/about'], ['Your wishlist', '/wishlist'], ['Style profiles', '/profiles']]],
+  ['Help', [['Help & contact', '/help'], ['Our fit promise', '/about'], ['Your wishlist', '/wishlist'], ['Your Look Book', '/look-book'], ['Style profiles', '/profiles']]],
   ['The small print', [['How our listings work', '/disclosures'], ['Privacy', '/privacy'], ['Terms', '/terms']]],
 ]
 

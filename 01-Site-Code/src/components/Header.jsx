@@ -1,4 +1,4 @@
-import { Heart, Menu, Search, UserRound, X } from 'lucide-react'
+import { BookOpen, Heart, Menu, Search, UserRound, X } from 'lucide-react'
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useStyle } from '../context/StyleContext'
@@ -149,6 +149,7 @@ export default function Header() {
               {wishlistCount > 0 && <span className="absolute -right-1.5 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-gold-400 px-1 text-[9px] font-black text-black">{wishlistCount > 9 ? '9+' : wishlistCount}</span>}
             </span>
           </Link>
+          <Link to="/look-book" aria-label="Your Look Book" className="hidden h-11 w-11 place-items-center sm:grid"><BookOpen size={21} /></Link>
           <Link to="/profiles" aria-label="Your style profiles" className="hidden h-11 w-11 place-items-center sm:grid"><UserRound size={21} /></Link>
           <button onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="mobile-menu" className="grid h-11 w-11 place-items-center xl:hidden">{open ? <X size={23} /> : <Menu size={23} />}</button>
         </div>
@@ -161,6 +162,7 @@ export default function Header() {
             <button className="py-3 text-left" onClick={() => startFor('Men')}>Men</button>
             {nav.map(([label, path]) => <Link key={path} className="py-3" to={path} onClick={() => setOpen(false)}>{label}</Link>)}
             <div className="mt-1 flex flex-col border-t border-neutral-200 pt-2 text-neutral-600">
+              <Link className="py-3.5" to="/look-book" onClick={() => setOpen(false)}>Look Book</Link>
               <Link className="py-3.5" to="/wishlist" onClick={() => setOpen(false)}>Wishlist{wishlistCount > 0 ? ` (${wishlistCount})` : ''}</Link>
               <Link className="py-3" to="/profiles" onClick={() => setOpen(false)}>Style Profiles</Link>
               <Link className="py-3" to="/about" onClick={() => setOpen(false)}>Our Fit Promise</Link>

@@ -24,6 +24,7 @@ const routes = [
   [/^\/thrift-corner\b/, 'Thrift Corner — Sell Your Stuff', 'Clear your closet and give your clothes a second life: where to sell clothing online, and five simple steps from closet to sold.'],
   [/^\/creative-corner\b/, 'Creative Corner', 'A directory and editorial spotlight for independent fashion designers and the ideas shaping what we wear next.'],
   [/^\/wishlist\b/, 'Your Wishlist', DEFAULT_DESCRIPTION, true],
+  [/^\/look-book\b/, 'Your Look Book', DEFAULT_DESCRIPTION, true],
   [/^\/profiles\b/, 'Style Profiles', DEFAULT_DESCRIPTION, true],
   [/^\/about\b/, 'Our Fit Promise', 'Fits Me Right is an independent discovery experience, not a retailer. Here is how we search, how we link out, and what we promise.'],
   [/^\/privacy\b/, 'Privacy', 'What Fits Me Right does and doesn’t do with your information: no accounts, no ads, no tracking.'],

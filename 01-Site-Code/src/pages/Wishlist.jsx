@@ -23,7 +23,7 @@ export default function Wishlist() {
 
       {items.length > 0 ? (
         <>
-          <p className="py-6 text-sm font-bold">{items.length} SAVED ITEM{items.length === 1 ? '' : 'S'}</p>
+          <div className="flex flex-wrap items-center justify-between gap-x-6 py-4"><p className="text-sm font-bold">{items.length} SAVED ITEM{items.length === 1 ? '' : 'S'}</p><Link to="/look-book" className="inline-flex min-h-11 items-center text-xs font-semibold uppercase tracking-[.14em] underline underline-offset-[6px]">Put them together in your Look Book</Link></div>
           <ProductGrid products={items} />
         </>
       ) : (
