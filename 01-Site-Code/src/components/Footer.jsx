@@ -2,19 +2,35 @@ import { Link } from 'react-router-dom'
 import BrandMark from './BrandMark'
 import { OPERATOR_NAME } from '../data/legalPages'
 
+// Quiet boutique footer: small-caps column headings, small plain links, the logo centered at the bottom.
+const columns = [
+  ['Shop', [['All stores', '/shop'], ['Your style edit', '/style/gender'], ['Tuxedos', '/shop?collection=tuxedos'], ['Need it fast', '/fast'], ['Fit guide', '/fit-guide']]],
+  ['Discover', [['Cobbler Corner', '/cobbler-corner'], ['Just Jewels', '/just-jewels'], ['Thrifty Shopper', '/thrifty-shopper'], ['Thrift Corner: sell your stuff', '/thrift-corner'], ['Creative Corner', '/creative-corner']]],
+  ['Help', [['Help & contact', '/help'], ['Our fit promise', '/about'], ['Your wishlist', '/wishlist'], ['Style profiles', '/profiles']]],
+  ['The small print', [['How our listings work', '/disclosures'], ['Privacy', '/privacy'], ['Terms', '/terms']]],
+]
+
 export default function Footer() {
   const year = new Date().getFullYear()
   return (
-    <footer className="mt-24 border-t border-neutral-200 bg-[#F7F5F0]">
-      <div className="mx-auto grid max-w-[1440px] gap-12 px-4 py-14 md:grid-cols-4 lg:px-8">
-        <div className="md:col-span-2">
-          <BrandMark />
-          <p className="mt-5 max-w-md text-sm leading-6 text-neutral-600">Your fashion concierge and independent marketplace—thoughtful finds for every body, every plan, and every version of you.</p>
-        </div>
-        <div><p className="text-xs font-bold uppercase tracking-[.16em]">Shop</p><div className="mt-3 flex flex-col text-sm text-neutral-600 [&>a]:py-2.5"><Link to="/shop">All Stores</Link><Link to="/style/gender">Your Style Edit</Link><Link to="/fast">Need It Fast</Link><Link to="/fit-guide">Fit Guide</Link><Link to="/cobbler-corner">Cobbler Corner</Link><Link to="/just-jewels">Just Jewels</Link><Link to="/thrifty-shopper">Thrifty Shopper</Link><Link to="/thrift-corner">Thrift Corner: Sell Your Stuff</Link><Link to="/wishlist">Your Wishlist</Link></div></div>
-        <div><p className="text-xs font-bold uppercase tracking-[.16em]">About</p><div className="mt-3 flex flex-col text-sm text-neutral-600 [&>a]:py-2.5"><Link to="/creative-corner">Creative Corner</Link><Link to="/about">Our Fit Promise</Link><Link to="/help">Help & Contact</Link></div></div>
+    <footer className="mt-24 border-t border-neutral-300 bg-white">
+      <div className="mx-auto grid max-w-[1440px] grid-cols-2 gap-x-6 gap-y-10 px-4 py-14 lg:grid-cols-4 lg:px-8">
+        {columns.map(([title, links]) => (
+          <nav key={title} aria-label={title}>
+            <p className="text-[11px] font-semibold uppercase tracking-[.2em] text-neutral-950">{title}</p>
+            <ul className="mt-4">
+              {links.map(([label, to]) => (
+                <li key={to}><Link to={to} className="block py-2.5 text-[13px] text-neutral-600 transition hover:text-black hover:underline hover:underline-offset-4">{label}</Link></li>
+              ))}
+            </ul>
+          </nav>
+        ))}
       </div>
-      <div className="border-t border-neutral-200 px-4 py-5 text-center text-xs text-neutral-500"><div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2"><span>© {year} {OPERATOR_NAME || 'Fits Me Right'}. All rights reserved.</span><Link to="/privacy" className="py-3 underline">Privacy</Link><Link to="/terms" className="py-3 underline">Terms</Link><Link to="/disclosures" className="py-3 underline">How our listings work</Link></div></div>
+      <div className="border-t border-neutral-200 px-4 py-12 text-center">
+        <Link to="/" aria-label="Fits Me Right home" className="inline-block"><BrandMark /></Link>
+        <p className="mx-auto mt-5 max-w-md text-[13px] leading-6 text-neutral-600">Your fashion concierge and independent marketplace: thoughtful finds for every body, every plan, and every version of you.</p>
+        <p className="mt-6 text-[11px] uppercase tracking-[.14em] text-neutral-500">© {year} {OPERATOR_NAME || 'Fits Me Right'}. All rights reserved.</p>
+      </div>
     </footer>
   )
 }
