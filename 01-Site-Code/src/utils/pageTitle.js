@@ -30,7 +30,10 @@ const routes = [
   [/^\/privacy\b/, 'Privacy', 'What Fits Me Right does and doesn’t do with your information: no accounts, no ads, no tracking.'],
   [/^\/terms\b/, 'Terms of Use', 'The ground rules for using Fits Me Right, an independent clothing discovery site.'],
   [/^\/disclosures\b/, 'How Our Listings Work', 'Where our products come from, how current the prices are, and what Fits Me Right does and doesn’t earn.'],
-  [/^\/help\b/,'Help & Contact', 'Answers to common questions about Fits Me Right, prices, sizes and links, plus how to reach us.'],
+  [/^\/help\b/,'Help & FAQs', 'Answers to common questions about Fits Me Right, prices, sizes, links, saved items and cookies.'],
+  [/^\/contact\b/, 'Contact Us', 'How to reach Fits Me Right about a price, a link, finding something, fit questions or privacy.'],
+  [/^\/delivery-returns\b/, 'Delivery & Returns', 'Fits Me Right never sells or ships anything. Here is who handles delivery, returns and sizing, and where to look.'],
+  [/^\/accessibility\b/, 'Accessibility', 'What we have done to make Fits Me Right easy to use, what we have not done, and how to tell us what is not working.'],
   [/^\/admin\b/, 'Catalog Manager', DEFAULT_DESCRIPTION, true],
 ]
 

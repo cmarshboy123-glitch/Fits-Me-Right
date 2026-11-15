@@ -166,7 +166,8 @@ export default function Header() {
               <Link className="py-3.5" to="/wishlist" onClick={() => setOpen(false)}>Wishlist{wishlistCount > 0 ? ` (${wishlistCount})` : ''}</Link>
               <Link className="py-3" to="/profiles" onClick={() => setOpen(false)}>Style Profiles</Link>
               <Link className="py-3" to="/about" onClick={() => setOpen(false)}>Our Fit Promise</Link>
-              <Link className="py-3" to="/help" onClick={() => setOpen(false)}>Help &amp; Contact</Link>
+              <Link className="py-3" to="/help" onClick={() => setOpen(false)}>Help &amp; FAQs</Link>
+              <Link className="py-3" to="/contact" onClick={() => setOpen(false)}>Contact us</Link>
             </div>
           </div>
         </div>

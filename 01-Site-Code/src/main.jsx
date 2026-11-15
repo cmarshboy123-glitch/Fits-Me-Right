@@ -5,6 +5,7 @@ import App from './App'
 import { StyleProvider } from './context/StyleContext'
 import { WishlistProvider } from './context/WishlistContext'
 import { LookBookProvider } from './context/LookBookContext'
+import { ConsentProvider } from './context/ConsentContext'
 import '@fontsource-variable/inter'
 import './index.css'
 
@@ -20,6 +21,7 @@ window.addEventListener('vite:preloadError', () => {
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
+      <ConsentProvider>
       <StyleProvider>
         <WishlistProvider>
           <LookBookProvider>
@@ -27,6 +29,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           </LookBookProvider>
         </WishlistProvider>
       </StyleProvider>
+      </ConsentProvider>
     </BrowserRouter>
   </React.StrictMode>,
 )

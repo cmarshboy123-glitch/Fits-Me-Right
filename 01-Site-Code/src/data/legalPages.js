@@ -1,10 +1,12 @@
 // Plain-language policy pages. Every statement here describes how the site actually works today
-// (no accounts, no analytics, no cookies of our own, live web search through SerpApi); if the
-// code changes in any of those ways, update this file in the same change.
+// (no accounts, no analytics, no advertising cookies, a few items kept in the browser with a cookie
+// consent choice, live web search through SerpApi); if the code changes in any of those ways, update
+// this file in the same change. Any analytics or advertising code must also check the visitor's
+// consent (src/utils/consent.js) before it runs.
 
 import { AFFILIATES_ACTIVE } from '../utils/affiliate'
 
-export const LEGAL_UPDATED = 'November 14, 2026'
+export const LEGAL_UPDATED = 'November 15, 2026'
 export const CONTACT_EMAIL = 'hello@fitsmeright.com'
 // Who runs the site (a person's name or a registered business name, plus a city/state). Left empty
 // until the owner decides; the terms show a "Who runs Fits Me Right" section as soon as it is set.
@@ -21,8 +23,19 @@ export const legalPages = {
         list: [
           'No account, sign-up, or password.',
           'No advertising, no tracking pixels, and no analytics tools on the site today.',
-          'We don’t set cookies of our own.',
+          'If we ever add analytics or advertising cookies, they stay switched off until you allow them.',
+          'A few small items are kept in your own browser so the site works (your saved items and your cookie choice). They are listed below.',
           'We don’t sell or rent information about you.',
+        ],
+      },
+      {
+        h: 'Cookies and similar storage',
+        p: ['Websites remember things in your browser in two main ways: cookies, and a similar feature called browser storage. Fits Me Right uses browser storage, not cookies, for the items below. Our cookie banner and cookie settings cover both, and you choose what is allowed.'],
+        list: [
+          'Strictly necessary (always on): your wishlist, Look Book and saved style profiles, so the features you use keep working between visits; and a note of your cookie choice, so we don’t ask you again on every page. These stay on this device until you clear them. They are never sent to us.',
+          'One-time update note (always on, for the current visit only): lets the site refresh itself once after we publish an update.',
+          'Analytics (off): none in use today. If we add a tool that counts visits, it stays off unless you allow it.',
+          'Advertising and affiliate (off): none in use today. If we connect affiliate programs, whose links can set cookies when you click through to a store, they are covered here and by the Affiliate links section above.',
         ],
       },
       {
@@ -56,7 +69,7 @@ export const legalPages = {
       },
       {
         h: 'Your choices',
-        p: ['You can clear your wishlist, Look Book and profiles at any time from the site, or by clearing your browser’s site data. To ask a question about this page, write to us at the address below.'],
+        p: ['You can clear your wishlist, Look Book and profiles at any time from the site, or by clearing your browser’s site data. You can change your cookie choice whenever you like with “Cookie settings” at the bottom of every page. To ask a question about this page, write to us at the address below.'],
       },
       {
         h: 'If this changes',
