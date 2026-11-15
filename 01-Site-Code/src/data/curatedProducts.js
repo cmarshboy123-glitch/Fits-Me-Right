@@ -110,4 +110,48 @@ const curatedProducts = rows.map(([vendor, name, category, price, color, fitNote
   tuxedo: true,
 }))
 
-export default curatedProducts
+// Victoria Beckham's official store (victoriabeckham.com). Name, price, photo and product page were read from
+// the store's own product listings on 2026-11-14, and each price was checked against the product page. The
+// store showed prices in pounds (GBP) in our browser, so they are listed in pounds with a £ sign rather than
+// converted. Only pieces that were in stock on that date are listed.
+const vbDate = '2026-11-14'
+const vbImage = (file) => `https://cdn.shopify.com/s/files/1/3028/8266/files/${file}?width=700`
+const womenBodyTypes = ['Straight', 'Curvy', 'Athletic', 'Petite', 'Tall', 'Plus']
+const evening = ['Cocktail Dress', 'Semi-Formal', 'Formal Attire']
+
+// [name, category, price in GBP, color, note, photo file, page handle, dress codes]
+const vbRows = [
+  ['High Neck Draped Midi Dress', 'Dresses', 950, 'Navy', 'Midi · crepe-back satin', 'VB_1426WDR007689B_MIDNIGHT_11214.jpg', 'high-neck-draped-midi-dress-in-midnight-22830', evening],
+  ['Kyra Midi Dress', 'Dresses', 990, 'Navy', 'Midi length', 'VB_1426WDR007612A_MIDNIGHT_1891-V2.jpg', 'kyra-midi-dress-in-midnight-22820', evening],
+  ['Lea Midi Dress', 'Dresses', 1100, 'Ivory', 'Midi length', 'VB_1426WDR007684A_IVORY_14277_1.jpg', 'lea-midi-dress-in-ivory-22828', evening],
+  ['Aida Gown', 'Dresses', 1290, 'Navy', 'Floor-length gown', 'AidaGowninBlue.jpg', 'aida-gown-in-navy-23402', ['Cocktail Dress', 'Formal Attire', 'Black Tie']],
+  ['Florence Gown', 'Dresses', 1190, 'Black', 'Floor-length gown', 'VB_1126WDR007087A_BLACK_3080_c6452207-3965-40b1-a5f3-65cbce0c0ae4.jpg', 'florence-gown-in-black', ['Cocktail Dress', 'Formal Attire', 'Black Tie']],
+  ['Long Sleeve Sheer Top', 'Tops', 490, 'Black', 'Sheer · long sleeve', 'Frame303.jpg', 'long-sleeve-sheer-top-in-black-23284', ['Semi-Formal', 'Cocktail Dress']],
+  ['Embroidered Scarf Cut-Out Blouse', 'Tops', 850, 'Black', 'Embroidered · cut-out detail', 'Frame298.jpg', 'embroidered-scarf-cut-out-blouse-in-black-light-grey-23271', ['Semi-Formal', 'Cocktail Dress']],
+  ['Ornamental Top', 'Tops', 650, 'Ivory', 'Ornamental detailing', 'Frame304.jpg', 'ornamental-top-in-ivory-23286', ['Semi-Formal', 'Cocktail Dress']],
+  ['Dorian East-West Clutch in Black Eel-Printed Leather', 'Accessories', 890, 'Black', 'Leather clutch', 'DORIANEASTWESTCLUTCHEELPRINTCALFBLACKB426AAC008080A1.jpg', 'dorian-east-west-clutch-in-black-23341', evening],
+  ['Sloane Frame Bag 28 in Dark Olive Distressed Leather', 'Accessories', 1590, 'Green', 'Distressed leather', 'SLOANE-FRAME-BAGB426AAC007810ADARK-OLIVE-2_c5d84e95-b29f-4345-82f8-d7e596bff6da.jpg', 'sloane-frame-bag-in-dark-olive-22900', ['Business Casual', 'Semi-Formal']],
+  ['Harlow Mask Halter Back 100 in Black Nappa Leather', 'Shoes', 590, 'Black', '100mm heel · nappa leather', 'HARLOW_MASK_HALTER_BACK_100NAPPABLACK1326FSL0076_40A_1.jpg', 'harlow-mask-halter-back-100-in-black-22416', evening],
+]
+
+const victoriaBeckham = vbRows.map(([name, category, price, color, fitNote, file, handle, dressCode], index) => ({
+  id: 200101 + index,
+  name,
+  gender: 'Women',
+  category,
+  price,
+  currency: 'GBP',
+  priceTier: priceTierFor(price),
+  imageUrl: vbImage(file),
+  vendor: 'Victoria Beckham',
+  brand: 'Victoria Beckham',
+  color,
+  storeTier: 'Luxury',
+  bodyType: womenBodyTypes,
+  dressCode,
+  fitNote: `${fitNote} · price in pounds from the store`,
+  productUrl: `https://www.victoriabeckham.com/products/${handle}`,
+  verifiedAt: vbDate,
+}))
+
+export default [...curatedProducts, ...victoriaBeckham]
