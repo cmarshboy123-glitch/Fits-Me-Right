@@ -166,3 +166,12 @@
   .runway-progress { animation: none; }
 }
 
+
+/* Editorial storefront look, applied across every page (the owner's reference: a quiet luxury boutique).
+   Square corners, no soft shadows, serif page titles. Circles stay circular (swatches, dots, avatars are spans/divs,
+   so only pill-shaped links and buttons are squared). Kept in one place so it is easy to change or remove. */
+main :is(.rounded-2xl, .rounded-3xl, .rounded-xl, .rounded-\[2rem\], .rounded-\[1\.75rem\], .rounded-\[1\.5rem\]) { border-radius: 0 !important; }
+main :is(a, button, input, select, textarea, form, label, summary).rounded-full { border-radius: 0 !important; }
+main :is(.shadow-soft, .shadow-lift) { box-shadow: none !important; }
+main h1 { font-family: Iowan Old Style, Palatino Linotype, Palatino, Georgia, Times New Roman, serif !important; font-weight: 400 !important; font-style: italic; letter-spacing: 0 !important; }
+main h2 { font-family: Iowan Old Style, Palatino Linotype, Palatino, Georgia, Times New Roman, serif !important; font-weight: 400 !important; letter-spacing: 0 !important; }
