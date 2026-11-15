@@ -4,6 +4,8 @@ import ErrorBoundary from './ErrorBoundary'
 import Header from './Header'
 import Footer from './Footer'
 import RouteLoader from './RouteLoader'
+import CookieConsent from './CookieConsent'
+import HelpButton from './HelpButton'
 import { getPageMeta } from '../utils/pageTitle'
 
 function setMeta(name, content) {
@@ -59,6 +61,8 @@ export default function Layout() {
         </ErrorBoundary>
       </main>
       <Footer />
+      <HelpButton />
+      <CookieConsent />
     </>
   )
 }

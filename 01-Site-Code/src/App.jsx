@@ -17,6 +17,9 @@ const Profiles = lazy(() => import('./pages/Profiles'))
 const LookBook = lazy(() => import('./pages/LookBook'))
 const About = lazy(() => import('./pages/About'))
 const Help = lazy(() => import('./pages/Help'))
+const Contact = lazy(() => import('./pages/Contact'))
+const DeliveryReturns = lazy(() => import('./pages/DeliveryReturns'))
+const Accessibility = lazy(() => import('./pages/Accessibility'))
 const Legal = lazy(() => import('./pages/Legal'))
 const Admin = lazy(() => import('./pages/Admin'))
 const NotFound = lazy(() => import('./pages/NotFound'))
@@ -42,6 +45,9 @@ export default function App() {
         <Route path="look-book" element={<LookBook />} />
         <Route path="about" element={<About />} />
         <Route path="help" element={<Help />} />
+        <Route path="contact" element={<Contact />} />
+        <Route path="delivery-returns" element={<DeliveryReturns />} />
+        <Route path="accessibility" element={<Accessibility />} />
         <Route path="privacy" element={<Legal page="privacy" />} />
         <Route path="terms" element={<Legal page="terms" />} />
         <Route path="disclosures" element={<Legal page="disclosures" />} />

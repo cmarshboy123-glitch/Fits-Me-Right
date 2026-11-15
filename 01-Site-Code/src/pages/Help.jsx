@@ -1,80 +1,117 @@
-import { ArrowRight, Mail } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { CONTACT_EMAIL } from '../data/legalPages'
+import SupportPage from '../components/SupportPage'
+import { useConsent } from '../context/ConsentContext'
 import { AFFILIATES_ACTIVE } from '../utils/affiliate'
 
-const faqs = [
+const groups = [
   {
-    q: 'Does Fits Me Right sell anything directly?',
-    a: AFFILIATES_ACTIVE
-      ? 'No. Every product links out to the retailer that actually sells it. We don’t process payments or hold your card details. Some links are affiliate links, marked on the card, which means the store may pay us a commission if you buy.'
-      : 'No. Every product links out to the retailer that actually sells it. We don’t process payments, hold your card details, or take a cut of the sale.',
+    title: 'Shopping',
+    items: [
+      {
+        q: 'Does Fits Me Right sell anything directly?',
+        a: AFFILIATES_ACTIVE
+          ? 'No. Every product links out to the retailer that actually sells it. We don’t process payments or hold your card details. Some links are affiliate links, marked on the card, which means the store may pay us a commission if you buy.'
+          : 'No. Every product links out to the retailer that actually sells it. We don’t process payments, hold your card details, or take a cut of the sale.',
+      },
+      {
+        q: 'Why do some items say “View at” a store and others say “Search at” a store?',
+        a: '“View at” links straight to the exact page we confirmed at that store, and the card says the date we checked it. When we haven’t confirmed an exact link yet, “Search at” opens a live search at that retailer for the same item instead of a dead end.',
+      },
+      {
+        q: 'How current are the prices and sizes shown?',
+        a: 'Prices and size availability are snapshots meant to help you compare. The retailer always has the final, live price and stock — we note the date a listing was last checked where we can.',
+      },
+      {
+        q: 'Where do the listings come from, and do you earn money from them?',
+        a: `Most are real products from stores’ own public product pages and feeds. A smaller set are sample listings (an example name and price, not a specific item in stock). They are hidden unless you turn them on in the shop’s filters. ${AFFILIATES_ACTIVE ? 'Some links are affiliate links and may earn us a commission, and they are marked.' : 'We don’t earn anything when you click or buy.'} The full explanation is on our How our listings work page.`,
+        link: ['/disclosures', 'How our listings work'],
+      },
+      {
+        q: 'Who handles delivery, returns and sizing questions about an order?',
+        a: 'The store you bought from. We never take orders, so we can’t see or change one.',
+        link: ['/delivery-returns', 'Delivery & returns'],
+      },
+      {
+        q: 'Do you offer sizing and style advice?',
+        a: 'Our Fit Guide collects published stylist tips by body type, and the Style Edit narrows the shop to your body type, budget and occasion. For a question about one item, write to us and we’ll do our best.',
+        link: ['/fit-guide', 'Open the Fit Guide'],
+      },
+      {
+        q: 'Can I sell my own clothes on Fits Me Right?',
+        a: 'Not directly. We don’t take listings, hold items or handle payments. Thrift Corner points you to resale marketplaces that do, with a few simple steps for getting your clothes ready to sell.',
+        link: ['/thrift-corner', 'Visit Thrift Corner'],
+      },
+    ],
   },
   {
-    q: 'Why do some items say “View at” a store and others say “Search at” a store?',
-    a: '“View at” links straight to the exact page we confirmed at that store, and the card says the date we checked it. When we haven’t confirmed an exact link yet, “Search at” opens a live search at that retailer for the same item instead of a dead end.',
+    title: 'Your saved items',
+    items: [
+      {
+        q: 'Do I need an account?',
+        a: 'No. Wishlist items, your Look Book and saved style profiles are stored in your browser on this device — there’s no sign-up, login, or password.',
+      },
+      {
+        q: 'What is the Look Book?',
+        a: 'A place to pull items you’ve saved into named looks, like “cousin’s wedding”, and keep your own notes on each piece: the size you chose, how it fits, and how it looks on you. Like the wishlist, it is saved only in this browser. We never see it, and clearing your browser data or switching devices clears it.',
+        link: ['/look-book', 'Open your Look Book'],
+      },
+      {
+        q: 'Will my wishlist follow me to another device?',
+        a: 'Not yet — it’s saved locally in this browser only. Clearing your browser data or switching devices will clear it too.',
+      },
+    ],
   },
   {
-    q: 'How current are the prices and sizes shown?',
-    a: 'Prices and size availability are snapshots meant to help you compare. The retailer always has the final, live price and stock — we note the date a listing was last checked where we can.',
+    title: 'Privacy and cookies',
+    items: [
+      {
+        q: 'Do you use cookies?',
+        a: 'Not for analytics or advertising. We keep a few things in your browser so the site works (your wishlist, Look Book, saved profiles and your cookie choice). If we ever add analytics or advertising cookies, they stay off unless you allow them.',
+        link: ['/privacy', 'Read the privacy page'],
+      },
+      {
+        q: 'How do I change my cookie choice?',
+        cookieButton: true,
+      },
+    ],
   },
   {
-    q: 'Where do the listings come from, and do you earn money from them?',
-    a: `Most are real products from stores’ own public product pages and feeds. A smaller set are sample listings (an example name and price, not a specific item in stock). They are hidden unless you turn them on in the shop’s filters. ${AFFILIATES_ACTIVE ? 'Some links are affiliate links and may earn us a commission, and they are marked.' : 'We don’t earn anything when you click or buy.'} The full explanation is on our How our listings work page.`,
-    link: ['/disclosures', 'How our listings work'],
-  },
-  {
-    q: 'Can I sell my own clothes on Fits Me Right?',
-    a: 'Not directly. We don’t take listings, hold items or handle payments. Thrift Corner points you to resale marketplaces that do, with a few simple steps for getting your clothes ready to sell.',
-    link: ['/thrift-corner', 'Visit Thrift Corner'],
-  },
-  {
-    q: 'Do I need an account?',
-    a: 'No. Wishlist items and saved style profiles are stored in your browser on this device — there’s no sign-up, login, or password.',
-  },
-  {
-    q: 'Will my wishlist follow me to another device?',
-    a: 'Not yet — it’s saved locally in this browser only. Clearing your browser data or switching devices will clear it too.',
-  },
-  {
-    q: 'What is the Look Book?',
-    a: 'A place to pull items you’ve saved into named looks, like “cousin’s wedding”, and keep your own notes on each piece: the size you chose, how it fits, and how it looks on you. Like the wishlist, it is saved only in this browser. We never see it, and clearing your browser data or switching devices clears it.',
-  },
-  {
-    q: 'I found a broken link or wrong price. What do I do?',
-    a: 'Tell us — see the contact details below. We rely on reports like this to keep the marketplace accurate.',
+    title: 'Problems',
+    items: [
+      {
+        q: 'I found a broken link or wrong price. What do I do?',
+        a: 'Tell us which item and which store. We rely on reports like this to keep the marketplace accurate.',
+        link: ['/contact', 'Contact us'],
+      },
+      {
+        q: 'Do you have a phone line or live chat?',
+        a: 'No. We’re reachable by email, and the contact page makes it quick to write.',
+        link: ['/contact', 'Contact us'],
+      },
+    ],
   },
 ]
 
 export default function Help() {
+  const { openSettings } = useConsent()
+  const shaped = groups.map((group) => ({
+    ...group,
+    items: group.items.map((item) => (item.cookieButton
+      ? { q: item.q, children: <p>Use “Cookie settings” at the bottom of any page, or <button type="button" onClick={openSettings} className="text-black underline underline-offset-4">open it here</button>. You can allow or turn off the optional categories whenever you like.</p> }
+      : item)),
+  }))
+
   return (
-    <section className="mx-auto max-w-4xl px-4 py-14 lg:px-8 lg:py-20">
-      <p className="text-xs font-bold uppercase tracking-widest text-gold-700">Support</p>
-      <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">Help &amp; contact.</h1>
-      <p className="mt-5 max-w-xl leading-7 text-neutral-600">Answers to what we hear most, and a way to reach us for everything else.</p>
-
-      <div className="mt-12 divide-y divide-neutral-200 rounded-2xl border border-neutral-200 bg-white">
-        {faqs.map(({ q, a, link }) => (
-          <details key={q} className="group p-6 open:bg-paper">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold marker:content-none">
-              {q}
-              <span className="shrink-0 text-xl leading-none text-neutral-400 transition group-open:rotate-45">+</span>
-            </summary>
-            <p className="mt-3 leading-6 text-neutral-600">{a}{link && <> <Link to={link[0]} className="font-bold text-black underline">{link[1]}</Link>.</>}</p>
-          </details>
+    <SupportPage
+      title="Help & FAQs."
+      intro="Answers to what we hear most. Can’t find yours? Write to us."
+      groups={shaped}
+    >
+      <nav aria-label="Customer care" className="mt-10 grid grid-cols-2 gap-px border border-neutral-300 bg-neutral-300 text-center sm:grid-cols-4">
+        {[['Contact us', '/contact'], ['Delivery & returns', '/delivery-returns'], ['Accessibility', '/accessibility'], ['Privacy', '/privacy']].map(([label, to]) => (
+          <Link key={to} to={to} className="flex min-h-14 items-center justify-center bg-white px-3 text-[11px] font-semibold uppercase tracking-[.14em] transition hover:bg-neutral-50">{label}</Link>
         ))}
-      </div>
-
-      <div className="mt-12 rounded-[2rem] bg-gold-50 p-8 lg:p-12">
-        <h2 className="text-2xl font-black">Still need something?</h2>
-        <p className="mt-3 max-w-lg leading-7 text-neutral-700">Reach out and we’ll get back to you as soon as we can.</p>
-        <a href={`mailto:${CONTACT_EMAIL}`} className="mt-6 inline-flex items-center gap-3 rounded-full bg-black px-7 py-4 text-sm font-black text-white"><Mail size={17} /> {CONTACT_EMAIL.toUpperCase()}</a>
-      </div>
-
-      <div className="mt-10 flex flex-wrap gap-4 text-sm font-bold">
-        <Link to="/about" className="flex min-h-11 items-center gap-2 text-neutral-700 hover:text-black">READ OUR FIT PROMISE <ArrowRight size={15} /></Link>
-        <Link to="/shop" className="flex min-h-11 items-center gap-2 text-neutral-700 hover:text-black">BACK TO SHOPPING <ArrowRight size={15} /></Link>
-      </div>
-    </section>
+      </nav>
+    </SupportPage>
   )
 }
