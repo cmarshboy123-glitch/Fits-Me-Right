@@ -62,7 +62,7 @@ export default function JustJewels() {
       <section className="mx-auto max-w-[1440px] px-4 py-12 lg:px-8">
         <form role="search" onSubmit={(event) => event.preventDefault()} className="mb-4">
           <label htmlFor="jewels-search" className="sr-only">Search jewelry and accessories</label>
-          <div className="flex items-center gap-2 rounded-full border border-neutral-300 px-5 focus-within:border-black">
+          <div className="flex items-center gap-2 border border-neutral-300 px-5 focus-within:border-black">
             <input
               id="jewels-search"
               type="search"

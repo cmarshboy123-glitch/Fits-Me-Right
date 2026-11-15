@@ -152,7 +152,9 @@ export function parseShoppingIntent(input = '') {
   const dressCode = dressCodeEntry?.[0] || ''
   const sourceWithoutDressCode = dressCodeAlias ? source.replace(new RegExp(`\\b${escapeRegExp(dressCodeAlias)}\\b`, 'g'), ' ') : source
 
-  const colorMatch = colorAliases.find(({ alias }) => new RegExp(`\\b${escapeRegExp(alias)}\\b`).test(sourceWithoutDressCode))
+  // "Purple Label" is Ralph Lauren's line, not the color purple, so it stays a name to match.
+  const sourceForColor = sourceWithoutDressCode.replace(/\bpurple label\b/g, ' ')
+  const colorMatch = colorAliases.find(({ alias }) => new RegExp(`\\b${escapeRegExp(alias)}\\b`).test(sourceForColor))
   const color = colorMatch?.value || ''
   // Category still checks the full source (not sourceWithoutDressCode) — a
   // dress code phrase like "cocktail dress" should narrow to actual dresses,
@@ -289,6 +291,8 @@ function indexOf(product) {
     spacedName,
     joinedName: spacedName.replace(/\s+/g, ''),
     nameWords: wordsOf(spacedName).map(stem),
+    // The brand and store names alone, so searching a brand lists that brand's items first.
+    brandWords: wordsOf(stripDiacritics(`${product.brand || ''} ${product.vendor || ''}`.toLowerCase()).replace(/[-_]+/g, ' ')).map(stem),
     rest: ` ${wordsOf(rest).map(stem).join(' ')} `,
     joinedAll: `${spacedName} ${rest}`.replace(/\s+/g, ''),
     spacedAll: `${spacedName} ${rest}`,
@@ -301,6 +305,7 @@ function indexOf(product) {
 function scoreToken(entry, token) {
   const stemmed = stem(token)
   if (entry.nameWords.includes(stemmed)) return 3
+  if (entry.brandWords.includes(stemmed)) return 2.8
   if (entry.joinedName.includes(token)) return 2.5
   if (entry.rest.includes(` ${stemmed} `) || entry.joinedAll.includes(token)) return 1
 
@@ -406,7 +411,10 @@ function vocabularyOf(products) {
   // corrections too, even when no product name happens to spell them that way.
   for (const word of knownWords) if (word.length >= 4) vocabulary.set(word, 500)
   for (const product of products) {
-    for (const word of wordsOf(stripDiacritics(String(product.name || '').toLowerCase()))) {
+    // Store and brand names count as real words too, so a correctly spelled "brioni"
+    // is not "corrected" into the unrelated "brion".
+    const text = `${product.name || ''} ${product.vendor || ''} ${product.brand || ''}`
+    for (const word of wordsOf(stripDiacritics(text.toLowerCase()))) {
       if (word.length >= 3) vocabulary.set(word, (vocabulary.get(word) || 0) + 1)
     }
   }
