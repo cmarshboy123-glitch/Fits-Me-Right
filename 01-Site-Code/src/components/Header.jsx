@@ -66,21 +66,21 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-neutral-200/80 bg-white/90 backdrop-blur-xl">
-      <div className="mx-auto flex h-[72px] max-w-[1440px] items-center gap-6 px-4 lg:px-8">
-        <Link to="/" className="shrink-0" aria-label="Fits Me Right home"><BrandMark /></Link>
-        <div className="hidden h-full items-center gap-5 xl:flex">
-          <NavLink to="/shop" end className={({ isActive }) => `text-sm font-semibold transition ${isActive ? 'text-black' : 'text-neutral-700 hover:text-black'}`}>Shop all</NavLink>
-          <button onClick={() => startFor('Women')} className="text-sm font-semibold text-neutral-700 transition hover:text-black">Women</button>
-          <button onClick={() => startFor('Men')} className="text-sm font-semibold text-neutral-700 transition hover:text-black">Men</button>
+      <div className="mx-auto flex h-[72px] max-w-[1440px] items-center gap-6 px-4 lg:px-8 xl:grid xl:h-auto xl:grid-cols-3 xl:gap-y-0 xl:pt-3">
+        <Link to="/" className="shrink-0 xl:col-start-2 xl:row-start-1 xl:justify-self-center" aria-label="Fits Me Right home"><BrandMark /></Link>
+        <div className="hidden items-center justify-center gap-7 border-t border-neutral-200/70 py-3 xl:col-span-3 xl:row-start-2 xl:flex">
+          <NavLink to="/shop" end className={({ isActive }) => `text-[11px] font-medium uppercase tracking-[.14em] transition ${isActive ? 'text-black' : 'text-neutral-700 hover:text-black'}`}>Shop all</NavLink>
+          <button onClick={() => startFor('Women')} className="text-[11px] font-medium uppercase tracking-[.14em] text-neutral-700 transition hover:text-black">Women</button>
+          <button onClick={() => startFor('Men')} className="text-[11px] font-medium uppercase tracking-[.14em] text-neutral-700 transition hover:text-black">Men</button>
           {nav.map(([label, path]) => (
-            <NavLink key={path} to={path} className={({ isActive }) => `text-xs font-semibold transition ${isActive ? 'text-black' : 'text-neutral-500 hover:text-black'}`}>{label}</NavLink>
+            <NavLink key={path} to={path} className={({ isActive }) => `text-[11px] font-medium uppercase tracking-[.14em] transition ${isActive ? 'text-black' : 'text-neutral-500 hover:text-black'}`}>{label}</NavLink>
           ))}
         </div>
-        <div className="relative ml-auto hidden max-w-sm flex-1 lg:block">
+        <div className="relative ml-auto hidden max-w-sm flex-1 lg:block xl:col-start-1 xl:row-start-1 xl:ml-0 xl:max-w-xs">
           <form
             role="search"
             onSubmit={(event) => { event.preventDefault(); runSearch(query) }}
-            className="flex items-center rounded-full border border-neutral-200 bg-neutral-100 px-4 py-2.5 transition focus-within:border-gold-400 focus-within:bg-white"
+            className="flex items-center border-b border-neutral-400 bg-transparent px-0 py-2 transition focus-within:border-black"
           >
             <input
               value={query}
@@ -141,7 +141,7 @@ export default function Header() {
             </div>
           )}
         </div>
-        <div className="ml-auto flex items-center gap-1 text-neutral-700 sm:gap-2 lg:ml-0">
+        <div className="ml-auto flex items-center gap-1 text-neutral-700 sm:gap-2 lg:ml-0 xl:col-start-3 xl:row-start-1 xl:justify-self-end">
           <Link to="/shop" aria-label="Search the marketplace" className="grid h-11 w-11 place-items-center lg:hidden"><Search size={21} /></Link>
           <Link to="/wishlist" aria-label={`Wishlist${wishlistCount ? `, ${wishlistCount} saved` : ''}`} className="grid h-11 w-11 place-items-center">
             <span className="relative block">

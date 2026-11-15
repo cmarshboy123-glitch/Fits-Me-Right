@@ -170,12 +170,12 @@ export default function Shop() {
 
   return (
     <section className="mx-auto min-h-[70vh] max-w-[1440px] px-4 py-14 lg:px-8 lg:py-20">
-      <p className="text-xs font-bold uppercase tracking-widest text-gold-600">The fashion marketplace</p>
-      <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">Search the whole closet.</h1>
-      <p className="mt-4 max-w-2xl leading-7 text-neutral-600">Search broadly or get precise. Combine clothing type, color, body type, size, price point, store, and brand in one edit.</p>
+      <p className="text-center text-[11px] font-medium uppercase tracking-[.22em] text-neutral-500">The fashion marketplace</p>
+      <h1 className="mt-3 text-center font-serif text-3xl font-normal italic tracking-normal sm:text-4xl">Search the whole closet.</h1>
+      <p className="mx-auto mt-4 max-w-xl text-center text-sm leading-6 text-neutral-600">Search broadly or get precise. Combine clothing type, color, body type, size, price point, store, and brand in one edit.</p>
 
       {collection === 'tuxedos' && (
-        <div className="mt-8 flex flex-col justify-between gap-3 rounded-2xl bg-neutral-950 px-5 py-5 text-white sm:flex-row sm:items-center">
+        <div className="mt-8 flex flex-col justify-between gap-3 bg-neutral-950 px-5 py-5 text-white sm:flex-row sm:items-center">
           <div>
             <p className="text-[10px] font-black uppercase tracking-[.2em] text-gold-300">Black tie</p>
             <p className="mt-2 text-sm font-bold">Men&rsquo;s tuxedos and tuxedo jackets from the brands&rsquo; own sites, with the price each one listed on {'Nov 10, 2026'}.</p>
@@ -186,21 +186,21 @@ export default function Shop() {
 
       {guidedSearch && <div className="mt-8 flex flex-col justify-between gap-5 rounded-2xl border border-gold-200 bg-gold-50 px-5 py-5 sm:flex-row sm:items-center"><div><p className="text-[10px] font-black uppercase tracking-[.2em] text-gold-800">Your concierge search is active</p><p className="mt-2 text-sm font-bold">{gender || 'All collections'} · {bodyType || 'All body types'} · {priceOptions.find(([, value]) => value === priceTier)?.[0] || 'All prices'}</p></div><Link to="/style/shirt-size" className="flex shrink-0 items-center gap-2 text-xs font-black">ADD SIZE + OCCASION <ArrowRight size={16} /></Link></div>}
 
-      <form onSubmit={syncUrl} className="mt-8 flex max-w-4xl rounded-full border border-neutral-300 bg-white p-1.5 shadow-soft transition focus-within:border-gold-400"><input value={query} onChange={(event) => setQuery(event.target.value)} className="min-w-0 flex-1 bg-transparent px-4 py-3 outline-none sm:px-5" enterKeyHint="search" type="search" placeholder={searchHint} aria-label="Search all products" /><button className="flex items-center gap-2 rounded-full bg-black px-6 text-sm font-bold text-white transition hover:bg-gold-700"><Search size={18} /><span className="hidden sm:inline">SEARCH</span></button></form>
+      <form onSubmit={syncUrl} className="mx-auto mt-8 flex max-w-xl border-b border-neutral-900 bg-transparent transition"><input value={query} onChange={(event) => setQuery(event.target.value)} className="min-w-0 flex-1 bg-transparent px-4 py-3 outline-none sm:px-5" enterKeyHint="search" type="search" placeholder={searchHint} aria-label="Search all products" /><button className="flex min-h-11 items-center gap-2 px-3 text-sm font-semibold text-neutral-950 transition hover:text-gold-700"><Search size={18} /><span className="hidden sm:inline">SEARCH</span></button></form>
       {activeCount === 0 && (
-        <div className="mt-4 flex max-w-4xl flex-wrap items-center gap-2">
-          <span className="mr-1 text-[10px] font-black uppercase tracking-[.18em] text-neutral-500">Popular</span>
-          {popularSearches.map(([label, to]) => <Link key={label} to={to} className="min-h-10 rounded-full border border-neutral-300 bg-white px-4 py-2.5 text-xs font-bold transition hover:border-gold-400">{label}</Link>)}
+        <div className="mx-auto mt-3 flex max-w-3xl flex-wrap items-center justify-center gap-x-1 gap-y-0">
+          <span className="mr-2 text-[10px] font-semibold uppercase tracking-[.18em] text-neutral-500">Popular</span>
+          {popularSearches.map(([label, to]) => <Link key={label} to={to} className="flex min-h-11 items-center px-2.5 text-[11px] font-medium uppercase tracking-[.14em] text-neutral-800 underline decoration-neutral-300 underline-offset-[6px] transition hover:decoration-neutral-900">{label}</Link>)}
         </div>
       )}
       {search?.correctedQuery && <p className="mt-3 max-w-4xl text-sm text-neutral-600">Showing results for <span className="font-bold text-black">“{search.correctedQuery}”</span></p>}
       {query && understood.length > 0 && <div className="mt-3 flex max-w-4xl flex-wrap items-center gap-2"><span className="mr-1 text-[10px] font-black uppercase tracking-[.18em] text-neutral-500">We understood</span>{understood.map((label) => <span key={label} className="rounded-full border border-neutral-300 bg-white px-3 py-1.5 text-[11px] font-bold">{label}</span>)}</div>}
 
-      <button type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} aria-controls="shop-filters" className="mt-8 flex min-h-12 w-full items-center justify-between rounded-2xl bg-neutral-50 px-5 text-xs font-bold shadow-soft lg:hidden">
+      <button type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} aria-controls="shop-filters" className="mt-8 flex min-h-12 w-full items-center justify-between border-y border-neutral-300 bg-white px-1 text-xs font-semibold uppercase tracking-[.14em]">
         <span className="flex items-center gap-2"><SlidersHorizontal size={15} /> FILTERS {activeCount > 0 && <span className="rounded-full bg-gold-400 px-2 py-0.5 text-[10px] text-black">{activeCount}</span>}</span>
         <span>{filtersOpen ? 'HIDE' : 'SHOW'}</span>
       </button>
-      <div id="shop-filters" className={`${filtersOpen ? 'mt-3' : 'hidden'} rounded-[2rem] bg-neutral-50 p-5 shadow-soft sm:p-7 lg:mt-9 lg:block`}>
+      <div id="shop-filters" className={`${filtersOpen ? 'mt-3' : 'hidden'} border-b border-neutral-200 bg-white py-5 sm:py-7`}>
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><div className="flex items-center gap-2 text-xs font-bold"><SlidersHorizontal size={15} /> FILTER THE MARKET {activeCount > 0 && <span className="rounded-full bg-gold-400 px-2 py-0.5 text-[10px] text-black">{activeCount}</span>}</div>{activeCount > 0 && <button onClick={clearAll} className="flex items-center gap-1.5 text-xs font-bold text-neutral-600 transition hover:text-black"><X size={14} /> CLEAR ALL</button>}</div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <FilterSelect label="Collection" value={gender} onChange={(value) => { setGender(value); setBodyType('') }} options={[['All people', ''], ['Women', 'Women'], ['Men', 'Men'], ['Children', 'Children']]} />
@@ -215,10 +215,10 @@ export default function Shop() {
         <FilterButtons label="Delivery speed" value={fast} onChange={setFast} options={[['Any speed', ''], ['Same-day delivery options', '1']]} />
         <FilterButtons label="Sample listings" value={samples} onChange={setSamples} options={[['Hidden', ''], ['Show them too', '1']]} />
         <FilterButtons label="Market" value={market} onChange={setMarket} options={[['All fashion', ''], ['Luxury', 'Luxury'], ['Asian Market', 'Asian Market'], ['Everyday & Designer', 'Everyday & Designer'], ['Resale & Vintage', 'Resale & Vintage']]} />
-        <button onClick={(event) => { syncUrl(event); setFiltersOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className="sticky bottom-3 mt-6 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-black px-6 text-xs font-black text-white shadow-lift transition hover:bg-gold-700 sm:w-auto lg:static lg:shadow-none">{loaded ? `SHOW ${filtered.length.toLocaleString()} ITEMS` : 'APPLY SEARCH FILTERS'} <Search size={15} /></button>
+        <button onClick={(event) => { syncUrl(event); setFiltersOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className="sticky bottom-3 mt-6 flex min-h-12 w-full items-center justify-center gap-2 bg-black px-6 text-xs font-black text-white shadow-lift transition hover:bg-gold-700 sm:w-auto lg:static lg:shadow-none">{loaded ? `SHOW ${filtered.length.toLocaleString()} ITEMS` : 'APPLY SEARCH FILTERS'} <Search size={15} /></button>
       </div>
 
-      <div className="flex flex-col gap-2 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-5"><p className="text-sm font-bold">{samples ? `${filtered.length} ITEMS, ${filtered.length - realShown} OF THEM SAMPLE LISTINGS` : `${filtered.length} REAL ITEMS ACROSS ${[...new Set(filtered.map((product) => product.vendor))].length} STORES`}</p><p className="max-w-md text-xs text-neutral-500 sm:text-right">{samples ? 'Real items open the store’s own page; sample listings open the store’s search · ' : 'Every shopping button opens the item on the store’s own site · '}the store confirms live price and stock</p></div>
+      <div className="flex flex-col gap-2 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-5"><p className="text-xs font-semibold uppercase tracking-[.14em]">{samples ? `${filtered.length} ITEMS, ${filtered.length - realShown} OF THEM SAMPLE LISTINGS` : `${filtered.length} REAL ITEMS ACROSS ${[...new Set(filtered.map((product) => product.vendor))].length} STORES`}</p><p className="max-w-md text-xs text-neutral-500 sm:text-right">{samples ? 'Real items open the store’s own page; sample listings open the store’s search · ' : 'Every shopping button opens the item on the store’s own site · '}the store confirms live price and stock</p></div>
 
       {loaded && !samples && hiddenSamples > 0 && (filtered.length < PAGE_SIZE || retailer || market === 'Luxury') && (
         <div className="mb-8 rounded-2xl border border-gold-200 bg-gold-50 px-5 py-5" role="status">
@@ -335,9 +335,9 @@ export default function Shop() {
 }
 
 function FilterSelect({ label, value, onChange, options }) {
-  return <label className="text-xs font-bold"><span className="mb-2 block text-[10px] uppercase tracking-[.18em] text-neutral-500">{label}</span><select value={value} onChange={(event) => onChange(event.target.value)} className="min-h-12 w-full rounded-xl border border-neutral-200 bg-white px-3 text-sm font-bold outline-none transition focus:border-gold-400">{options.map(([name, optionValue]) => <option key={`${label}-${name}`} value={optionValue}>{name}</option>)}</select></label>
+  return <label className="text-xs font-bold"><span className="mb-2 block text-[10px] uppercase tracking-[.18em] text-neutral-500">{label}</span><select value={value} onChange={(event) => onChange(event.target.value)} className="min-h-12 w-full rounded-none border border-neutral-300 bg-white px-3 text-sm font-medium outline-none transition focus:border-neutral-900">{options.map(([name, optionValue]) => <option key={`${label}-${name}`} value={optionValue}>{name}</option>)}</select></label>
 }
 
 function FilterButtons({ label, value, onChange, options }) {
-  return <div className="mt-5"><p className="mb-2 text-[10px] font-black uppercase tracking-[.18em] text-neutral-500">{label}</p><div className="flex flex-wrap gap-2">{options.map(([name, optionValue]) => <button key={name} onClick={() => onChange(optionValue)} className={`rounded-full px-4 py-2.5 text-xs font-bold transition ${value === optionValue ? 'bg-black text-white' : 'border border-neutral-200 bg-white text-neutral-700 hover:border-gold-400'}`}>{name.toUpperCase()}</button>)}</div></div>
+  return <div className="mt-5"><p className="mb-2 text-[10px] font-black uppercase tracking-[.18em] text-neutral-500">{label}</p><div className="flex flex-wrap gap-2">{options.map(([name, optionValue]) => <button key={name} onClick={() => onChange(optionValue)} className={`min-h-10 px-4 py-2.5 text-[11px] font-medium uppercase tracking-[.1em] transition ${value === optionValue ? 'bg-black text-white' : 'border border-neutral-300 bg-white text-neutral-700 hover:border-neutral-900'}`}>{name.toUpperCase()}</button>)}</div></div>
 }

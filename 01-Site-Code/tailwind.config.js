@@ -4,6 +4,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
+        // System serif stack: no web font to download, so nothing new is requested from a third party.
+        serif: ['"Iowan Old Style"', '"Palatino Linotype"', 'Palatino', 'Georgia', '"Times New Roman"', 'serif'],
         sans: ['"Inter Variable"', 'Inter', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
       },
       colors: {
