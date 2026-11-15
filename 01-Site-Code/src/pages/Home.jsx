@@ -42,9 +42,9 @@ const storeSearch = (retailer) => `/shop?q=${encodeURIComponent(retailer)}`
 export default function Home() {
   return (
     <>
-      <div className="bg-paper px-3 pb-8 pt-4 sm:px-4 lg:px-8">
+      <div className="bg-paper">
         <InteractiveWardrobe />
-        <Link to="/fast" className="mx-auto mt-4 flex max-w-[1440px] flex-col gap-3 rounded-2xl bg-black px-6 py-5 text-white transition hover:bg-neutral-800 sm:flex-row sm:items-center sm:justify-between">
+        <Link to="/fast" className="flex flex-col gap-3 bg-black px-6 py-4 text-white lg:px-8 transition hover:bg-neutral-800 sm:flex-row sm:items-center sm:justify-between">
           <span className="flex items-center gap-3"><Zap size={22} className="shrink-0 text-gold-300" /><span><span className="font-black">Need it tonight?</span> <span className="text-white/75">Same-day delivery and pickup for last-minute events, tuxedos included.</span></span></span>
           <span className="flex shrink-0 items-center gap-2 text-xs font-black text-gold-300">SEE FAST OPTIONS <ArrowRight size={15} /></span>
         </Link>
@@ -87,17 +87,17 @@ export default function Home() {
         <div className="mb-9 flex items-end justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-gold-600">Find your moment</p>
-            <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">Shop by occasion</h2>
+            <h2 className="mt-2 font-serif text-3xl font-normal italic sm:text-4xl">Shop by occasion</h2>
           </div>
           <Link to="/style/gender" className="hidden items-center gap-2 text-sm font-bold text-neutral-700 transition hover:text-black sm:flex">START THE EDIT <ArrowRight size={16} /></Link>
         </div>
         <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-4 lg:grid-cols-7">
           {categories.map(([label, image, to], index) => (
             <Link key={label} to={to} className="group text-left">
-              <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-neutral-100 shadow-soft transition duration-300 group-hover:shadow-lift">
+              <div className="aspect-[3/4] overflow-hidden bg-neutral-100">
                 {image ? <TileImage image={image} label={label} index={index} /> : <BowTieTile />}
               </div>
-              <p className="mt-3 text-sm font-bold">{label}</p>
+              <p className="mt-3 text-[11px] font-medium uppercase tracking-[.16em]">{label}</p>
             </Link>
           ))}
         </div>

@@ -12,6 +12,10 @@ A fashion discovery site: shoppers search real products from many stores by body
 - Run it: `cd 01-Site-Code && npm install && npm run dev`. Build: `npm run build`. Data checks: `npm run audit`.
 - Read `01-Site-Code/README.md` (catalog, shop filters, fit guide, affiliate links, sample listings) and `01-Site-Code/HOSTING.md` (hosting, DNS, going live) before changing those areas.
 
+## Design direction (set by the owner, Nov 2026)
+
+The look should follow a quiet luxury-boutique storefront (the owner pointed at Victoria Beckham's official store as the reference): thin nav in small caps with a centered logo, full-width hero, square corners, black and white with a serif for headlines (system serif stack, no web font), portrait product photos on a light grey stage with small type underneath, a collapsed filter bar, and text links instead of heavy buttons. Copy the layout principles only, never another brand's name, photos, text or code. The site sells nothing, so "buy" always means opening the store's own page.
+
 ## Catalog and honesty rules (these matter)
 
 - Catalog = Heroku API items plus `public/catalog-extra.json` (about 25,000 real items from store feeds). The shop merges them in `src/services/catalogService.js`. A third source, `src/data/curatedProducts.js`, holds hand-checked listings (18 men's tuxedos, ids from 200001, each read from the brand's own page on 2026-11-10) that are always included; they carry `tuxedo: true` and power the home page Tuxedos tile (`/shop?collection=tuxedos`). Add to it only items whose price you read from the brand page.
