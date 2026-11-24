@@ -37,6 +37,8 @@ Retailers don't publish body-type fit or dress codes, so those two fields are as
 
 The same file also lists 11 Victoria Beckham pieces (dresses, gowns, tops, bags and a shoe) read from her official store on 2026-11-14. Her store showed prices in pounds, so they are shown as £ (a card with `currency: 'GBP'` shows the pound sign, and pound prices are left out of Look Book dollar totals).
 
+Also in that file: 12 Emmy Kasbit pieces (a Nigerian tailoring label; prices in naira, shown with ₦ and never converted) and 9 Lumina Eligma pieces (a Vancouver label) sold at Wolf & Badger in US dollars, all read from the stores on 2026-11-23. Products priced in another currency carry `currency` and are formatted by `src/utils/currency.js`.
+
 ## Sample listings are hidden by default
 
 About 7,800 items from the product API have no `productUrl`: an example name and price in a store's typical range, shown with an illustration, that open the store's search. `isSampleListing()` in `src/services/catalogService.js` identifies them (no exact product page). Every page uses real items only (`getRealProducts()`), and the shop opts samples back in with `?samples=1` (the "Sample listings" filter, or the button in the note that appears when a search finds few real items). Luxury houses, the big department stores and the Asian-market stores are almost entirely samples, so those searches show how few real items exist and link to the store's own site. Real products from a store (feed or affiliate) bring it back automatically.

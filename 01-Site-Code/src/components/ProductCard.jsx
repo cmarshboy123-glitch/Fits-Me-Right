@@ -6,6 +6,7 @@ import GarmentArt from './GarmentArt'
 import { useWishlist } from '../context/WishlistContext'
 import { retailerSearchUrl } from '../utils/retailers'
 import { affiliateUrl, isAffiliateLink, outboundRel } from '../utils/affiliate'
+import { formatPrice } from '../utils/currency'
 
 export default function ProductCard({ product }) {
   const { isSaved, toggle } = useWishlist()
@@ -84,7 +85,7 @@ export default function ProductCard({ product }) {
       <div className="pt-3">
         <p className="truncate text-[10px] font-semibold uppercase tracking-[.16em] text-neutral-500">{product.vendor}{showBrand ? ` · ${product.brand}` : ''}</p>
         <h3 className="mt-1.5 text-[13px] font-medium leading-snug text-neutral-950">{product.name}</h3>
-        <p className="mt-1.5 text-[13px] font-semibold text-neutral-950">{product.currency === "GBP" ? "£" : "$"}{product.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="block text-[10px] font-normal uppercase tracking-wide text-neutral-500 sm:inline sm:pl-1">{shortDate ? `price as of ${shortDate}` : "example price"}</span></p>
+        <p className="mt-1.5 text-[13px] font-semibold text-neutral-950">{formatPrice(product)} <span className="block text-[10px] font-normal uppercase tracking-wide text-neutral-500 sm:inline sm:pl-1">{shortDate ? `price as of ${shortDate}` : "example price"}</span></p>
         {product.fitNote && <p className="mt-1 line-clamp-2 text-xs leading-4 text-neutral-500">{product.fitNote}</p>}
         {visibleSizes && <p className="mt-1.5 truncate text-[10px] font-semibold uppercase tracking-wide text-neutral-500">Sizes {visibleSizes.join(' · ')}</p>}
         {fastOption && <p className="mt-1.5 flex items-center gap-1 text-[10px] font-semibold text-neutral-700"><Zap size={11} aria-hidden="true" /> Same-day delivery may be available via {fastOption.provider}</p>}

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { Faq } from '../components/SupportPage'
 import { getRealProducts } from '../services/catalogService'
 import { affiliateUrl, outboundRel } from '../utils/affiliate'
+import { formatPrice } from '../utils/currency'
 import { buildRequest, describeRequest, hasRequirements, rankProducts } from '../utils/matchEngine'
 import { buildPrompt } from '../utils/matchPrompt'
 import { shoppingCategories, shoppingColors } from '../utils/searchIntent'
@@ -13,7 +14,7 @@ const empty = { description: '', category: '', gender: '', brand: '', color: '',
 const field = 'min-h-11 w-full border border-neutral-300 bg-white px-3 text-sm outline-none transition focus:border-neutral-900'
 const label = 'mb-1.5 block text-[10px] font-semibold uppercase tracking-[.18em] text-neutral-500'
 
-const money = (product) => `${product.currency === 'GBP' ? '£' : product.currency === 'NGN' ? '₦' : '$'}${product.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+const money = (product) => formatPrice(product)
 const dateOf = (iso) => (iso ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(`${iso}T00:00:00Z`)) : null)
 
 function Field({ name, text, form, set, placeholder, type = 'text', inputMode }) {
