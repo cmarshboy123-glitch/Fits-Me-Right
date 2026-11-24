@@ -15,6 +15,7 @@ const ThriftCorner = lazy(() => import('./pages/ThriftCorner'))
 const Wishlist = lazy(() => import('./pages/Wishlist'))
 const Profiles = lazy(() => import('./pages/Profiles'))
 const LookBook = lazy(() => import('./pages/LookBook'))
+const Match = lazy(() => import('./pages/Match'))
 const About = lazy(() => import('./pages/About'))
 const Help = lazy(() => import('./pages/Help'))
 const Contact = lazy(() => import('./pages/Contact'))
@@ -43,6 +44,7 @@ export default function App() {
         <Route path="wishlist" element={<Wishlist />} />
         <Route path="profiles" element={<Profiles />} />
         <Route path="look-book" element={<LookBook />} />
+        <Route path="match" element={<Match />} />
         <Route path="about" element={<About />} />
         <Route path="help" element={<Help />} />
         <Route path="contact" element={<Contact />} />

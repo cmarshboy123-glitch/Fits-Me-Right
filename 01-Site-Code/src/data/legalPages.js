@@ -49,7 +49,7 @@ export const legalPages = {
       },
       {
         h: 'What you search for',
-        p: ['Searching the catalog happens in your browser, against product data the page has already downloaded. Those searches are not sent to us.',
+        p: ['Searching the catalog happens in your browser, against product data the page has already downloaded. Those searches are not sent to us. The Find my match tool works the same way: what you type into it is compared with products in your browser and is not sent to us, and its copyable AI prompt is just text built on your device.',
           'If you search for something the catalog doesn’t cover well, the site may run a live web search. When it does, the words you typed are sent to our server, which asks SerpApi (a search-results service) for Google Shopping results. We keep a copy of those words and the results so repeat searches are quick, and refresh it after about a week. We don’t attach your name or any account to it. Please don’t type personal details into the search box.'],
       },
       {
