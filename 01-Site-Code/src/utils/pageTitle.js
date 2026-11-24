@@ -25,6 +25,7 @@ const routes = [
   [/^\/creative-corner\b/, 'Creative Corner', 'A directory and editorial spotlight for independent fashion designers and the ideas shaping what we wear next.'],
   [/^\/wishlist\b/, 'Your Wishlist', DEFAULT_DESCRIPTION, true],
   [/^\/look-book\b/, 'Your Look Book', DEFAULT_DESCRIPTION, true],
+  [/^\/match\b/, 'Find My Match', 'Describe the exact piece you want and we rank the closest real products in the marketplace, with a match score and what differs.'],
   [/^\/profiles\b/, 'Style Profiles', DEFAULT_DESCRIPTION, true],
   [/^\/about\b/, 'Our Fit Promise', 'Fits Me Right is an independent discovery experience, not a retailer. Here is how we search, how we link out, and what we promise.'],
   [/^\/privacy\b/, 'Privacy', 'What Fits Me Right does and doesn’t do with your information: no accounts, no ads, no tracking.'],

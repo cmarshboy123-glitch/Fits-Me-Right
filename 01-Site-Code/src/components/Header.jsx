@@ -10,6 +10,7 @@ import { affiliateUrl, outboundRel } from '../utils/affiliate'
 import BrandMark from './BrandMark'
 
 const nav = [
+  ['Find My Match', '/match'],
   ['Need It Fast', '/fast'],
   ['Cobbler Corner', '/cobbler-corner'],
   ['Just Jewels', '/just-jewels'],

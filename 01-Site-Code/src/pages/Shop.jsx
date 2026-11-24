@@ -18,6 +18,7 @@ const popularSearches = [
   ['White sneakers', '/shop?q=white+sneakers'],
   ['Linen shirt', '/shop?q=linen+shirt'],
   ['On a budget', '/shop?priceTier=budget'],
+  ['Find my match', '/match'],
 ]
 const womenBodyTypes =['Straight', 'Curvy', 'Athletic', 'Petite', 'Tall', 'Plus']
 const menBodyTypes = ['Slim', 'Balanced', 'Athletic', 'Broad', 'Big & Tall', 'Short']

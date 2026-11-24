@@ -5,7 +5,7 @@ import { OPERATOR_NAME } from '../data/legalPages'
 
 // Quiet boutique footer: small-caps column headings, small plain links, the logo centered at the bottom.
 const columns = [
-  ['Shop', [['All stores', '/shop'], ['Your style edit', '/style/gender'], ['Tuxedos', '/shop?collection=tuxedos'], ['Need it fast', '/fast'], ['Fit guide', '/fit-guide']]],
+  ['Shop', [['All stores', '/shop'], ['Your style edit', '/style/gender'], ['Tuxedos', '/shop?collection=tuxedos'], ['Find my match', '/match'], ['Need it fast', '/fast'], ['Fit guide', '/fit-guide']]],
   ['Discover', [['Cobbler Corner', '/cobbler-corner'], ['Just Jewels', '/just-jewels'], ['Thrifty Shopper', '/thrifty-shopper'], ['Thrift Corner: sell your stuff', '/thrift-corner'], ['Creative Corner', '/creative-corner']]],
   ['Your things', [['Your wishlist', '/wishlist'], ['Your Look Book', '/look-book'], ['Style profiles', '/profiles'], ['Our fit promise', '/about']]],
   ['Customer care', [['Contact us', '/contact'], ['Help & FAQs', '/help'], ['Delivery & returns', '/delivery-returns'], ['Accessibility', '/accessibility']]],
