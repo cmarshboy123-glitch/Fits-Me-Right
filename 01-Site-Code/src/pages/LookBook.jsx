@@ -4,12 +4,13 @@ import { Link } from 'react-router-dom'
 import { useLookBook } from '../context/LookBookContext'
 import { useWishlist } from '../context/WishlistContext'
 import { affiliateUrl, outboundRel } from '../utils/affiliate'
+import { formatPrice, isDollar } from '../utils/currency'
 
 const occasions = ['Everyday', 'Work', 'Weekend', 'Date night', 'Wedding guest', 'Black tie', 'Travel', 'Other']
 const fitOptions = [['', 'How does it fit?'], ['true', 'True to size'], ['small', 'Runs small'], ['large', 'Runs large'], ['unsure', 'Not sure yet']]
 const ratingWords = ['Not rated', 'Not for me', 'It’s okay', 'Good', 'Great', 'Love it']
 
-const money = (item) => `${item.currency === 'GBP' ? '£' : '$'}${item.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+const money = (item) => formatPrice(item)
 const dateOf = (iso) => (iso ? new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(`${iso}T00:00:00Z`)) : null)
 
 const field = 'min-h-11 w-full border border-neutral-300 bg-white px-3 text-sm outline-none transition focus:border-neutral-900'
@@ -108,8 +109,8 @@ function Look({ look }) {
   const [adding, setAdding] = useState(look.items.length === 0)
 
   // Pound prices are not added into a dollar total.
-  const total = look.items.reduce((sum, item) => (item.product.currency === 'GBP' ? sum : sum + item.product.price), 0)
-  const hasPounds = look.items.some((item) => item.product.currency === 'GBP')
+  const total = look.items.reduce((sum, item) => (isDollar(item.product) ? sum + item.product.price : sum), 0)
+  const hasPounds = look.items.some((item) => !isDollar(item.product))
   const rated = look.items.filter((item) => item.rating > 0)
   const average = rated.length ? rated.reduce((sum, item) => sum + item.rating, 0) / rated.length : 0
 
@@ -137,7 +138,7 @@ function Look({ look }) {
           {average > 0 && <span className="text-neutral-500"> · average rating {average.toFixed(1)} of 5</span>}
         </p>
       )}
-      {look.items.length > 0 && <p className="mt-1 text-[11px] leading-4 text-neutral-500">Totals add up the prices shown on each item, as of the dates shown. The stores confirm live prices.{hasPounds ? ' Prices in pounds are not included in the total.' : ''}</p>}
+      {look.items.length > 0 && <p className="mt-1 text-[11px] leading-4 text-neutral-500">Totals add up the prices shown on each item, as of the dates shown. The stores confirm live prices.{hasPounds ? ' Prices in other currencies (pounds, naira) are not included in the total.' : ''}</p>}
 
       {look.items.length > 0 && (
         <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

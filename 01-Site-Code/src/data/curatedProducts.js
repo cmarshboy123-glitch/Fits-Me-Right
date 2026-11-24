@@ -154,4 +154,88 @@ const victoriaBeckham = vbRows.map(([name, category, price, color, fitNote, file
   verifiedAt: vbDate,
 }))
 
-export default [...curatedProducts, ...victoriaBeckham]
+// Emmy Kasbit (emmykasbit.com), a Nigerian label. Name, price, photo and page were read from the brand's own
+// shop on 2026-11-23, and only pieces marked in stock that day are listed. Their shop prices in Nigerian naira
+// (NGN), so prices show with a ₦ sign and are not converted. The price tier below is only a rough filter bucket
+// (about 1,500 naira to the dollar) and is never shown. The brand makes suits and tailoring, not tuxedos.
+const ekDate = '2026-11-23'
+const ekImage = (path) => `https://emmykasbit.com/wp-content/uploads/${path}`
+const ekTier = (naira) => priceTierFor(naira / 1500)
+const menBody = ['Slim', 'Athletic', 'Regular', 'Broad', 'Big & Tall', 'Short']
+const tailored = ['Business Casual', 'Semi-Formal']
+
+// [name, category, gender, price in NGN, color, note, photo path, page slug]
+const ekRows = [
+  ['Andre Jacket (Cream)', 'Outerwear', 'Men', 250000, 'Cream', 'Double-breasted jacket · relaxed, structured shoulders', '2026/06/E8325EE1-0EFB-42FE-91AE-F6B28A5AEE18-scaled.jpg', 'andre-jacket-cream'],
+  ['Andre Pants (Cream)', 'Pants', 'Men', 150000, 'Cream', 'Pleated trousers', '2026/06/548B6CA9-201B-4330-A3EF-26DE1676B2C9-scaled.jpg', 'andre-pants-cream'],
+  ['Dato Jacket', 'Outerwear', 'Men', 250000, '', 'Tailored jacket', '2026/06/E060659D-4A82-4CFE-972A-4026799AB121-scaled.jpg', 'dato-jacket-2'],
+  ['Dato Pant', 'Pants', 'Men', 200000, '', 'Tailored trousers', '2026/06/8E3BCDAF-DBB1-4F8C-B244-5A024B5DF7C0-scaled.jpg', 'dato-pant-2'],
+  ['Rose Shirt', 'Tops', 'Men', 200000, '', 'Shirt', '2026/06/E6148789-8A1C-4840-AFC9-CECC80C268AD-scaled.jpg', 'rose-shirt-3'],
+  ['Asher Shirt', 'Tops', 'Men', 150000, '', 'Shirt', '2026/06/C8E47F71-00CB-460D-A800-803B36318A6B-scaled.jpg', 'asher-shirt'],
+  ['Ojongo Suit', 'Suits', 'Women', 350000, '', 'Jacket and trousers · contrast panel detail', '2026/06/D1EA842B-2DF9-45DF-8F8B-E6DF2A7F7DFE-scaled.jpg', 'ojongo-suit'],
+  ['Ngowari Jacket', 'Outerwear', 'Women', 250000, '', 'Tailored jacket', '2026/06/C360EA71-348C-4A57-8CA4-10F92B927CC9-scaled.jpg', 'ngowari-jacket'],
+  ['Ngowari Pants', 'Pants', 'Women', 200000, '', 'Tailored trousers', '2026/06/F698C2B0-6A89-49DE-A5B4-34BC15BD0141-scaled.jpg', 'ngowari-pants'],
+  ['Lolia Jacket', 'Outerwear', 'Women', 450000, '', 'Spring/Summer 26 jacket', '2025/12/B63C55EA-CF22-4B30-9DA4-A5C88C45E13B-scaled.jpg', 'lolia-jacket'],
+  ['Atili Dress', 'Dresses', 'Women', 605000, '', 'Spring/Summer 26 · long dress with front slit', '2025/12/9DF6A226-B9E9-4644-98FB-5C24357C888E-scaled.jpg', 'atili-dress'],
+  ['Rika Shirtdress (Green)', 'Dresses', 'Women', 300000, 'Green', 'Shirtdress', '2026/06/F5A1C0A2-614B-4C57-B933-95572E78F4A4-scaled.jpg', 'rika-shirtdress-green'],
+]
+
+const emmyKasbit = ekRows.map(([name, category, gender, price, color, note, photo, slug], index) => ({
+  id: 200201 + index,
+  name,
+  gender,
+  category,
+  price,
+  currency: 'NGN',
+  priceTier: ekTier(price),
+  imageUrl: ekImage(photo),
+  vendor: 'Emmy Kasbit',
+  brand: 'Emmy Kasbit',
+  ...(color ? { color } : {}),
+  storeTier: 'Everyday & Designer',
+  bodyType: gender === 'Men' ? menBody : womenBodyTypes,
+  dressCode: category === 'Dresses' ? ['Cocktail Dress', 'Semi-Formal'] : tailored,
+  fitNote: `${note} · made in Nigeria · price in naira from the brand`,
+  productUrl: `https://emmykasbit.com/product/${slug}/`,
+  verifiedAt: ekDate,
+}))
+
+// Lumina Eligma (a Vancouver label), sold at Wolf & Badger. Prices are Wolf & Badger's US-site dollar prices,
+// read from the product pages on 2026-11-23. Only pieces with an add-to-bag button and no sold-out notice that day.
+const leDate = '2026-11-23'
+const leImage = (slug, hash) => `https://res.cloudinary.com/wolfandbadger/image/upload/f_auto,q_auto:best,c_pad,b_white,w_600,h_800/products/${slug}__${hash}`
+const dressy = ['Cocktail Dress', 'Semi-Formal', 'Business Casual']
+
+// [name, category, price USD, color, colorway note, page slug, photo hash, dress codes]
+const leRows = [
+  ['Opera Blazer Dress', 'Dresses', 712, 'Navy', 'Navy and gold mustard', 'opera-blazer-dress-navy-gold-mustard', 'de333a511f8ede301732a82ad15452fb', dressy],
+  ['Neoteric Dress', 'Dresses', 623, 'Gray', 'Gray', 'neoteric-dress-gray', 'ba0c25726a6ddc4f1e8a61333e1a9c4d', dressy],
+  ['The Tuxedo Dress', 'Dresses', 689, 'Black', 'Black', 'the-tuxedo-dress-black', '00ae56c0251464462c1db6cdbd0559f6', ['Cocktail Dress', 'Semi-Formal', 'Formal Attire']],
+  ['Petals Blazer Dress', 'Dresses', 705, 'Black', 'Black with white stripes', 'petals-blazer-dress-black-white-stripes', 'ff991bebd4fa446cf631e43a94def3d7', dressy],
+  ['The Rectangle Shirt Dress', 'Dresses', 375, 'Navy', 'Reversible, navy and mustard gold', 'the-rectangle-shirt-dress-reversible-navy-mustard-gold', '366822cfdf7dd062e7698cd127e5adc0', dressy],
+  ['Cascade Silk Cowl Top', 'Tops', 255, 'Navy', 'Navy midnight · silk', 'cascade-silk-cowl-top-navy-midnight', 'abb631b9c8ba6750b526e4031c8ee91b', ['Business Casual', 'Semi-Formal']],
+  ['Cascade Silk Cowl Top', 'Tops', 255, 'Green', 'Emerald green · silk', 'cascade-silk-cowl-top-emerald-green', '0b64460547c7bca5985781843da79cff', ['Business Casual', 'Semi-Formal']],
+  ['The Vanguard Skirt', 'Skirts', 398, 'Navy', 'Navy and mustard', 'the-vanguard-skirt-navy-mustard', '40ee99494bba64152b1f6bc18dee2809', ['Business Casual', 'Semi-Formal']],
+  ['Clean Cut Shorts', 'Shorts', 137, 'Black', 'Black', 'clean-cut-shorts-black', 'b606ac54ea553ca674c907137cc2e3cc', ['Casual', 'Business Casual']],
+]
+
+const luminaEligma = leRows.map(([name, category, price, color, note, slug, hash, dressCode], index) => ({
+  id: 200301 + index,
+  name,
+  gender: 'Women',
+  category,
+  price,
+  priceTier: priceTierFor(price),
+  imageUrl: leImage(slug, hash),
+  vendor: 'Wolf & Badger',
+  brand: 'Lumina Eligma',
+  color,
+  storeTier: 'Everyday & Designer',
+  bodyType: womenBodyTypes,
+  dressCode,
+  fitNote: `${note} · Lumina Eligma, sold at Wolf & Badger`,
+  productUrl: `https://www.wolfandbadger.com/us/${slug}/`,
+  verifiedAt: leDate,
+}))
+
+export default [...curatedProducts, ...victoriaBeckham, ...emmyKasbit, ...luminaEligma]

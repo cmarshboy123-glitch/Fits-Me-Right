@@ -1,3 +1,4 @@
+import { isDollar } from './currency'
 import { parseShoppingIntent, productColorFamily, shoppingColors } from './searchIntent'
 
 // "Find my match": turns a description of one specific item into ranked, real products from our catalogue.
@@ -129,7 +130,6 @@ export const hasRequirements = (request) => describeRequest(request).length > 0
 
 const WEIGHTS = { category: 25, color: 20, details: 20, brand: 12, price: 10, size: 10, material: 8, fit: 8, style: 7 }
 
-const isDollar = (product) => !product.currency || product.currency === 'USD'
 
 function termScore(haystack, phrases) {
   if (phrases.length === 0) return null
