@@ -7,9 +7,26 @@ import { searchLiveWeb } from '../services/liveSearchService'
 import { filterWebResults, intentLabels, productColorFamily, productMatchesIntent, searchCatalog, shoppingCategories, shoppingColors } from '../utils/searchIntent'
 import { luxuryRetailers, webSearchDestinations } from '../utils/retailers'
 import { affiliateUrl, outboundRel } from '../utils/affiliate'
+import { roughUsd } from '../utils/currency'
 import { doorDashSearchUrl, fastDeliveryFor, mapsSearchUrl, urgencyPattern, withoutUrgency } from '../utils/fastDelivery'
 
-const priceOptions = [['All prices', ''], ['On a Budget', 'budget'], ['Money to Spend', 'treat'], ["Let's Splurge", 'splurge']]
+// The tiers are exact: budget is under $60, treat is $60 to $179.99, splurge is $180 and up.
+const priceOptions = [['All prices', ''], ['On a budget · under $60', 'budget'], ['Money to spend · $60–$179', 'treat'], ['Let’s splurge · $180+', 'splurge']]
+const sortOptions = [['Best first', ''], ['Price: low to high', 'low'], ['Price: high to low', 'high']]
+
+// With no search words, the grid shows clothing, shoes and everyday pieces first and small extras
+// (socks, scrunchies, bracelets, underwear) last, instead of a random mix of everything.
+const CATEGORY_RANK = { Dresses: 0, Tops: 0, Pants: 0, Jeans: 0, Skirts: 0, Shorts: 0, Outerwear: 0, Knitwear: 0, Suits: 0, Shoes: 0, Activewear: 1, Swimwear: 1, Accessories: 2, Jewelry: 2, Intimates: 2 }
+
+// Stores rarely say which body types a piece suits, so almost every listing carries all of them and picking one
+// would change nothing. Where a listing does say it (petite, tall, plus in the name) we narrow to those.
+const BODY_SIGNALS = { Petite: /petite/i, Tall: /\btall\b/i, Plus: /\bplus\b|\bcurve\b|\b[1-4]x\b/i, 'Big & Tall': /\bbig\b|\btall\b/i }
+function bodyTypeMatches(product, selected) {
+  if (!selected) return true
+  const signal = BODY_SIGNALS[selected]
+  if (signal && product.fromFeed) return signal.test(product.name || '')
+  return Boolean(product.bodyType?.includes(selected === 'Balanced' ? 'Regular' : selected))
+}
 // One-tap starting points for someone who is not sure what to type. Each is checked against the real catalog.
 const popularSearches = [
   ['Tuxedos', '/shop?collection=tuxedos'],
@@ -47,6 +64,7 @@ export default function Shop() {
   const [samples, setSamples] = useState(searchParams.get('samples') || '')
   // A hand-picked group of items, such as ?collection=tuxedos (men's tuxedos from the brands we checked).
   const [collection, setCollection] = useState(searchParams.get('collection') || '')
+  const [sort, setSort] = useState(searchParams.get('sort') || '')
 
   const [loaded, setLoaded] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -70,6 +88,7 @@ export default function Shop() {
     setFast(searchParams.get('fast') || '')
     setSamples(searchParams.get('samples') || '')
     setCollection(searchParams.get('collection') || '')
+    setSort(searchParams.get('sort') || '')
   }, [searchParams])
 
   const realProducts = useMemo(() => products.filter((product) => !isSampleListing(product)), [products])
@@ -85,17 +104,27 @@ export default function Shop() {
   const search = useMemo(() => (deferredQuery.trim() ? searchCatalog(catalogProducts, deferredQuery) : null), [catalogProducts, deferredQuery])
   const understood = search ? intentLabels(search.intent) : []
 
-  const passesFilters = useMemo(() => (product) => {
-    const catalogBodyType = bodyType === 'Balanced' ? 'Regular' : bodyType
-    return (!retailer || product.vendor === retailer) && (!brand || product.brand === brand) &&
-      (!gender || product.gender === gender) && (!bodyType || product.bodyType?.includes(catalogBodyType)) &&
-      (!priceTier || product.priceTier === priceTier) && (!market || product.storeTier === market) &&
-      (!category || productMatchesIntent(product, { text: '', color: '', category, maxPrice: null, minPrice: null, size: '', gender: '' })) &&
-      (!color || productColorFamily(product.color) === color) &&
-      (!fast || fastDeliveryFor(product.vendor)) &&
-      (collection !== 'tuxedos' || product.tuxedo === true)
-  }, [retailer, brand, gender, bodyType, priceTier, market, category, color, fast, collection])
-  const filtered = useMemo(() => (search ? search.results : catalogProducts).filter(passesFilters), [catalogProducts, search, passesFilters])
+  // One definition of "this item passes these filters", so the results and the "remove a filter" suggestions agree.
+  const makePasses = (f) => (product) => (
+    (!f.retailer || product.vendor === f.retailer) && (!f.brand || product.brand === f.brand) &&
+    (!f.gender || product.gender === f.gender) && bodyTypeMatches(product, f.bodyType) &&
+    (!f.priceTier || product.priceTier === f.priceTier) && (!f.market || product.storeTier === f.market) &&
+    (!f.category || productMatchesIntent(product, { text: '', color: '', category: f.category, maxPrice: null, minPrice: null, size: '', gender: '' })) &&
+    (!f.color || productColorFamily(product.color) === f.color) &&
+    (!f.fast || fastDeliveryFor(product.vendor)) &&
+    (f.collection !== 'tuxedos' || product.tuxedo === true)
+  )
+  const activeFilters = { retailer, brand, gender, bodyType, priceTier, market, category, color, fast, collection }
+  const passesFilters = useMemo(() => makePasses(activeFilters), [retailer, brand, gender, bodyType, priceTier, market, category, color, fast, collection]) // eslint-disable-line react-hooks/exhaustive-deps
+  const filtered = useMemo(() => {
+    const matching = (search ? search.results : catalogProducts).filter(passesFilters)
+    if (sort === 'low') return [...matching].sort((a, b) => roughUsd(a) - roughUsd(b))
+    if (sort === 'high') return [...matching].sort((a, b) => roughUsd(b) - roughUsd(a))
+    // Search results are already in order of relevance. Otherwise keep the store mix but put everyday clothing first.
+    if (search) return matching
+    const rank = (product) => CATEGORY_RANK[product.category] ?? 1
+    return matching.map((product, index) => [product, index]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(([product]) => product)
+  }, [catalogProducts, search, passesFilters, sort])
 
   // How many hidden sample listings would match the same search and filters.
   const hiddenSamples = useMemo(() => {
@@ -106,7 +135,32 @@ export default function Shop() {
   const realShown = samples ? filtered.filter((product) => !isSampleListing(product)).length : filtered.length
 
   const activeCount = [query, retailer, brand, gender, bodyType, priceTier, market, category, color, fast, collection].filter(Boolean).length
-  const guidedSearch = Boolean(searchParams.get('bodyType') || searchParams.get('priceTier'))
+  // The filters tucked under "More filters", counted for its badge.
+  const moreCount = [retailer, brand, color, bodyType, market, fast, samples].filter(Boolean).length
+  const chips = [
+    query.trim() && [`“${query.trim()}”`, 'q'],
+    gender && [`For: ${gender}`, 'gender'],
+    category && [`Item: ${category}`, 'category'],
+    priceTier && [priceOptions.find(([, value]) => value === priceTier)?.[0], 'priceTier'],
+    retailer && [`Store: ${retailer}`, 'store'],
+    brand && [`Brand: ${brand}`, 'brand'],
+    color && [`Color: ${shoppingColors.find((option) => option.value === color)?.label || color}`, 'color'],
+    bodyType && [`Body type: ${bodyType}`, 'bodyType'],
+    market && [`Market: ${market}`, 'market'],
+    fast && ['Same-day delivery', 'fast'],
+    samples && ['Including samples', 'samples'],
+    collection && [collection === 'tuxedos' ? 'Tuxedos' : collection, 'collection'],
+  ].filter(Boolean)
+
+  // When nothing matches, say which single filter to remove and how many items that would bring back.
+  const filterKeyOf = { gender: 'gender', category: 'category', priceTier: 'priceTier', store: 'retailer', brand: 'brand', color: 'color', bodyType: 'bodyType', market: 'market', fast: 'fast', collection: 'collection' }
+  const relaxations = loaded && filtered.length === 0
+    ? chips.filter(([, key]) => filterKeyOf[key])
+      .map(([label, key]) => [label, key, (search ? search.results : catalogProducts).filter(makePasses({ ...activeFilters, [filterKeyOf[key]]: '' })).length])
+      .filter(([, , matches]) => matches > 0).sort((a, b) => b[2] - a[2]).slice(0, 3)
+    : []
+  // Only the Style Edit sends all three (collection, body type and budget), so a plain budget filter doesn't show its banner.
+  const guidedSearch = Boolean(searchParams.get('gender') && searchParams.get('bodyType') && searchParams.get('priceTier'))
 
   // Reset back to the first page whenever the result set itself changes —
   // otherwise switching to a narrower filter could leave visibleCount past
@@ -146,12 +200,21 @@ export default function Shop() {
   const syncUrl = (event) => {
     event?.preventDefault()
     const params = new URLSearchParams()
-    Object.entries({ q: query, store: retailer, brand, gender, bodyType, priceTier, market, category, color, fast, samples, collection }).forEach(([key, value]) => { if (value) params.set(key, value) })
+    Object.entries({ q: query, store: retailer, brand, gender, bodyType, priceTier, market, category, color, fast, samples, collection, sort }).forEach(([key, value]) => { if (value) params.set(key, value) })
+    setSearchParams(params)
+  }
+
+  // Every filter change goes through here: it updates the address (so the page, the link and the chips agree),
+  // keeps whatever is typed in the search box, and applies at once.
+  const update = (changes) => {
+    const params = new URLSearchParams(searchParams)
+    if (query.trim()) params.set('q', query.trim()); else params.delete('q')
+    Object.entries(changes).forEach(([key, value]) => { if (value) params.set(key, value); else params.delete(key) })
     setSearchParams(params)
   }
 
   const clearAll = () => {
-    setQuery(''); setRetailer(''); setBrand(''); setGender(''); setBodyType(''); setPriceTier(''); setMarket(''); setCategory(''); setColor(''); setFast(''); setSamples(''); setCollection(''); setSearchParams({})
+    setQuery(''); setRetailer(''); setBrand(''); setGender(''); setBodyType(''); setPriceTier(''); setMarket(''); setCategory(''); setColor(''); setFast(''); setSamples(''); setCollection(''); setSort(''); setSearchParams({})
   }
 
   // Turning samples on or off keeps every other search and filter as it is.
@@ -197,29 +260,44 @@ export default function Shop() {
       {search?.correctedQuery && <p className="mt-3 max-w-4xl text-sm text-neutral-600">Showing results for <span className="font-bold text-black">“{search.correctedQuery}”</span></p>}
       {query && understood.length > 0 && <div className="mt-3 flex max-w-4xl flex-wrap items-center gap-2"><span className="mr-1 text-[10px] font-black uppercase tracking-[.18em] text-neutral-500">We understood</span>{understood.map((label) => <span key={label} className="rounded-full border border-neutral-300 bg-white px-3 py-1.5 text-[11px] font-bold">{label}</span>)}</div>}
 
-      <button type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} aria-controls="shop-filters" className="mt-8 flex min-h-12 w-full items-center justify-between border-y border-neutral-300 bg-white px-1 text-xs font-semibold uppercase tracking-[.14em]">
-        <span className="flex items-center gap-2"><SlidersHorizontal size={15} /> FILTERS {activeCount > 0 && <span className="rounded-full bg-gold-400 px-2 py-0.5 text-[10px] text-black">{activeCount}</span>}</span>
+      {/* The filters people use most stay in view. The rest open under "More filters". Every change applies at once. */}
+      <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <FilterSelect label="For" value={gender} onChange={(value) => update({ gender: value, bodyType: '' })} options={[['Everyone', ''], ['Women', 'Women'], ['Men', 'Men'], ['Children', 'Children']]} />
+        <FilterSelect label="Item" value={category} onChange={(value) => update({ category: value })} options={[['All items', ''], ...shoppingCategories.map((value) => [value, value])]} />
+        <FilterSelect label="Price" value={priceTier} onChange={(value) => update({ priceTier: value })} options={priceOptions} />
+        <FilterSelect label="Sort by" value={sort} onChange={(value) => update({ sort: value })} options={sortOptions} />
+      </div>
+
+      {chips.length > 0 && (
+        <div className="mt-4 flex flex-wrap items-center gap-2" role="group" aria-label="Filters in use">
+          <span className="text-[10px] font-semibold uppercase tracking-[.18em] text-neutral-500">Showing</span>
+          {chips.map(([label, key]) => <button key={key} type="button" onClick={() => update({ [key]: '' })} aria-label={`Remove filter: ${label}`} className="flex min-h-10 items-center gap-1.5 border border-neutral-900 px-3 text-[11px] font-medium uppercase tracking-[.1em]">{label} <X size={13} /></button>)}
+          <button type="button" onClick={clearAll} className="min-h-10 px-2 text-[11px] font-semibold uppercase tracking-[.14em] underline underline-offset-4">Clear all</button>
+        </div>
+      )}
+
+      <button type="button" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} aria-controls="shop-filters" className="mt-5 flex min-h-12 w-full items-center justify-between border-y border-neutral-300 bg-white px-1 text-xs font-semibold uppercase tracking-[.14em]">
+        <span className="flex items-center gap-2"><SlidersHorizontal size={15} /> MORE FILTERS {moreCount > 0 && <span className="rounded-full bg-gold-400 px-2 py-0.5 text-[10px] text-black">{moreCount}</span>}</span>
         <span>{filtersOpen ? 'HIDE' : 'SHOW'}</span>
       </button>
       <div id="shop-filters" className={`${filtersOpen ? 'mt-3' : 'hidden'} border-b border-neutral-200 bg-white py-5 sm:py-7`}>
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><div className="flex items-center gap-2 text-xs font-bold"><SlidersHorizontal size={15} /> FILTER THE MARKET {activeCount > 0 && <span className="rounded-full bg-gold-400 px-2 py-0.5 text-[10px] text-black">{activeCount}</span>}</div>{activeCount > 0 && <button onClick={clearAll} className="flex items-center gap-1.5 text-xs font-bold text-neutral-600 transition hover:text-black"><X size={14} /> CLEAR ALL</button>}</div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <FilterSelect label="Collection" value={gender} onChange={(value) => { setGender(value); setBodyType('') }} options={[['All people', ''], ['Women', 'Women'], ['Men', 'Men'], ['Children', 'Children']]} />
-          <FilterSelect label="Body type" value={bodyType} onChange={setBodyType} options={[['All body types', ''], ...bodyTypes.map((value) => [value, value])]} />
-          <FilterSelect label="Clothing category" value={category} onChange={setCategory} options={[['All clothing', ''], ...shoppingCategories.map((value) => [value, value])]} />
-          <FilterSelect label="Store" value={retailer} onChange={setRetailer} options={[['All stores', ''], ...stores.map((value) => [value, value])]} />
-          <FilterSelect label="Fashion brand" value={brand} onChange={setBrand} options={[['All brands', ''], ...brands.map((value) => [value, value])]} />
-          <FilterSelect label="Color family" value={color} onChange={setColor} options={[['All colors', ''], ...shoppingColors.map(({ label, value }) => [label, value])]} />
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <FilterSelect label="Body type" value={bodyType} onChange={(value) => update({ bodyType: value })} options={[['All body types', ''], ...bodyTypes.map((value) => [value, value])]} />
+            <p className="mt-1.5 text-[11px] leading-4 text-neutral-500">{bodyType && BODY_SIGNALS[bodyType] ? `Showing only items whose name says “${bodyType.toLowerCase()}”.` : 'Most stores don’t say which body types a piece suits, so this narrows only the listings that do. Our Fit Guide has styling tips by body type.'}</p>
+          </div>
+          <FilterSelect label="Store" value={retailer} onChange={(value) => update({ store: value })} options={[['All stores', ''], ...stores.map((value) => [value, value])]} />
+          <FilterSelect label="Fashion brand" value={brand} onChange={(value) => update({ brand: value })} options={[['All brands', ''], ...brands.map((value) => [value, value])]} />
+          <FilterSelect label="Color family" value={color} onChange={(value) => update({ color: value })} options={[['All colors', ''], ...shoppingColors.map(({ label, value }) => [label, value])]} />
         </div>
-        <div className="mt-5"><p className="mb-2 text-[10px] font-black uppercase tracking-[.18em] text-neutral-500">Quick color edit</p><div className="flex flex-wrap gap-2"><button onClick={() => setColor('')} aria-pressed={!color} className={`min-h-10 rounded-full px-4 text-[11px] font-bold ${!color ? 'bg-black text-white' : 'border border-neutral-300 bg-white'}`}>ALL</button>{shoppingColors.map((option) => <button key={option.value} onClick={() => setColor(option.value)} aria-label={`Filter by ${option.label}`} aria-pressed={color === option.value} title={option.label} className={`flex min-h-10 items-center gap-2 rounded-full px-3 text-[11px] font-bold ${color === option.value ? 'bg-black text-white' : 'border border-neutral-300 bg-white'}`}><span className="h-4 w-4 rounded-full border border-black/20" style={{ background: option.swatch }} />{option.label}</button>)}</div></div>
-        <FilterButtons label="Price point" value={priceTier} onChange={setPriceTier} options={priceOptions} pill />
-        <FilterButtons label="Delivery speed" value={fast} onChange={setFast} options={[['Any speed', ''], ['Same-day delivery options', '1']]} />
-        <FilterButtons label="Sample listings" value={samples} onChange={setSamples} options={[['Hidden', ''], ['Show them too', '1']]} />
-        <FilterButtons label="Market" value={market} onChange={setMarket} options={[['All fashion', ''], ['Luxury', 'Luxury'], ['Asian Market', 'Asian Market'], ['Everyday & Designer', 'Everyday & Designer'], ['Resale & Vintage', 'Resale & Vintage']]} />
-        <button onClick={(event) => { syncUrl(event); setFiltersOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className="sticky bottom-3 mt-6 flex min-h-12 w-full items-center justify-center gap-2 bg-black px-6 text-xs font-black text-white shadow-lift transition hover:bg-gold-700 sm:w-auto lg:static lg:shadow-none">{loaded ? `SHOW ${filtered.length.toLocaleString()} ITEMS` : 'APPLY SEARCH FILTERS'} <Search size={15} /></button>
+        <div className="mt-5"><p className="mb-2 text-[10px] font-black uppercase tracking-[.18em] text-neutral-500">Quick color edit</p><div className="flex flex-wrap gap-2"><button type="button" onClick={() => update({ color: '' })} aria-pressed={!color} className={`min-h-10 rounded-full px-4 text-[11px] font-bold ${!color ? 'bg-black text-white' : 'border border-neutral-300 bg-white'}`}>ALL</button>{shoppingColors.map((option) => <button type="button" key={option.value} onClick={() => update({ color: option.value })} aria-label={`Filter by ${option.label}`} aria-pressed={color === option.value} title={option.label} className={`flex min-h-10 items-center gap-2 rounded-full px-3 text-[11px] font-bold ${color === option.value ? 'bg-black text-white' : 'border border-neutral-300 bg-white'}`}><span className="h-4 w-4 rounded-full border border-black/20" style={{ background: option.swatch }} />{option.label}</button>)}</div></div>
+        <FilterButtons label="Delivery speed" value={fast} onChange={(value) => update({ fast: value })} options={[['Any speed', ''], ['Same-day delivery options', '1']]} />
+        <FilterButtons label="Sample listings" value={samples} onChange={(value) => update({ samples: value })} options={[['Hidden', ''], ['Show them too', '1']]} />
+        <FilterButtons label="Market" value={market} onChange={(value) => update({ market: value })} options={[['All fashion', ''], ['Luxury', 'Luxury'], ['Asian Market', 'Asian Market'], ['Everyday & Designer', 'Everyday & Designer'], ['Resale & Vintage', 'Resale & Vintage']]} />
+        <button type="button" onClick={() => { setFiltersOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className="sticky bottom-3 mt-6 flex min-h-12 w-full items-center justify-center gap-2 bg-black px-6 text-xs font-black text-white shadow-lift transition hover:bg-gold-700 sm:w-auto lg:static lg:shadow-none">{loaded ? `SHOW ${filtered.length.toLocaleString()} ITEMS` : 'DONE'}</button>
       </div>
 
-      <div className="flex flex-col gap-2 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-5"><p className="text-xs font-semibold uppercase tracking-[.14em]">{samples ? `${filtered.length} ITEMS, ${filtered.length - realShown} OF THEM SAMPLE LISTINGS` : `${filtered.length} REAL ITEMS ACROSS ${[...new Set(filtered.map((product) => product.vendor))].length} STORES`}</p><p className="max-w-md text-xs text-neutral-500 sm:text-right">{samples ? 'Real items open the store’s own page; sample listings open the store’s search · ' : 'Every shopping button opens the item on the store’s own site · '}the store confirms live price and stock</p></div>
+      <div className="flex flex-col gap-2 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-5"><p className="text-xs font-semibold uppercase tracking-[.14em]">{samples ? `${filtered.length.toLocaleString()} ITEMS, ${(filtered.length - realShown).toLocaleString()} OF THEM SAMPLE LISTINGS` : `${filtered.length.toLocaleString()} REAL ITEMS ACROSS ${[...new Set(filtered.map((product) => product.vendor))].length} STORES`}</p><p className="max-w-md text-xs text-neutral-500 sm:text-right">{samples ? 'Real items open the store’s own page; sample listings open the store’s search · ' : 'Every shopping button opens the item on the store’s own site · '}the store confirms live price and stock</p></div>
 
       {loaded && !samples && hiddenSamples > 0 && (filtered.length < PAGE_SIZE || retailer || market === 'Luxury') && (
         <div className="mb-8 rounded-2xl border border-gold-200 bg-gold-50 px-5 py-5" role="status">
@@ -278,6 +356,11 @@ export default function Shop() {
         <div className="rounded-2xl bg-neutral-100 px-6 py-16 text-center">
           <h2 className="text-2xl font-bold">{hiddenSamples > 0 ? 'No real listings matched that yet.' : 'Nothing in our marketplace matched that search.'}</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-neutral-600">{hiddenSamples > 0 ? 'See the note above for sample listings and the store’s own site. ' : ''}Try clearing a filter to widen the selection{canSearchWeb ? ', or look below — we sent your search to the wider web.' : '.'}</p>
+          {relaxations.length > 0 && (
+            <div className="mt-6 flex flex-wrap justify-center gap-2">
+              {relaxations.map(([label, key, matches]) => <button key={key} type="button" onClick={() => update({ [key]: '' })} className="min-h-11 border border-neutral-900 bg-white px-4 text-[11px] font-medium uppercase tracking-[.1em] transition hover:bg-neutral-950 hover:text-white">Remove “{label}” to see {matches.toLocaleString()}</button>)}
+            </div>
+          )}
           <button onClick={clearAll} className="mt-5 text-sm font-bold underline">CLEAR ALL FILTERS</button>
         </div>
       )}
