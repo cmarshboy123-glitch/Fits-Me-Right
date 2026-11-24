@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import BodyShape from '../components/BodyShape'
 import ProductGrid from '../components/ProductGrid'
 import { useStyle } from '../context/StyleContext'
-import { getRecommendedProducts } from '../services/catalogService'
+import { getRecommendedWithFallbacks, getTopStoresByTier } from '../services/catalogService'
 import { summarizeSelections } from '../utils/summarizeSelections'
 
 const steps = ['gender', 'body-type', 'price', 'shirt-size', 'pants-size', 'dress-code', 'save-profile', 'results']
@@ -28,8 +28,8 @@ const womenPants = ['00', '0', '2', '4', '6', '8', '10', '12', '14', '16', '18',
 const menPants = ['28 × 30', '30 × 30', '32 × 30', '32 × 32', '34 × 32', '36 × 32', '38 × 32', '40 × 32', '42 × 32', '44 × 32', '46 × 32', '48 × 32', 'Not sure']
 const prices = [
   { value: 'budget', title: 'On a Budget', detail: 'Under $60', stores: ['H&M', 'Old Navy', 'Uniqlo', 'ASOS'] },
-  { value: 'treat', title: 'Money to Spend', detail: '$60–$180', stores: ['Macy’s', 'Nordstrom', 'COS', 'Reformation'] },
-  { value: 'splurge', title: 'Let’s Splurge', detail: 'Above $180', stores: ['Saks Fifth Avenue', 'Net-a-Porter', 'Gucci', 'Prada'] },
+  { value: 'treat', title: 'Money to Spend', detail: '$60–$179', stores: ['Macy’s', 'Nordstrom', 'COS', 'Reformation'] },
+  { value: 'splurge', title: 'Let’s Splurge', detail: '$180 and up', stores: ['Saks Fifth Avenue', 'Net-a-Porter', 'Gucci', 'Prada'] },
 ]
 const womenDressCodes = ['Casual', 'Business Casual', 'Professional/Formal Business', 'Formal Attire', 'Cocktail Dress', 'Bohemian', 'Active Wear', 'Semi-Formal']
 const menDressCodes = [...womenDressCodes.slice(0, 6), 'Black Tie', ...womenDressCodes.slice(6)]
@@ -39,6 +39,8 @@ export default function GuidedFlow() {
   const navigate = useNavigate()
   const { selections, profiles, updateSelection, resetSelections, saveProfile, loadProfile, deleteProfile } = useStyle()
   const [results, setResults] = useState([])
+  const [alternatives, setAlternatives] = useState([])
+  const [tierStores, setTierStores] = useState({})
   const [visibleCount, setVisibleCount] = useState(24)
   const [loading, setLoading] = useState(step === 'results')
   const [profileName, setProfileName] = useState('')
@@ -54,11 +56,12 @@ export default function GuidedFlow() {
     ? new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${latestVerifiedAt}T00:00:00Z`))
     : null
 
+  useEffect(() => { if (step === 'price') getTopStoresByTier().then(setTierStores) }, [step])
   useEffect(() => { if (index === -1) navigate('/style/gender', { replace: true }) }, [index, navigate])
   useEffect(() => {
     if (step === 'results') {
       setLoading(true)
-      getRecommendedProducts(selections).then((items) => { setResults(items); setVisibleCount(24); setLoading(false) })
+      getRecommendedWithFallbacks(selections).then(({ exact, alternatives: more }) => { setResults(exact); setAlternatives(more); setVisibleCount(24); setLoading(false) })
     }
   }, [step, selections])
 
@@ -88,7 +91,8 @@ export default function GuidedFlow() {
         </div>
         <div className="flex flex-wrap items-center justify-between gap-4 py-6"><p className="text-sm font-bold">{loading ? 'CURATING…' : `${results.length} MATCH${results.length === 1 ? '' : 'ES'}`}</p><div className="flex items-center gap-5"><button onClick={() => navigate('/style/save-profile')} className="flex min-h-11 items-center gap-2 text-sm font-bold"><BookmarkPlus size={17} /> SAVE PROFILE</button><button onClick={() => navigate('/style/dress-code')} className="flex min-h-11 items-center gap-2 text-sm font-bold"><SlidersHorizontal size={17} /> EDIT FILTERS</button></div></div>
         {!loading && results.length > 0 && <><div className="mb-7 border-y border-black py-5"><p className="text-[10px] font-black uppercase tracking-[.24em] text-gold-800">Verified direct matches</p><div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm font-bold">{[...new Set(results.map((product) => product.vendor))].map((vendor) => <span key={vendor}>{vendor}</span>)}</div><p className="mt-3 max-w-2xl text-xs leading-5 text-neutral-500">Each button opens that exact retailer product page. Prices and size availability {latestVerifiedLabel ? `were checked ${latestVerifiedLabel}` : 'are a snapshot'} and can change at the store.</p></div><ProductGrid products={results.slice(0, visibleCount)} />{visibleCount < results.length && <div className="mt-10 flex flex-col items-center gap-2"><button onClick={() => setVisibleCount((count) => count + 24)} className="flex min-h-12 items-center gap-2 rounded-full border border-neutral-300 bg-white px-8 text-sm font-bold transition hover:border-gold-400">LOAD MORE</button><p className="text-xs text-neutral-500">Showing {Math.min(visibleCount, results.length)} of {results.length}</p></div>}</>}
-        {!loading && results.length === 0 && <div className="grid place-items-center rounded-3xl bg-neutral-100 px-6 py-24 text-center"><div><p className="text-xs font-bold uppercase tracking-widest text-gold-700">The edit is still in progress</p><h2 className="mt-3 text-3xl font-black">No exact matches yet.</h2><p className="mx-auto mt-3 max-w-md text-neutral-600">Try adjusting one detail and we’ll widen the rail.</p><button onClick={() => navigate('/style/dress-code')} className="mt-7 rounded-full bg-black px-7 py-4 text-sm font-bold text-white">CHANGE DRESS CODE</button></div></div>}
+        {!loading && alternatives.map((group) => <div key={group.title} className="mt-12 border-t border-black pt-8"><h2 className="text-2xl">{group.title}</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-600">{group.note}</p><div className="mt-6"><ProductGrid products={group.products} /></div></div>)}
+        {!loading && results.length === 0 && alternatives.length === 0 && <div className="grid place-items-center rounded-3xl bg-neutral-100 px-6 py-24 text-center"><div><p className="text-xs font-bold uppercase tracking-widest text-gold-700">The edit is still in progress</p><h2 className="mt-3 text-3xl font-black">Nothing matches that combination yet.</h2><p className="mx-auto mt-3 max-w-md text-neutral-600">We only show real products, so when none fit every choice we say so. Try changing the occasion or the price level.</p><button onClick={() => navigate('/style/dress-code')} className="mt-7 rounded-full bg-black px-7 py-4 text-sm font-bold text-white">CHANGE DRESS CODE</button></div></div>}
       </section>
     )
   }
@@ -129,7 +133,7 @@ export default function GuidedFlow() {
 
       {step === 'shirt-size' && <SizeGrid icon={<Shirt size={28} />} sizes={shirtSizes} selected={selections.shirtSize} onChoose={(value) => choose('shirtSize', value)} />}
       {step === 'pants-size' && <SizeGrid icon={<Ruler size={28} />} sizes={pantsSizes} selected={selections.pantsSize} onChoose={(value) => choose('pantsSize', value)} />}
-      {step === 'price' && <div className="grid border-l border-t border-black md:grid-cols-3">{prices.map((price, index) => <button key={price.value} onClick={() => choosePriceAndSearch(price.value)} className="group flex min-h-80 flex-col items-start justify-between border-b border-r border-black p-7 text-left transition-colors hover:bg-[#E8C45D]"><span className="flex w-full items-center justify-between text-[10px] font-black uppercase tracking-[.22em]"><span>Price edit</span><span>0{index + 1}</span></span><span className="block"><span className="block text-3xl font-black tracking-tight">{price.title}</span><span className="mt-2 block text-neutral-600 group-hover:text-black">{price.detail}</span><span className="mt-7 block border-t border-black/25 pt-4 text-[10px] font-black uppercase tracking-[.18em]">Stores you may see</span><span className="mt-2 block text-xs leading-6 text-neutral-600 group-hover:text-black">{price.stores.join(' · ')}</span><span className="mt-5 block text-[10px] font-black uppercase tracking-[.18em]">Search this edit</span></span><ArrowRight /></button>)}</div>}
+      {step === 'price' && <div className="grid border-l border-t border-black md:grid-cols-3">{prices.map((price, index) => <button key={price.value} onClick={() => choosePriceAndSearch(price.value)} className="group flex min-h-80 flex-col items-start justify-between border-b border-r border-black p-7 text-left transition-colors hover:bg-[#E8C45D]"><span className="flex w-full items-center justify-between text-[10px] font-black uppercase tracking-[.22em]"><span>Price edit</span><span>0{index + 1}</span></span><span className="block"><span className="block text-3xl font-black tracking-tight">{price.title}</span><span className="mt-2 block text-neutral-600 group-hover:text-black">{price.detail}</span><span className="mt-7 block border-t border-black/25 pt-4 text-[10px] font-black uppercase tracking-[.18em]">Stores you may see</span><span className="mt-2 block text-xs leading-6 text-neutral-600 group-hover:text-black">{(tierStores[price.value] || []).join(' · ')}</span><span className="mt-5 block text-[10px] font-black uppercase tracking-[.18em]">Search this edit</span></span><ArrowRight /></button>)}</div>}
       {step === 'dress-code' && <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">{dressCodes.map((value, i) => <button key={value} onClick={() => choose('dressCode', value)} className="flex min-h-28 items-center justify-between rounded-2xl border border-neutral-300 p-5 text-left font-bold transition hover:border-black hover:bg-[#FFF1C7]"><span><span className="mr-4 text-xs text-neutral-400">{String(i + 1).padStart(2, '0')}</span>{value}</span><ArrowRight size={18} /></button>)}</div>}
       {step === 'save-profile' && <div className="grid border-y border-black lg:grid-cols-[1fr_1.15fr]">
         <div className="border-b border-black bg-[#F4EEE2] p-7 lg:border-b-0 lg:border-r lg:p-10">

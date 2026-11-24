@@ -1,5 +1,6 @@
 import { ArrowRight, Clock, ExternalLink, MapPin, Search, Store, Zap } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { getRealProducts } from '../services/catalogService'
 import { Link, useNavigate } from 'react-router-dom'
 import { doorDashSearchUrl, FAST_DELIVERY_CHECKED, fastDeliveryRetailers, fastDeliverySources, mapsSearchUrl } from '../utils/fastDelivery'
 
@@ -42,6 +43,8 @@ const timeframes = [
 
 export default function FastDelivery() {
   const navigate = useNavigate()
+  const [storeCounts, setStoreCounts] = useState(null)
+  useEffect(() => { getRealProducts().then((items) => { const counts = {}; items.forEach((item) => { counts[item.vendor] = (counts[item.vendor] || 0) + 1 }); setStoreCounts(counts) }) }, [])
   const [need, setNeed] = useState('')
   const [when, setWhen] = useState('hours')
   const timeframe = timeframes.find((item) => item.id === when)
@@ -62,7 +65,7 @@ export default function FastDelivery() {
           <p className="mt-6 max-w-2xl text-lg leading-8 text-white/75">Tuxedo for tonight, a dress for tomorrow&rsquo;s interview. We don&rsquo;t deliver anything ourselves &mdash; we point you to the real same-day delivery and pickup options and tell you honestly what&rsquo;s possible.</p>
 
           <form
-            onSubmit={(event) => { event.preventDefault(); navigate(`/shop?q=${encodeURIComponent(query)}&fast=1`) }}
+            onSubmit={(event) => { event.preventDefault(); navigate(`/shop?q=${encodeURIComponent(query)}`) }}
             role="search"
             className="mt-9 max-w-2xl"
           >
@@ -111,7 +114,7 @@ export default function FastDelivery() {
           <p className="mt-3 max-w-2xl text-neutral-600">These searches only show items from stores that offer same-day delivery. If none match, you can search DoorDash directly for what&rsquo;s near you.</p>
           <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
             {occasions.map(([label, search]) => (
-              <Link key={label} to={`/shop?q=${encodeURIComponent(search)}&fast=1`} className="flex min-h-28 flex-col justify-between rounded-2xl border border-neutral-200 bg-[#FAF9F6] p-4 transition hover:border-black">
+              <Link key={label} to={`/shop?q=${encodeURIComponent(search)}`} className="flex min-h-28 flex-col justify-between rounded-2xl border border-neutral-200 bg-[#FAF9F6] p-4 transition hover:border-black">
                 <span className="font-bold leading-snug">{label}</span>
                 <span className="mt-4 flex items-center gap-1 text-[11px] font-black text-gold-800">SHOP <ArrowRight size={13} /></span>
               </Link>
@@ -131,7 +134,7 @@ export default function FastDelivery() {
               <p className="mt-2 text-sm text-neutral-600">{info.coverage}, {info.speed}.</p>
               <p className="mt-1 text-xs text-neutral-400">On DoorDash since {info.since}</p>
               <div className="mt-6 flex flex-1 flex-col justify-end gap-2">
-                <Link to={`/shop?store=${encodeURIComponent(retailer)}`} className="flex min-h-11 items-center justify-center gap-2 rounded-full bg-black px-4 text-xs font-black text-white transition hover:bg-gold-700">BROWSE {retailer.toUpperCase()} <ArrowRight size={13} /></Link>
+                {storeCounts?.[retailer] > 0 && <Link to={`/shop?store=${encodeURIComponent(retailer)}`} className="flex min-h-11 items-center justify-center gap-2 rounded-full bg-black px-4 text-xs font-black text-white transition hover:bg-gold-700">BROWSE {retailer.toUpperCase()} <ArrowRight size={13} /></Link>}
                 <a href={doorDashSearchUrl(retailer)} target="_blank" rel="noreferrer" className="flex min-h-11 items-center justify-center gap-2 rounded-full border border-neutral-300 px-4 text-xs font-black transition hover:border-black">ORDER ON DOORDASH <ExternalLink size={13} /></a>
               </div>
             </article>

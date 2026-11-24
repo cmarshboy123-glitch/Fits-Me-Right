@@ -8,17 +8,22 @@ export const API_URL = 'https://fits-me-right-api-6d1474833fcd.herokuapp.com/api
 // verified/marketplace records use availableShirtSizes/availablePantsSizes —
 // line the field names up so every product behaves identically once merged.
 async function loadBundledCatalog() {
-  const [{ default: mockProducts }, { default: verifiedProducts }, { default: marketplaceInventory }] = await Promise.all([
+  const [{ default: mockProducts }, { default: verifiedProducts }, { default: marketplaceInventory }, { default: apiSnapshot }] = await Promise.all([
     import('../data/products.json'),
     import('../data/verifiedProducts'),
     import('../data/marketplaceInventory'),
+    // The real items the product API holds (shoes, resale finds, luxury pieces), saved in the site so they
+    // still show when the API can't be reached. Refresh with: node work/snapshot-api.mjs
+    import('../data/apiSnapshot.json'),
   ])
   const normalizedMockProducts = mockProducts.map((product) => ({
     ...product,
     availableShirtSizes: product.shirtSizes,
     availablePantsSizes: product.pantsSizes,
   }))
-  return [...verifiedProducts, ...marketplaceInventory, ...normalizedMockProducts]
+  // The snapshot comes first, and a product that appears in more than one source is kept once.
+  const seen = new Set()
+  return [...apiSnapshot, ...verifiedProducts, ...marketplaceInventory, ...normalizedMockProducts].filter((product) => !seen.has(product.id) && seen.add(product.id))
 }
 
 // Stores don't publish body-type fit, so feed items list every body type for their gender.
@@ -173,4 +178,47 @@ export async function getRecommendedProducts(selections) {
     product.dressCode.includes(selections.dressCode) &&
     matchesSelectedSize(product),
   )
+}
+
+// The stores that really have the most items in each price level, so the quiz names stores that exist
+// in the marketplace instead of a fixed list.
+export async function getTopStoresByTier(limit = 4) {
+  const catalog = await getRealProducts()
+  const counts = { budget: {}, treat: {}, splurge: {} }
+  catalog.forEach((product) => {
+    if ((!product.currency || product.currency === 'USD') && counts[product.priceTier]) {
+      counts[product.priceTier][product.vendor] = (counts[product.priceTier][product.vendor] || 0) + 1
+    }
+  })
+  return Object.fromEntries(Object.entries(counts).map(([tier, vendors]) => [tier, Object.entries(vendors).sort((a, b) => b[1] - a[1]).slice(0, limit).map(([vendor]) => vendor)]))
+}
+
+const TIER_UP = { budget: 'treat', treat: 'splurge' }
+const FORMAL = ['Black Tie', 'Formal Attire', 'Cocktail Dress', 'Semi-Formal', 'Professional/Formal Business']
+
+// The exact matches, plus honest next-best groups when there are few of them: the most formal pieces
+// inside the same budget, and the same choices one price level up. Nothing here is loosened silently:
+// each group is labelled with what changed.
+export async function getRecommendedWithFallbacks(selections) {
+  const exact = await getRecommendedProducts(selections)
+  const alternatives = []
+  if (exact.length >= 12) return { exact, alternatives }
+
+  const seen = new Set(exact.map((product) => product.id))
+  if (FORMAL.includes(selections.dressCode)) {
+    const order = [selections.dressCode, ...FORMAL.filter((code) => code !== selections.dressCode)]
+    const lists = await Promise.all(order.map((code) => getRecommendedProducts({ ...selections, dressCode: code })))
+    const merged = []
+    lists.forEach((list) => list.forEach((product) => { if (!seen.has(product.id) && !merged.some((item) => item.id === product.id)) merged.push(product) }))
+    if (merged.length) {
+      alternatives.push({ title: 'The most formal pieces in your budget', note: `Pieces labelled ${selections.dressCode} are rare at this price, so these are the closest dressy options that fit the rest of your choices.`, products: merged.slice(0, 24) })
+      merged.forEach((product) => seen.add(product.id))
+    }
+  }
+  const up = TIER_UP[selections.priceTier]
+  if (up) {
+    const list = (await getRecommendedProducts({ ...selections, priceTier: up })).filter((product) => !seen.has(product.id))
+    if (list.length) alternatives.push({ title: up === 'treat' ? 'A step up: $60 to $179' : 'A step up: $180 and over', note: 'Your same choices, one price level higher.', products: list.slice(0, 24) })
+  }
+  return { exact, alternatives }
 }

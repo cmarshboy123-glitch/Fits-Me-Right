@@ -32,6 +32,9 @@ export default function ThriftyShopper() {
   const visible = filtered.slice(0, visibleCount)
   const otherTab = tabs.find((tab) => tab !== active && counts[tab] > 0)
 
+  // A quick-search chip is only offered when it finds something, so no chip leads to an empty page.
+  const liveChips = useMemo(() => (loaded ? quickSearches.filter((chip) => { const chipIntent = parseShoppingIntent(chip); return products.some((item) => productMatchesIntent(item, chipIntent)) }) : quickSearches), [products, loaded])
+
   return (
     <>
       <section className="mx-auto mt-6 grid max-w-[1440px] overflow-hidden rounded-[2rem] bg-[#F5F0E7] px-4 lg:grid-cols-[1.05fr_.95fr] lg:px-8">
@@ -69,7 +72,7 @@ export default function ThriftyShopper() {
           </div>
         </form>
         <div className="mb-8 flex flex-wrap gap-2">
-          {quickSearches.map((chip) => (
+          {liveChips.map((chip) => (
             <button key={chip} type="button" onClick={() => setQuery(chip === query ? '' : chip)} className={`min-h-[36px] rounded-full border px-4 text-xs font-bold ${query === chip ? 'border-black bg-black text-white' : 'border-neutral-300 hover:border-black'}`}>{chip}</button>
           ))}
         </div>
