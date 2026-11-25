@@ -1,4 +1,5 @@
 import { slugify } from '../utils/slugify'
+import { registerCatalogWords } from '../utils/searchIntent'
 
 export const API_URL = 'https://fits-me-right-api-6d1474833fcd.herokuapp.com/api/products'
 
@@ -144,6 +145,7 @@ export const isSampleListing = (product) => !product.productUrl
 // What visitors see by default: real products only. The shop can opt back in to samples.
 export async function getRealProducts() {
   const catalog = await getProducts()
+  registerCatalogWords(catalog)
   return catalog.filter((product) => !isSampleListing(product))
 }
 

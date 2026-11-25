@@ -11,7 +11,7 @@ const categories = [
   ['Formal Wear', '/assets/unique/home-after-five-v1.webp', '/style/gender'],
   // Strictly tuxedos: hand-checked men's tuxedos and tuxedo jackets (no loose trousers, shirts or women's pieces).
   ['Tuxedos', 'https://dtcralphlauren.scene7.com/is/image/PoloGSI/s7-1339421_alternate10?wid=700&fmt=jpeg', '/shop?collection=tuxedos'],
-  ['Made to Move', '/assets/unique/home-made-to-move-men-v1.webp', '/style/gender'],
+  ['Made to Move', '/assets/unique/home-made-to-move-men-v1.webp', '/shop?collection=sportswear'],
   ['Shoes', '/assets/unique/home-shoes-occasion-men-v1.webp', '/style/gender'],
   ['Accessories', '/assets/unique/home-accessories-occasion-v1.webp', '/style/gender'],
 ]

@@ -1,6 +1,6 @@
 import { BookOpen, Heart, Menu, Search, UserRound, X } from 'lucide-react'
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useStyle } from '../context/StyleContext'
 import { useWishlist } from '../context/WishlistContext'
 import { getRealProducts } from '../services/catalogService'
@@ -11,6 +11,7 @@ import { formatPrice } from '../utils/currency'
 import BrandMark from './BrandMark'
 
 const nav = [
+  ['Sportswear', '/shop?collection=sportswear'],
   ['Find My Match', '/match'],
   ['Need It Fast', '/fast'],
   ['Cobbler Corner', '/cobbler-corner'],
@@ -27,6 +28,9 @@ export default function Header() {
   const [showSuggestions, setShowSuggestions] = useState(false)
   const blurTimeout = useRef(null)
   const navigate = useNavigate()
+  const location = useLocation()
+  // A link is current when its page and, for links with a query (like Sportswear), its query match the address bar.
+  const isCurrent = (path) => (path.includes('?') ? location.pathname + location.search === path : location.pathname === path)
   const { updateSelection } = useStyle()
   const { count: wishlistCount } = useWishlist()
 
@@ -68,14 +72,14 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-neutral-200/80 bg-white/90 backdrop-blur-xl">
-      <div className="mx-auto flex h-[72px] max-w-[1440px] items-center gap-6 px-4 lg:px-8 xl:grid xl:h-auto xl:grid-cols-3 xl:gap-y-0 xl:pt-3">
+      <div className="mx-auto flex h-[72px] max-w-[1440px] items-center gap-3 px-3 sm:gap-6 sm:px-4 lg:px-8 xl:grid xl:h-auto xl:grid-cols-3 xl:gap-y-0 xl:pt-3">
         <Link to="/" className="shrink-0 xl:col-start-2 xl:row-start-1 xl:justify-self-center" aria-label="Fits Me Right home"><BrandMark /></Link>
         <div className="hidden items-center justify-center gap-7 border-t border-neutral-200/70 py-3 xl:col-span-3 xl:row-start-2 xl:flex">
-          <NavLink to="/shop" end className={({ isActive }) => `text-[11px] font-medium uppercase tracking-[.14em] transition ${isActive ? 'text-black' : 'text-neutral-700 hover:text-black'}`}>Shop all</NavLink>
+          <Link to="/shop" className={`text-[11px] font-medium uppercase tracking-[.14em] transition ${location.pathname === '/shop' && !location.search.includes('collection=') ? 'text-black' : 'text-neutral-700 hover:text-black'}`}>Shop all</Link>
           <button onClick={() => startFor('Women')} className="text-[11px] font-medium uppercase tracking-[.14em] text-neutral-700 transition hover:text-black">Women</button>
           <button onClick={() => startFor('Men')} className="text-[11px] font-medium uppercase tracking-[.14em] text-neutral-700 transition hover:text-black">Men</button>
           {nav.map(([label, path]) => (
-            <NavLink key={path} to={path} className={({ isActive }) => `text-[11px] font-medium uppercase tracking-[.14em] transition ${isActive ? 'text-black' : 'text-neutral-500 hover:text-black'}`}>{label}</NavLink>
+            <Link key={path} to={path} className={`text-[11px] font-medium uppercase tracking-[.14em] transition ${isCurrent(path) ? 'text-black' : 'text-neutral-500 hover:text-black'}`}>{label}</Link>
           ))}
         </div>
         <div className="relative ml-auto hidden max-w-sm flex-1 lg:block xl:col-start-1 xl:row-start-1 xl:ml-0 xl:max-w-xs">

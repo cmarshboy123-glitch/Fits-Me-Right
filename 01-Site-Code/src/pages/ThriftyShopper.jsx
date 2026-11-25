@@ -3,7 +3,7 @@ import { ArrowRight, Recycle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid'
 import { getRealProducts } from '../services/catalogService'
-import { parseShoppingIntent, productMatchesIntent } from '../utils/searchIntent'
+import { parseShoppingIntent, productMatchesIntent, searchCatalog } from '../utils/searchIntent'
 
 const tabs = ['Women', 'Men']
 const PAGE_SIZE = 24
@@ -19,10 +19,8 @@ export default function ThriftyShopper() {
 
   const intent = useMemo(() => parseShoppingIntent(query), [query])
   const hasQuery = query.trim().length > 0
-  const matches = useMemo(() => {
-    if (!hasQuery) return products
-    return products.filter((item) => productMatchesIntent(item, intent))
-  }, [products, intent, hasQuery])
+  const search = useMemo(() => (hasQuery ? searchCatalog(products, query) : null), [products, query, hasQuery])
+  const matches = search ? search.results : products
 
   useEffect(() => { if (intent.gender && intent.gender !== active && tabs.includes(intent.gender)) setActive(intent.gender) }, [intent.gender]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -71,6 +69,8 @@ export default function ThriftyShopper() {
             {hasQuery && <button type="button" onClick={() => setQuery('')} className="min-h-[44px] shrink-0 px-2 text-xs font-bold uppercase tracking-wider text-neutral-500 hover:text-black">Clear</button>}
           </div>
         </form>
+        {search && (search.relaxed || search.partial) && <p className="mb-6 text-sm text-neutral-600" role="status">No exact match for “{query.trim()}”, so these are the closest we have.</p>}
+        {search?.exactCount > 0 && !search.relaxed && <p className="mb-6 text-sm text-neutral-600" role="status">{search.exactCount === 1 ? '1 exact match' : `${search.exactCount} exact matches`} for “{query.trim()}” come first, followed by the closest other pieces.</p>}
         <div className="mb-8 flex flex-wrap gap-2">
           {liveChips.map((chip) => (
             <button key={chip} type="button" onClick={() => setQuery(chip === query ? '' : chip)} className={`min-h-[36px] rounded-full border px-4 text-xs font-bold ${query === chip ? 'border-black bg-black text-white' : 'border-neutral-300 hover:border-black'}`}>{chip}</button>
