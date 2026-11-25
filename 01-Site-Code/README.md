@@ -43,6 +43,21 @@ Also in that file: 12 Emmy Kasbit pieces (a Nigerian tailoring label; prices in 
 
 The 429 real items held by the product API (Steve Madden, Dr. Martens and Depop resale finds, a few luxury and high-street pieces) are also saved in `src/data/apiSnapshot.json` and used whenever the API cannot be reached, for example on the private preview (its address is not on the API allow-list) or while the server wakes. Refresh it with `node work/snapshot-api.mjs` after the API data changes.
 
+## Search: one engine for every page
+
+Every search box (Shop, header, Cobbler Corner, Thrifty Shopper, Just Jewels) goes through `searchCatalog()` in `src/utils/searchIntent.js`, so the same words give the same kind of answer everywhere. Rules to keep when you change it:
+
+- **Broad and specific both work.** Exact matches come first. If a specific search has only a few (fewer than 5), the closest other pieces follow and the page says "N exact matches … come first". If nothing matches, it loosens step by step (dropping the unmatched word, then the colour) and says what it dropped. It never shows an empty page when a looser reading has results.
+- **Spell-correction is cautious.** Only words of 5+ letters, sharing their first letter, and not already a real word anywhere in the catalogue (`registerCatalogWords()`, called when the catalogue loads), a store or brand name, or the built-in fashion and occasion vocabulary (`FASHION_WORDS`). Without this, small pages "corrected" real words into look-alikes ("rugby" to "ruby", "leather" to "heather"). Brands such as "nike" are matched exactly, never as typos ("bike").
+- **Possessives are normalised** ("Levi's", "women's", "kids'") in both the catalogue text and the query.
+- **Occasions** ("interview", "party", "wedding guest", "beach vacation") are not product words, so `occasionGroups` points each to the kinds of piece people mean. A piece that literally says the word still ranks first.
+- Size words are only read as a size when they look like one ("size 10", "in medium"), so "oversized" is not read as "over".
+- Test changes against the whole catalogue, not a few queries: run the most common 700 words through `searchCatalog` on each page's slice of the catalogue and confirm none is "corrected".
+
+## Sportswear
+
+`src/utils/sportswear.js` decides what counts as sportswear (`isSportswear`): known athletic stores, plus product-name words (leggings, sports bra, running, gym, yoga...), minus things that only share a word (dress pants, sleepwear, loungewear, boots). It powers `/shop?collection=sportswear`, the Item filter's Activewear option, the home page "Made to Move" tile, the nav and footer links, and the type buttons (`?kind=`, from `sportKind`). Stores file sportswear under many categories, which is why this is decided from the listing rather than the category field.
+
 ## Sample listings are hidden by default
 
 About 7,800 items from the product API have no `productUrl`: an example name and price in a store's typical range, shown with an illustration, that open the store's search. `isSampleListing()` in `src/services/catalogService.js` identifies them (no exact product page). Every page uses real items only (`getRealProducts()`), and the shop opts samples back in with `?samples=1` (the "Sample listings" filter, or the button in the note that appears when a search finds few real items). Luxury houses, the big department stores and the Asian-market stores are almost entirely samples, so those searches show how few real items exist and link to the store's own site. Real products from a store (feed or affiliate) bring it back automatically.

@@ -1,3 +1,4 @@
+import { isSportswear } from './sportswear.js'
 import { withoutUrgency } from './fastDelivery.js'
 
 export const shoppingColors = [
@@ -85,6 +86,8 @@ const colorAliases = shoppingColors
   .flatMap((color) => color.aliases.map((alias) => ({ ...color, alias: stripSeparators(alias) })))
   .sort((a, b) => b.alias.length - a.alias.length)
 
+const PATTERN_WORDS = new Set(['floral', 'print', 'printed', 'patterned', 'polka dot'])
+
 // Colors repeat across thousands of products, so each distinct one is worked out once.
 const colorFamilyCache = new Map()
 export function productColorFamily(color = '') {
@@ -103,7 +106,7 @@ export const shoppingCategories = ['Pants', 'Jeans', 'Tops', 'Dresses', 'Skirts'
 // "Derby Shoe" is an oxford), so each type also lists the model/style words
 // that imply it.
 const shoeTypes = [
-  { query: /\b(sneakers?|trainers?)\b/, name: /sneaker|trainer|runner|running|air max|air force|ultraboost|cloud|jordan|dunk|court|slip-on|cup/ },
+  { query: /\b(sneakers?|trainers?|(running|training|gym|workout|athletic|tennis) shoes?)\b/, name: /sneaker|trainer|runner|running|air max|air force|ultraboost|cloud|jordan|dunk|court|slip-on|cup/ },
   { query: /\bboots?\b/, name: /boot|chelsea|chukka|combat/ },
   { query: /\bloafers?\b/, name: /loafer|moccasin|monolith|penny/ },
   { query: /\bsandals?\b/, name: /sandal|slide|gizeh|arizona|slingback|thong/ },
@@ -138,7 +141,9 @@ export function parseShoppingIntent(input = '') {
   let remainder = source
   const maxMatch = source.match(/(?:under|below|less than|up to|max(?:imum)?(?: of)?)\s*\$?\s*(\d+(?:\.\d{1,2})?)/)
   const minMatch = source.match(/(?:over|above|more than|at least)\s*\$?\s*(\d+(?:\.\d{1,2})?)/)
-  const sizeMatch = source.match(/(?:in\s+)?size\s*[:#-]?\s*([a-z0-9]+(?:\s*[x×]\s*[a-z0-9]+)?)/i)
+  // "size 8", "in size M", "size 32x30". Whole word only: "oversized" is a style, not a size, and the
+  // size has to look like one ("plus size dress" does not mean size "dress").
+  const sizeMatch = source.match(/(?:\bin\s+)?\bsize\s*[:#-]?\s*((?:\d{1,2}(?:\.5)?[a-z]?(?:\s*[x×]\s*\d{1,2})?|(?:x{1,3}|[2-5]x?)?-?(?:s|m|l|small|medium|large)|xxs|xs|xl|xxl|xxxl|[2-5]xl)\b)/i)
 
   // Detected first, and excluded from the text color/category checks below —
   // otherwise "black tie" reads as color "black" plus leftover text "tie"
@@ -154,13 +159,24 @@ export function parseShoppingIntent(input = '') {
 
   // "Purple Label" is Ralph Lauren's line, not the color purple, so it stays a name to match.
   const sourceForColor = sourceWithoutDressCode.replace(/\bpurple label\b/g, ' ')
-  const colorMatch = colorAliases.find(({ alias }) => new RegExp(`\\b${escapeRegExp(alias)}\\b`).test(sourceForColor))
+  // Pattern words (floral, printed) describe the design, not a color: they stay as words to match in the name,
+  // so "floral dress" lists dresses that say floral, whatever their color.
+  const colorMatch = colorAliases.find(({ alias }) => !PATTERN_WORDS.has(alias) && new RegExp(`\\b${escapeRegExp(alias)}\\b`).test(sourceForColor))
   const color = colorMatch?.value || ''
   // Category still checks the full source (not sourceWithoutDressCode) — a
   // dress code phrase like "cocktail dress" should narrow to actual dresses,
   // not just drop the category the way it drops color's false "black" match.
-  const categoryEntry = Object.entries(categoryAliases).find(([, aliases]) => aliases.some((alias) => new RegExp(`\\b${alias}\\b`).test(source)))
-  const category = categoryEntry?.[0]
+  const matchesCategory = ([, aliases]) => aliases.some((alias) => new RegExp(`\\b${alias}\\b`).test(source))
+  let categoryEntry = Object.entries(categoryAliases).find(matchesCategory)
+  // "denim jacket" or "denim skirt" is that garment made of denim, not jeans: "denim" alone must not pick Jeans
+  // when the search also names another garment. (The word "denim" stays in the search as a word to match.)
+  if (categoryEntry?.[0] === 'Jeans' && !/\b(jeans?|jeggings?)\b/.test(source)) {
+    const garment = Object.entries(categoryAliases).find((entry) => entry[0] !== 'Jeans' && matchesCategory(entry))
+    if (garment) categoryEntry = garment
+  }
+  // A sports bra is sportswear, not underwear ("bra" alone would send it to Intimates and list boxers).
+  const sportsBra = /\bsports? bras?\b/.test(source)
+  const category = sportsBra ? 'Activewear' : categoryEntry?.[0]
   // The exact word that picked the category ("hoodie", "trouser"), so items that
   // literally contain it can be ranked above the rest of that category.
   const categoryWord = categoryEntry ? categoryEntry[1].find((alias) => new RegExp(`\\b${alias}\\b`).test(source)) : ''
@@ -172,7 +188,11 @@ export function parseShoppingIntent(input = '') {
   if (colorMatch) remainder = remainder.replace(new RegExp(`\\b${escapeRegExp(colorMatch.alias)}\\b`, 'g'), ' ')
   // Activewear is a broad bucket ("black joggers" shouldn't list every black
   // tank top), so a specific item word in it stays in the search as a word to match.
-  const keepCategoryWord = category === 'Activewear' && ['joggers', 'jogger', 'leggings', 'legging', 'tracksuit', 'tracksuits'].includes(categoryWord)
+  // Likewise Jewelry and Accessories are many different things: "gold earrings" must not list gold necklaces, so the
+  // specific word (earrings, belt, wallet) stays as a word to match, unless it is only the general name of the category.
+  const GENERAL_WORDS = ['jewelry', 'jewellery', 'jewels', 'accessories', 'accessory']
+  const keepCategoryWord = (category === 'Activewear' && ['joggers', 'jogger', 'leggings', 'legging', 'tracksuit', 'tracksuits'].includes(categoryWord)) ||
+    (['Jewelry', 'Accessories'].includes(category) && Boolean(categoryWord) && !GENERAL_WORDS.includes(categoryWord))
   if (category) categoryAliases[category].forEach((alias) => { if (!(keepCategoryWord && alias === categoryWord)) remainder = remainder.replace(new RegExp(`\\b${alias}\\b`, 'g'), ' ') })
 
   // Conversational filler ("show me some nice purple clothing") carries no
@@ -192,6 +212,8 @@ export function parseShoppingIntent(input = '') {
     raw: input,
     text,
     color,
+    // gold, silver, bronze or copper: all one "metallic" family, but a shopper asking for silver does not want gold.
+    colorShade: color === 'metallic' ? colorMatch.alias : '',
     category,
     categoryWord,
     dressCode,
@@ -244,6 +266,21 @@ const synonymGroups = [
   ['button down', 'button up'],
 ]
 
+// Occasions and seasons are not product words, so nothing is *named* "interview". These point one way, from the
+// occasion to the kinds of piece people mean by it. A piece that literally says the word still ranks first.
+const occasionGroups = [
+  [['interview', 'office', 'work', 'business', 'professional', 'corporate'], ['blazer', 'trouser', 'pencil skirt', 'blouse', 'button down', 'sheath', 'dress pants', 'loafer', 'tailored']],
+  [['party', 'club', 'nye'], ['sequin', 'satin', 'cocktail', 'velvet', 'mini dress', 'bodycon', 'metallic', 'sparkle']],
+  [['date', 'night', 'dinner'], ['satin', 'silk', 'midi dress', 'mini dress', 'wrap', 'velvet', 'cocktail']],
+  [['wedding', 'guest', 'bridesmaid', 'gala', 'prom', 'formal', 'evening'], ['gown', 'maxi dress', 'midi dress', 'satin', 'silk', 'floral', 'cocktail', 'tuxedo']],
+  [['brunch', 'garden'], ['floral', 'midi dress', 'linen', 'sundress', 'wrap', 'cotton']],
+  [['beach', 'vacation', 'resort', 'cruise', 'honeymoon', 'summer', 'holiday'], ['linen', 'sundress', 'swim', 'sandal', 'floral', 'maxi', 'cotton', 'straw']],
+  [['winter', 'cold'], ['coat', 'wool', 'knit', 'sweater', 'puffer', 'cashmere', 'fleece']],
+  [['casual', 'weekend', 'everyday', 'travel'], ['tee', 'jeans', 'sneaker', 'hoodie', 'sweatshirt', 'cotton', 'denim']],
+  [['church', 'funeral'], ['midi dress', 'long sleeve', 'blouse', 'skirt', 'blazer']],
+  [['festival', 'concert'], ['boho', 'fringe', 'crochet', 'denim short', 'boot']],
+]
+
 const termKey = (term) => (term.includes(' ') ? term : stem(term))
 const cleanTerm = (term) => normalize(term).replace(/\s+/g, ' ')
 const synonymIndex = new Map()
@@ -252,8 +289,14 @@ synonymGroups.forEach((group) => group.forEach((term) => {
   const others = group.filter((other) => other !== term).map(cleanTerm)
   synonymIndex.set(key, [...new Set([...(synonymIndex.get(key) || []), ...others])])
 }))
+occasionGroups.forEach(([words, related]) => words.forEach((word) => {
+  const key = termKey(cleanTerm(word))
+  synonymIndex.set(key, [...new Set([...(synonymIndex.get(key) || []), ...related.map(cleanTerm)])])
+}))
 
-const wordsOf = (value) => value.split(/[^a-z0-9]+/).filter(Boolean)
+// "Levi's" is searched as "levis" or "levi", "kids'" as "kids", so both spellings find it.
+const unpossess = (value) => value.replace(/([a-z0-9])['’]s\b/g, '$1s $1').replace(/['’]/g, '')
+const wordsOf = (value) => unpossess(value).split(/[^a-z0-9]+/).filter(Boolean)
 
 // Number of single-letter edits (insert, delete, change, or swap two neighbors)
 // between two words, or Infinity once it can't stay within `limit`.
@@ -283,8 +326,8 @@ const searchIndex = new WeakMap()
 function indexOf(product) {
   let entry = searchIndex.get(product)
   if (entry) return entry
-  const spacedName = stripDiacritics(String(product.name || '').toLowerCase()).replace(/[-_]+/g, ' ')
-  const rest = stripDiacritics(`${product.brand || ''} ${product.vendor || ''} ${product.category || ''} ${product.color || ''} ${product.fitNote || ''} ${(product.dressCode || []).join(' ')} ${(product.bodyType || []).join(' ')}`.toLowerCase()).replace(/[-_]+/g, ' ')
+  const spacedName = unpossess(stripDiacritics(String(product.name || '').toLowerCase())).replace(/[-_]+/g, ' ')
+  const rest = unpossess(stripDiacritics(`${product.brand || ''} ${product.vendor || ''} ${product.category || ''} ${product.color || ''} ${product.fitNote || ''} ${(product.dressCode || []).join(' ')} ${(product.bodyType || []).join(' ')}`.toLowerCase())).replace(/[-_]+/g, ' ')
   // Plain arrays and strings, not Sets: with tens of thousands of products the per-item
   // lookup tables are what use the memory, and these lists are only a handful of words long.
   entry = {
@@ -302,7 +345,7 @@ function indexOf(product) {
 }
 
 // How well one search word matches a product: 0 means not at all.
-function scoreToken(entry, token) {
+function scoreToken(entry, token, isKnownWord = false) {
   const stemmed = stem(token)
   if (entry.nameWords.includes(stemmed)) return 3
   if (entry.brandWords.includes(stemmed)) return 2.8
@@ -317,8 +360,9 @@ function scoreToken(entry, token) {
     if (entry.spacedAll.includes(term)) return 0.7
   }
 
-  // Typos: only for words long enough that a one- or two-letter slip is unambiguous.
-  if (token.length >= 4) {
+  // Typos: only for words long enough that a one- or two-letter slip is unambiguous, and never for a word the
+  // catalogue really contains (a brand like "nike" must not be read as a typo of "bike").
+  if (token.length >= 4 && !isKnownWord) {
     const limit = token.length >= 8 ? 2 : 1
     for (const word of entry.nameWords) if (withinEdits(stemmed, word, limit)) return 1.3
     for (const word of entry.rest.trim().split(' ')) if (withinEdits(stemmed, word, limit)) return 0.6
@@ -328,7 +372,7 @@ function scoreToken(entry, token) {
 
 // The shared multi-word phrases ("wide leg", "mom jeans") get a chance to be treated as one unit.
 function searchTokens(intent) {
-  return intent.text.split(/\s+/).filter((token) => token.length > 1)
+  return unpossess(intent.text).split(/\s+/).filter((token) => token.length > 1)
 }
 
 // Products are filed under one category, but shoppers don't think that way: joggers
@@ -346,6 +390,8 @@ const categoryNeighbors = {
 }
 
 function inCategory(product, intent) {
+  // "Activewear" means sportswear wherever the store filed it: see src/utils/sportswear.js.
+  if (intent.category === 'Activewear') return isSportswear(product)
   if (!intent.category || product.category === intent.category) return true
   if (intent.category === 'Jeans' && ['Bottoms', 'Pants'].includes(product.category) && indexOf(product).joinedAll.includes('jean')) return true
   if (intent.category === 'Pants' && ['Bottoms', 'Jeans'].includes(product.category)) return true
@@ -355,9 +401,17 @@ function inCategory(product, intent) {
   return categoryAliases[intent.category].some((alias) => alias.length >= 3 && nameWords.includes(stem(alias)))
 }
 
+// Asking for silver rules out items that say gold (and the reverse). An item that names no metal stays in.
+function metalShadeOk(product, shade) {
+  const text = ` ${normalize(`${product.color || ''} ${product.name || ''}`)} `
+  if (text.includes(` ${shade} `)) return true
+  return !/\b(gold|silver|bronze|copper)\b/.test(text)
+}
+
 function passesFilters(product, intent, { ignoreColor = false } = {}) {
   const sizes = [...(product.availablePantsSizes || []), ...(product.availableShirtSizes || [])].map(normalizeSize)
   return (ignoreColor || !intent.color || productColorFamily(product.color) === intent.color) &&
+    (ignoreColor || !intent.colorShade || metalShadeOk(product, intent.colorShade)) &&
     inCategory(product, intent) &&
     (!intent.dressCode || (product.dressCode || []).includes(intent.dressCode)) &&
     (intent.maxPrice == null || product.price < intent.maxPrice) &&
@@ -381,7 +435,7 @@ function scoreProduct(product, intent, tokens, options) {
   let total = 0
   let matched = 0
   for (const token of tokens) {
-    const value = scoreToken(entry, token)
+    const value = scoreToken(entry, token, Boolean(options?.knownWords?.has(token)))
     if (value > 0) { total += value; matched += 1 }
   }
   if (matched === 0) return null
@@ -394,9 +448,17 @@ function scoreProduct(product, intent, tokens, options) {
 // "Did you mean": swaps words that appear nowhere in the catalog for the closest
 // word that does ("dresess" becomes "dresses"), preferring the commonest one.
 const grammarWords = ['under', 'over', 'below', 'above', 'than', 'less', 'more', 'least', 'size', 'max', 'maximum', 'women', 'womens', 'men', 'mens', 'kids', 'boys', 'girls']
+// Ordinary fashion vocabulary. These are real words wherever you search, so they are never "corrected" into something
+// else just because the items on one small page happen not to use them (this once turned "leather" into "heather"
+// on the resale page), and they are valid targets when someone misspells them ("leahter").
+const FASHION_WORDS = ['leather', 'suede', 'satin', 'silk', 'linen', 'cotton', 'wool', 'cashmere', 'denim', 'tweed', 'boucle', 'velvet', 'corduroy', 'fleece', 'knit', 'crochet', 'lace', 'mesh', 'sequin', 'sequined', 'beaded', 'embroidered', 'ruffle', 'ruffled', 'pleated', 'cropped', 'oversized', 'relaxed', 'tailored', 'fitted', 'slim', 'straight', 'wide', 'flared', 'bootcut', 'skinny', 'sleeveless', 'strapless', 'halter', 'wrap', 'button', 'zipper', 'hooded', 'quilted', 'puffer', 'padded', 'waterproof', 'vegan', 'faux', 'shearling', 'sherpa', 'canvas', 'nylon', 'polyester', 'stretch', 'ribbed', 'cable', 'chunky', 'lightweight', 'platform', 'wedge', 'block', 'stiletto', 'kitten', 'pointed', 'ankle', 'knee', 'thigh', 'gold', 'silver', 'pearl', 'crystal', 'enamel', 'pendant', 'chain', 'charm', 'floral', 'striped', 'plaid', 'checked', 'gingham', 'leopard', 'camo', 'graphic', 'embellished', 'asymmetric', 'backless', 'bodycon', 'peplum', 'smocked', 'tiered', 'vintage', 'retro', 'classic', 'modern', 'boho', 'preppy', 'minimalist', 'streetwear', 'heather', 'herringbone', 'houndstooth', 'paisley', 'tartan', 'jacquard', 'terry', 'poplin', 'chiffon', 'organza', 'taffeta', 'jersey', 'twill', 'ripstop', 'flannel', 'gauze', 'hemp', 'bamboo', 'merino', 'alpaca', 'mohair', 'angora', 'nubuck', 'patent', 'python', 'woven', 'braided', 'tasseled', 'fringe', 'studded', 'distressed', 'washed', 'faded', 'selvedge', 'sweater', 'cardigan', 'hoodie', 'blouse', 'trousers', 'jumpsuit', 'romper', 'blazer', 'parka', 'trench', 'bomber', 'anorak', 'sandals', 'sneakers', 'loafers', 'boots', 'heels', 'bikini', 'necklace', 'earrings', 'bracelet', 'sunglasses', 'wallet', 'backpack', 'clutch',
+  // Occasions, seasons and places people search by, none of which is a product word.
+  'wedding', 'guest', 'party', 'evening', 'night', 'dinner', 'office', 'casual', 'summer', 'winter', 'spring', 'autumn', 'beach', 'vacation', 'holiday', 'brunch', 'interview', 'graduation', 'festival', 'gala', 'prom', 'cocktail', 'bridesmaid', 'church', 'travel', 'everyday', 'weekend', 'business', 'formal', 'occasion', 'honeymoon', 'engagement', 'funeral', 'concert', 'resort', 'cruise']
 const knownWords = new Set([
   ...grammarWords,
-  ...stopwordList.map((word) => word.replace('?', '')),
+  ...FASHION_WORDS,
+  // "outfits?" stands for both "outfit" and "outfits".
+  ...stopwordList.flatMap((word) => (word.includes('?') ? [word.replace('?', ''), word.replace(/.\?/, '')] : [word])),
   ...Object.values(rawCategoryAliases).flat(),
   ...Object.values(rawDressCodeAliases).flat().flatMap((phrase) => phrase.split(' ')),
   ...shoppingColors.flatMap((color) => color.aliases.flatMap((alias) => alias.split(/[ -]/))),
@@ -422,19 +484,35 @@ function vocabularyOf(products) {
   return vocabulary
 }
 
+// Every word anywhere in the catalogue. The shoe, jewelry and resale pages only search their own slice, but a word
+// that exists elsewhere in the catalogue ("rugby", "cargo") is still a real word and must not be "corrected" into
+// a look-alike that happens to be on that page ("ruby", "caro").
+const catalogueWords = new Set()
+const registeredCatalogues = new WeakSet()
+export function registerCatalogWords(products) {
+  if (!Array.isArray(products) || registeredCatalogues.has(products)) return
+  registeredCatalogues.add(products)
+  for (const product of products) {
+    const text = `${product.name || ''} ${product.vendor || ''} ${product.brand || ''}`
+    for (const word of wordsOf(stripDiacritics(text.toLowerCase()))) if (word.length >= 3) catalogueWords.add(word)
+  }
+}
+
 function correctQuery(products, query) {
   const vocabulary = vocabularyOf(products)
   let changed = false
   const corrected = stripDiacritics(query.toLowerCase()).split(/(\s+)/).map((part) => {
     const word = part.replace(/[^a-z']/g, '')
-    if (word.length < 4 || part !== word || /\d/.test(part)) return part
+    // Short words are too ambiguous to guess at ("tote" is not a typo of "tone"), so only 5+ letter words are corrected.
+    if (word.length < 5 || part !== word || /\d/.test(part)) return part
     const plain = stripSeparators(word)
-    if (vocabulary.has(plain) || vocabulary.has(stem(plain)) || knownWords.has(plain) || knownWords.has(stem(plain))) return part
+    if (vocabulary.has(plain) || vocabulary.has(stem(plain)) || knownWords.has(plain) || knownWords.has(stem(plain)) || catalogueWords.has(plain) || catalogueWords.has(stem(plain))) return part
 
-    const limit = plain.length >= 8 ? 2 : 1
+    const limit = plain.length >= 10 ? 2 : 1
     let best = null
     for (const [candidate, count] of vocabulary) {
-      if (candidate.length < 4) continue
+      // Typos rarely change the first letter, so a candidate must share it.
+      if (candidate.length < 4 || candidate[0] !== plain[0]) continue
       const distance = editDistance(plain, candidate, limit)
       if (distance === Infinity) continue
       if (!best || distance < best.distance || (distance === best.distance && count > best.count)) best = { candidate, count, distance }
@@ -461,14 +539,30 @@ export function searchCatalog(products, rawQuery) {
   const intent = parseShoppingIntent(query)
   const tokens = searchTokens(intent)
 
+  // Words the catalogue really contains (names, brands, stores) are matched exactly, with no typo guessing.
+  const vocabulary = vocabularyOf(products)
+  const knownWords = new Set(tokens.filter((token) => vocabulary.has(token) || vocabulary.has(stem(token))))
   const scored = []
   for (const product of products) {
-    const result = scoreProduct(product, intent, tokens)
+    const result = scoreProduct(product, intent, tokens, { knownWords })
     if (result) scored.push({ product, ...result })
   }
 
   const everyWord = scored.filter((item) => item.matchedAll)
   const strict = tokens.length > 1 && everyWord.length > 0 ? everyWord : scored
+  // A specific search with only a few exact matches ("plus size jeans" finds 2) keeps those first and then adds the
+  // closest others, so a precise search is still precise but never leaves the shopper with a near-empty page.
+  const hasFilters = Boolean(intent.color || intent.category || intent.dressCode || intent.maxPrice != null || intent.minPrice != null || intent.size || intent.gender)
+  if (strict.length > 0 && strict.length < 5 && (scored.length > strict.length || hasFilters)) {
+    const seen = new Set(strict.map((item) => item.product))
+    const partialMatches = scored.filter((item) => !seen.has(item.product)).sort(byScore)
+    partialMatches.forEach((item) => seen.add(item.product))
+    // Pieces that pass every filter (size, price, category...) but don't mention the word come last.
+    const filterOnly = hasFilters ? products.filter((product) => !seen.has(product) && passesFilters(product, intent)) : []
+    if (partialMatches.length + filterOnly.length > 0) {
+      return { intent, correctedQuery, results: [...strict.sort(byScore), ...partialMatches].map((item) => item.product).concat(filterOnly), relaxed: null, partial: false, exactCount: strict.length }
+    }
+  }
   if (strict.length > 0) {
     return { intent, correctedQuery, results: strict.sort(byScore).map((item) => item.product), relaxed: null, partial: strict === scored && tokens.length > 1 }
   }

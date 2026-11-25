@@ -8,6 +8,7 @@ import { filterWebResults, intentLabels, productColorFamily, productMatchesInten
 import { luxuryRetailers, webSearchDestinations } from '../utils/retailers'
 import { affiliateUrl, outboundRel } from '../utils/affiliate'
 import { roughUsd } from '../utils/currency'
+import { isSportswear, SPORT_KINDS, sportKind } from '../utils/sportswear'
 import { doorDashSearchUrl, fastDeliveryFor, mapsSearchUrl, urgencyPattern, withoutUrgency } from '../utils/fastDelivery'
 
 // The tiers are exact: budget is under $60, treat is $60 to $179.99, splurge is $180 and up.
@@ -30,6 +31,7 @@ function bodyTypeMatches(product, selected) {
 // One-tap starting points for someone who is not sure what to type. Each is checked against the real catalog.
 const popularSearches = [
   ['Tuxedos', '/shop?collection=tuxedos'],
+  ['Sportswear', '/shop?collection=sportswear'],
   ['Black dress', '/shop?q=black+dress'],
   ['Leather jacket', '/shop?q=leather+jacket'],
   ['White sneakers', '/shop?q=white+sneakers'],
@@ -64,6 +66,8 @@ export default function Shop() {
   const [samples, setSamples] = useState(searchParams.get('samples') || '')
   // A hand-picked group of items, such as ?collection=tuxedos (men's tuxedos from the brands we checked).
   const [collection, setCollection] = useState(searchParams.get('collection') || '')
+  // Inside the Sportswear collection: leggings, sports bras, shorts and so on.
+  const [kind, setKind] = useState(searchParams.get('kind') || '')
   const [sort, setSort] = useState(searchParams.get('sort') || '')
 
   const [loaded, setLoaded] = useState(false)
@@ -88,6 +92,7 @@ export default function Shop() {
     setFast(searchParams.get('fast') || '')
     setSamples(searchParams.get('samples') || '')
     setCollection(searchParams.get('collection') || '')
+    setKind(searchParams.get('kind') || '')
     setSort(searchParams.get('sort') || '')
   }, [searchParams])
 
@@ -109,13 +114,15 @@ export default function Shop() {
     (!f.retailer || product.vendor === f.retailer) && (!f.brand || product.brand === f.brand) &&
     (!f.gender || product.gender === f.gender) && bodyTypeMatches(product, f.bodyType) &&
     (!f.priceTier || product.priceTier === f.priceTier) && (!f.market || product.storeTier === f.market) &&
-    (!f.category || productMatchesIntent(product, { text: '', color: '', category: f.category, maxPrice: null, minPrice: null, size: '', gender: '' })) &&
+    (!f.category || (f.category === 'Activewear' ? isSportswear(product) : productMatchesIntent(product, { text: '', color: '', category: f.category, maxPrice: null, minPrice: null, size: '', gender: '' }))) &&
     (!f.color || productColorFamily(product.color) === f.color) &&
     (!f.fast || fastDeliveryFor(product.vendor)) &&
-    (f.collection !== 'tuxedos' || product.tuxedo === true)
+    (f.collection !== 'tuxedos' || product.tuxedo === true) &&
+    (f.collection !== 'sportswear' || isSportswear(product)) &&
+    (!f.kind || sportKind(product) === f.kind)
   )
-  const activeFilters = { retailer, brand, gender, bodyType, priceTier, market, category, color, fast, collection }
-  const passesFilters = useMemo(() => makePasses(activeFilters), [retailer, brand, gender, bodyType, priceTier, market, category, color, fast, collection]) // eslint-disable-line react-hooks/exhaustive-deps
+  const activeFilters = { retailer, brand, gender, bodyType, priceTier, market, category, color, fast, collection, kind }
+  const passesFilters = useMemo(() => makePasses(activeFilters), [retailer, brand, gender, bodyType, priceTier, market, category, color, fast, collection, kind]) // eslint-disable-line react-hooks/exhaustive-deps
   const filtered = useMemo(() => {
     const matching = (search ? search.results : catalogProducts).filter(passesFilters)
     if (sort === 'low') return [...matching].sort((a, b) => roughUsd(a) - roughUsd(b))
@@ -149,11 +156,12 @@ export default function Shop() {
     market && [`Market: ${market}`, 'market'],
     fast && ['Same-day delivery', 'fast'],
     samples && ['Including samples', 'samples'],
-    collection && [collection === 'tuxedos' ? 'Tuxedos' : collection, 'collection'],
+    collection && [collection === 'tuxedos' ? 'Tuxedos' : collection === 'sportswear' ? 'Sportswear' : collection, 'collection'],
+    kind && [`Type: ${kind}`, 'kind'],
   ].filter(Boolean)
 
   // When nothing matches, say which single filter to remove and how many items that would bring back.
-  const filterKeyOf = { gender: 'gender', category: 'category', priceTier: 'priceTier', store: 'retailer', brand: 'brand', color: 'color', bodyType: 'bodyType', market: 'market', fast: 'fast', collection: 'collection' }
+  const filterKeyOf = { gender: 'gender', category: 'category', priceTier: 'priceTier', store: 'retailer', brand: 'brand', color: 'color', bodyType: 'bodyType', market: 'market', fast: 'fast', collection: 'collection', kind: 'kind' }
   const relaxations = loaded && filtered.length === 0
     ? chips.filter(([, key]) => filterKeyOf[key])
       .map(([label, key]) => [label, key, (search ? search.results : catalogProducts).filter(makePasses({ ...activeFilters, [filterKeyOf[key]]: '' })).length])
@@ -200,21 +208,24 @@ export default function Shop() {
   const syncUrl = (event) => {
     event?.preventDefault()
     const params = new URLSearchParams()
-    Object.entries({ q: query, store: retailer, brand, gender, bodyType, priceTier, market, category, color, fast, samples, collection, sort }).forEach(([key, value]) => { if (value) params.set(key, value) })
+    Object.entries({ q: query, store: retailer, brand, gender, bodyType, priceTier, market, category, color, fast, samples, collection, kind, sort }).forEach(([key, value]) => { if (value) params.set(key, value) })
     setSearchParams(params)
   }
 
   // Every filter change goes through here: it updates the address (so the page, the link and the chips agree),
   // keeps whatever is typed in the search box, and applies at once.
   const update = (changes) => {
-    const params = new URLSearchParams(searchParams)
-    if (query.trim()) params.set('q', query.trim()); else params.delete('q')
-    Object.entries(changes).forEach(([key, value]) => { if (value) params.set(key, value); else params.delete(key) })
-    setSearchParams(params)
+    // Built from the address as it is right now, so two quick changes in a row both stick.
+    setSearchParams((previous) => {
+      const params = new URLSearchParams(previous)
+      if (query.trim()) params.set('q', query.trim()); else params.delete('q')
+      Object.entries(changes).forEach(([key, value]) => { if (value) params.set(key, value); else params.delete(key) })
+      return params
+    })
   }
 
   const clearAll = () => {
-    setQuery(''); setRetailer(''); setBrand(''); setGender(''); setBodyType(''); setPriceTier(''); setMarket(''); setCategory(''); setColor(''); setFast(''); setSamples(''); setCollection(''); setSort(''); setSearchParams({})
+    setQuery(''); setRetailer(''); setBrand(''); setGender(''); setBodyType(''); setPriceTier(''); setMarket(''); setCategory(''); setColor(''); setFast(''); setSamples(''); setCollection(''); setKind(''); setSort(''); setSearchParams({})
   }
 
   // Turning samples on or off keeps every other search and filter as it is.
@@ -237,6 +248,17 @@ export default function Shop() {
       <p className="text-center text-[11px] font-medium uppercase tracking-[.22em] text-neutral-500">The fashion marketplace</p>
       <h1 className="mt-3 text-center font-serif text-3xl font-normal italic tracking-normal sm:text-4xl">Search the whole closet.</h1>
       <p className="mx-auto mt-4 max-w-xl text-center text-sm leading-6 text-neutral-600">Search broadly or get precise. Combine clothing type, color, body type, size, price point, store, and brand in one edit.</p>
+
+      {collection === 'sportswear' && (
+        <div className="mt-8 border border-neutral-300 bg-white px-5 py-5">
+          <p className="text-[10px] font-semibold uppercase tracking-[.2em] text-neutral-500">Sportswear</p>
+          <p className="mt-2 text-sm leading-6 text-neutral-700">Leggings, sports bras, shorts, joggers, running shoes and gym gear for women, men and children, from the stores in our marketplace. Pick a type:</p>
+          <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Sportswear types">
+            <button type="button" onClick={() => update({ kind: '' })} aria-pressed={!kind} className={`min-h-10 px-4 text-[11px] font-medium uppercase tracking-[.1em] ${!kind ? 'bg-black text-white' : 'border border-neutral-300 bg-white hover:border-neutral-900'}`}>All</button>
+            {SPORT_KINDS.map((type) => <button type="button" key={type} onClick={() => update({ kind: type })} aria-pressed={kind === type} className={`min-h-10 px-4 text-[11px] font-medium uppercase tracking-[.1em] ${kind === type ? 'bg-black text-white' : 'border border-neutral-300 bg-white hover:border-neutral-900'}`}>{type}</button>)}
+          </div>
+        </div>
+      )}
 
       {collection === 'tuxedos' && (
         <div className="mt-8 flex flex-col justify-between gap-3 bg-neutral-950 px-5 py-5 text-white sm:flex-row sm:items-center">
@@ -339,6 +361,7 @@ export default function Shop() {
         </div>
       )}
       {search?.partial && !search.relaxed && filtered.length > 0 && <p className="mb-6 text-sm text-neutral-600">Nothing matched every word, so these match some of them, best matches first.</p>}
+      {search?.exactCount > 0 && !search.relaxed && filtered.length > 0 && <p className="mb-6 text-sm text-neutral-600" role="status">{search.exactCount === 1 ? '1 exact match' : `${search.exactCount} exact matches`} for “{(searchParams.get('q') || query).trim()}” come first, followed by the closest other pieces.</p>}
 
       {filtered.length ? (
         <>
