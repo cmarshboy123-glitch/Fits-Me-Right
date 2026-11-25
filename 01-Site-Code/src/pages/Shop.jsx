@@ -319,7 +319,7 @@ export default function Shop() {
         <button type="button" onClick={() => { setFiltersOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className="sticky bottom-3 mt-6 flex min-h-12 w-full items-center justify-center gap-2 bg-black px-6 text-xs font-black text-white shadow-lift transition hover:bg-gold-700 sm:w-auto lg:static lg:shadow-none">{loaded ? `SHOW ${filtered.length.toLocaleString()} ITEMS` : 'DONE'}</button>
       </div>
 
-      <div className="flex flex-col gap-2 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-5"><p className="text-xs font-semibold uppercase tracking-[.14em]">{samples ? `${filtered.length.toLocaleString()} ITEMS, ${(filtered.length - realShown).toLocaleString()} OF THEM SAMPLE LISTINGS` : `${filtered.length.toLocaleString()} REAL ITEMS ACROSS ${[...new Set(filtered.map((product) => product.vendor))].length} STORES`}</p><p className="max-w-md text-xs text-neutral-500 sm:text-right">{samples ? 'Real items open the store’s own page; sample listings open the store’s search · ' : 'Every shopping button opens the item on the store’s own site · '}the store confirms live price and stock</p></div>
+      <div className="flex flex-col gap-2 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-5"><p className="text-xs font-semibold uppercase tracking-[.14em]">{samples ? `${filtered.length.toLocaleString()} ITEMS, ${(filtered.length - realShown).toLocaleString()} OF THEM SAMPLE LISTINGS` : `${filtered.length.toLocaleString()} REAL ${filtered.length === 1 ? 'ITEM' : 'ITEMS'} ACROSS ${[...new Set(filtered.map((product) => product.vendor))].length === 1 ? '1 STORE' : `${[...new Set(filtered.map((product) => product.vendor))].length} STORES`}`}</p><p className="max-w-md text-xs text-neutral-500 sm:text-right">{samples ? 'Real items open the store’s own page; sample listings open the store’s search · ' : 'Every shopping button opens the item on the store’s own site · '}the store confirms live price and stock</p></div>
 
       {loaded && !samples && hiddenSamples > 0 && (filtered.length < PAGE_SIZE || retailer || market === 'Luxury') && (
         <div className="mb-8 rounded-2xl border border-gold-200 bg-gold-50 px-5 py-5" role="status">
@@ -377,8 +377,8 @@ export default function Shop() {
         <div className="rounded-2xl bg-neutral-100 px-6 py-16 text-center" aria-busy="true"><p className="text-sm font-bold text-neutral-500">Loading the marketplace…</p></div>
       ) : (
         <div className="rounded-2xl bg-neutral-100 px-6 py-16 text-center">
-          <h2 className="text-2xl font-bold">{hiddenSamples > 0 ? 'No real listings matched that yet.' : 'Nothing in our marketplace matched that search.'}</h2>
-          <p className="mx-auto mt-2 max-w-md text-sm text-neutral-600">{hiddenSamples > 0 ? 'See the note above for sample listings and the store’s own site. ' : ''}Try clearing a filter to widen the selection{canSearchWeb ? ', or look below — we sent your search to the wider web.' : '.'}</p>
+          <h2 className="text-2xl font-bold">{hiddenSamples > 0 ? 'No verified items for this yet.' : 'Nothing in our marketplace matched that search.'}</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-neutral-600">{hiddenSamples > 0 ? 'The box above links to the store itself. ' : ''}You can also clear a filter to widen the selection{canSearchWeb ? ', or look below for the wider web.' : '.'}</p>
           {relaxations.length > 0 && (
             <div className="mt-6 flex flex-wrap justify-center gap-2">
               {relaxations.map(([label, key, matches]) => <button key={key} type="button" onClick={() => update({ [key]: '' })} className="min-h-11 border border-neutral-900 bg-white px-4 text-[11px] font-medium uppercase tracking-[.1em] transition hover:bg-neutral-950 hover:text-white">Remove “{label}” to see {matches.toLocaleString()}</button>)}
