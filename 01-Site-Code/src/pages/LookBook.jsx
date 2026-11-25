@@ -96,7 +96,7 @@ function WishlistPicker({ look, onClose }) {
             })}
           </ul>
           <button type="button" disabled={picked.length === 0} onClick={() => { addItems(look.id, picked); onClose() }} className="mt-5 min-h-12 bg-black px-6 text-xs font-semibold uppercase tracking-[.14em] text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-40">
-            Add {picked.length > 0 ? picked.length : ''} to this look
+            {picked.length > 0 ? `Add ${picked.length} to this look` : 'Pick items to add'}
           </button>
         </>
       )}

@@ -91,7 +91,7 @@ export default function JustJewels() {
           </div>
           <div className="flex items-center gap-4">
             <div className="flex gap-2">{kinds.map((value) => <button key={value} onClick={() => setKind(value)} aria-pressed={kind === value} className={`min-h-[36px] rounded-full px-4 text-xs font-bold ${kind === value ? 'bg-black text-white' : 'border border-neutral-300 hover:border-black'}`}>{value.toUpperCase()}</button>)}</div>
-            <span className="text-xs font-bold">{filtered.length} ITEMS</span>
+            <span className="text-xs font-bold">{filtered.length.toLocaleString()} {filtered.length === 1 ? 'ITEM' : 'ITEMS'}</span>
           </div>
         </div>
         {filtered.length ? (

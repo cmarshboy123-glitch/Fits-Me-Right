@@ -77,7 +77,7 @@ export default function ThriftyShopper() {
           ))}
         </div>
         <div className="mb-8 flex border-b border-neutral-200">{tabs.map((tab) => <button key={tab} onClick={() => setActive(tab)} className={`flex-1 border-b-2 px-3 py-4 text-sm font-bold sm:flex-none sm:px-10 ${active === tab ? 'border-black' : 'border-transparent text-neutral-500'}`}>{tab.toUpperCase()}{hasQuery ? ` (${counts[tab]})` : ''}</button>)}</div>
-        <div className="mb-6 flex items-end justify-between"><h2 className="text-2xl font-bold">{active}'s vintage &amp; resale</h2><span className="text-xs font-bold">{filtered.length} ITEMS</span></div>
+        <div className="mb-6 flex items-end justify-between"><h2 className="text-2xl font-bold">{active}'s vintage &amp; resale</h2><span className="text-xs font-bold">{filtered.length.toLocaleString()} {filtered.length === 1 ? 'ITEM' : 'ITEMS'}</span></div>
         {filtered.length ? (
           <>
             <ProductGrid products={visible} />

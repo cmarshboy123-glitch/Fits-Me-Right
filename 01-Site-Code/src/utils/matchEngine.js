@@ -139,8 +139,9 @@ function termScore(haystack, phrases) {
   phrases.forEach((tokens) => {
     const hit = tokens.filter((token) => tokenPresent(haystack, token))
     earned += hit.length / tokens.length
-    if (hit.length === tokens.length) found.push(tokens.join(' '))
-    else missing.push(tokens.join(' '))
+    // A phrase can be partly confirmed ("satin midi thin strap": satin and midi are, thin strap isn't), so say which.
+    if (hit.length > 0) found.push(hit.join(' '))
+    if (hit.length < tokens.length) missing.push(tokens.filter((token) => !hit.includes(token)).join(' '))
   })
   return { fraction: earned / phrases.length, found, missing }
 }

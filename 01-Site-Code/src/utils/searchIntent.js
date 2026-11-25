@@ -158,7 +158,8 @@ export function parseShoppingIntent(input = '') {
   const sourceWithoutDressCode = dressCodeAlias ? source.replace(new RegExp(`\\b${escapeRegExp(dressCodeAlias)}\\b`, 'g'), ' ') : source
 
   // "Purple Label" is Ralph Lauren's line, not the color purple, so it stays a name to match.
-  const sourceForColor = sourceWithoutDressCode.replace(/\bpurple label\b/g, ' ')
+  // "rose gold" is a metal, not the color rose (pink).
+  const sourceForColor = sourceWithoutDressCode.replace(/\bpurple label\b/g, ' ').replace(/\brose[ -]gold\b/g, ' gold ')
   // Pattern words (floral, printed) describe the design, not a color: they stay as words to match in the name,
   // so "floral dress" lists dresses that say floral, whatever their color.
   const colorMatch = colorAliases.find(({ alias }) => !PATTERN_WORDS.has(alias) && new RegExp(`\\b${escapeRegExp(alias)}\\b`).test(sourceForColor))
@@ -213,7 +214,8 @@ export function parseShoppingIntent(input = '') {
     text,
     color,
     // gold, silver, bronze or copper: all one "metallic" family, but a shopper asking for silver does not want gold.
-    colorShade: color === 'metallic' ? colorMatch.alias : '',
+    // Only a named metal narrows (gold vs silver); the general word "metallic" accepts any of them.
+    colorShade: color === 'metallic' && ['gold', 'silver', 'bronze', 'copper'].includes(colorMatch.alias) ? colorMatch.alias : '',
     category,
     categoryWord,
     dressCode,
@@ -336,6 +338,10 @@ function indexOf(product) {
     nameWords: wordsOf(spacedName).map(stem),
     // The brand and store names alone, so searching a brand lists that brand's items first.
     brandWords: wordsOf(stripDiacritics(`${product.brand || ''} ${product.vendor || ''}`.toLowerCase()).replace(/[-_]+/g, ' ')).map(stem),
+    // Whole store and brand names, to tell when the shopper typed one ("white fox" is a store, not white + fox).
+    // The same names as one word ("redone" for "Re/Done"), which is how a multi-word name travels through the search.
+    brandJoined: [product.vendor, product.brand].map((name) => stripDiacritics(String(name || '').toLowerCase()).replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '')).filter(Boolean),
+    namedBy: [product.vendor, product.brand].map((name) => { const words = wordsOf(stripDiacritics(String(name || '').toLowerCase())).map(stem); return words.length ? ` ${words.join(' ')} ` : '' }).filter(Boolean),
     rest: ` ${wordsOf(rest).map(stem).join(' ')} `,
     joinedAll: `${spacedName} ${rest}`.replace(/\s+/g, ''),
     spacedAll: `${spacedName} ${rest}`,
@@ -348,7 +354,7 @@ function indexOf(product) {
 function scoreToken(entry, token, isKnownWord = false) {
   const stemmed = stem(token)
   if (entry.nameWords.includes(stemmed)) return 3
-  if (entry.brandWords.includes(stemmed)) return 2.8
+  if (entry.brandWords.includes(stemmed) || entry.brandJoined.includes(token)) return 2.8
   if (entry.joinedName.includes(token)) return 2.5
   if (entry.rest.includes(` ${stemmed} `) || entry.joinedAll.includes(token)) return 1
 
@@ -533,19 +539,75 @@ const byScore = (a, b) => b.score - a.score
 // word matches); if that finds nothing it loosens the search step by step and
 // says what it dropped, rather than showing an empty page.
 export function searchCatalog(products, rawQuery) {
+  const core = searchCore(products, rawQuery)
+
+  // Typing a product's own name must always find it, even when a word in the name ("khaki", "shirt jacket") is
+  // filed differently by the store and would otherwise be filtered out. Those exact-name items go first.
+  const nameWords = wordsOf(stripDiacritics(String(rawQuery || '').toLowerCase())).map(stem)
+  if (nameWords.length >= 2) {
+    const phrase = ` ${nameWords.join(' ')} `
+    const pinned = products.filter((product) => ` ${indexOf(product).nameWords.join(' ')} `.includes(phrase))
+    if (pinned.length > 0) {
+      const seen = new Set(pinned)
+      return { ...core, results: [...pinned, ...core.results.filter((product) => !seen.has(product))], relaxed: null, partial: false }
+    }
+  }
+  return core
+}
+
+// Store and brand names of two or more words ("White Fox", "Rowing Blazers", "Alo Yoga") that real shoppers type whole.
+// Read word by word, "white fox" is the color white and "blazers" is a garment, which filters the store's own pieces
+// out. So a name found whole in the query is kept as one unit and its words are not read as colors or categories.
+const brandNameCache = new WeakMap()
+function brandNames(products) {
+  let names = brandNameCache.get(products)
+  if (names) return names
+  const counts = new Map()
+  for (const product of products) {
+    for (const name of [product.vendor, product.brand]) {
+      const words = stripDiacritics(String(name || '').toLowerCase()).replace(/['’]/g, '').split(/[^a-z0-9]+/).filter(Boolean)
+      if (words.length < 2 || words.some((word) => /\d/.test(word))) continue
+      const key = words.join(' ')
+      counts.set(key, (counts.get(key) || 0) + 1)
+    }
+  }
+  names = [...counts].filter(([, count]) => count >= 15).map(([key]) => ({ words: key.split(' '), joined: key.replace(/ /g, '') }))
+    .map((name) => ({ ...name, pattern: new RegExp(`(?<![a-z0-9])${name.words.join('[^a-z0-9]+')}(?![a-z0-9])`) }))
+    .sort((a, b) => b.words.length - a.words.length)
+  brandNameCache.set(products, names)
+  return names
+}
+
+function maskBrandNames(products, text) {
+  let masked = stripDiacritics(text.toLowerCase()).replace(/['’]/g, '')
+  const restore = []
+  for (const name of brandNames(products)) {
+    if (name.pattern.test(masked)) { masked = masked.replace(name.pattern, name.joined); restore.push(name) }
+  }
+  return { masked, restore: (value) => restore.reduce((out, name) => out.replace(name.joined, name.words.join(' ')), value) }
+}
+
+function searchCore(products, rawQuery) {
   // "tuxedo asap" or "dress for tonight": the urgency isn't a product word, so it is dropped.
   const { query, changed } = correctQuery(products, withoutUrgency(rawQuery) || rawQuery)
   const correctedQuery = changed ? query : null
-  const intent = parseShoppingIntent(query)
+  const { masked, restore } = maskBrandNames(products, query)
+  const intent = parseShoppingIntent(masked)
   const tokens = searchTokens(intent)
+  intent.text = restore(intent.text)
 
   // Words the catalogue really contains (names, brands, stores) are matched exactly, with no typo guessing.
   const vocabulary = vocabularyOf(products)
   const knownWords = new Set(tokens.filter((token) => vocabulary.has(token) || vocabulary.has(stem(token))))
+  // Typing a store's or brand's whole name ("white fox", "good american") ranks that store's pieces first.
+  const queryPhrase = ` ${wordsOf(stripDiacritics(query.toLowerCase())).map(stem).join(' ')} `
   const scored = []
   for (const product of products) {
     const result = scoreProduct(product, intent, tokens, { knownWords })
-    if (result) scored.push({ product, ...result })
+    if (result) {
+      const byName = indexOf(product).namedBy.some((name) => queryPhrase.includes(name))
+      scored.push({ product, ...result, score: result.score + (byName ? 5 : 0) })
+    }
   }
 
   const everyWord = scored.filter((item) => item.matchedAll)
